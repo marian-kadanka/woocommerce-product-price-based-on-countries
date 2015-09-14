@@ -44,7 +44,7 @@ class WCPBC_Install {
 		// Queue upgrades
 		$current_version = self::get_install_version();
 		
-		if ( null !== $current_version && version_compare( $current_version, '1.3.2', '<' ) ) {
+		if ( null !== $current_version && version_compare( $current_version, '1.4.0', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 		} else {
 			delete_option( 'wc_price_based_country_version' );
@@ -57,7 +57,7 @@ class WCPBC_Install {
 	 */
 	public static function check_version() {
 				
-		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.3.2', '<' ) ) {
+		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.4.0', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 
 		} else {
@@ -122,7 +122,8 @@ class WCPBC_Install {
 
 			$install_version = self::get_install_version();
 			$db_updates         = array(
-				'1.3.2' => 'updates/wcpbc-update-1.3.2.php'
+				'1.3.2' => 'updates/wcpbc-update-1.3.2.php',
+				'1.4.0' => 'updates/wcpbc-update-1.4.0.php'
 			);
 
 			foreach ( $db_updates as $version => $updater ) {

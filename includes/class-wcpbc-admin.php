@@ -42,7 +42,7 @@ class WCPBC_Admin {
 
 		add_action( 'woocommerce_variable_product_sync', array( &$this, 'variable_product_sync' ), 10, 2 );
 
-		add_filter( 'woocommerce_currency',  array( &$this, 'order_currency' ) );		
+		add_filter( 'woocommerce_currency',  array( &$this, 'order_currency' ) );			
 
 	}
 

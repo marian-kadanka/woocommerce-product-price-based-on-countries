@@ -22,11 +22,6 @@ class WCPBC_Frontend {
 	 */
 	protected $customer = null;
 
-	/**
-	 * @var int $filter_widget_min_or_max;
-	 */
-	protected $filter_widget_min_or_max = 'min';
-
 	function __construct(){
 		
 		add_action( 'woocommerce_init', array(&$this, 'init') );		
@@ -56,7 +51,9 @@ class WCPBC_Frontend {
 		// Price Filter
 		add_filter( 'woocommerce_price_filter_results', array( &$this, 'price_filter_results' ), 10, 3 );
 
-		add_filter( 'woocommerce_price_filter_widget_amount', array( &$this, 'price_filter_widget_amount' ) );
+		add_filter( 'woocommerce_price_filter_widget_min_amount', array( &$this, 'price_filter_widget_min_amount' ) );
+
+		add_filter( 'woocommerce_price_filter_widget_max_amount', array( &$this, 'price_filter_widget_max_amount' ) );
 
 		//shortcode country selector
 		add_shortcode( 'wcpbc_country_selector', array( &$this, 'country_select' ) );
@@ -376,46 +373,90 @@ class WCPBC_Frontend {
 			$_price = '_' . $this->customer->group_key . '_price';
 
 			$sql = $wpdb->prepare('SELECT DISTINCT ID, post_parent, post_type FROM %1$s 
-					INNER JOIN %2$s wc_price ON ID = wc_price.post_id and wc_price.meta_key = "_price"
+					INNER JOIN %2$s wc_price ON ID = wc_price.post_id and wc_price.meta_key = "_price" AND wc_price.meta_value != ""
 					LEFT JOIN %2$s price_method ON ID = price_method.post_id and price_method.meta_key = "%3$s"
-					LEFT JOIN %2$s price ON ID = price.post_id and price.meta_key = "%4$s"
+					LEFT JOIN %2$s price ON ID = price.post_id and price.meta_key = "%4$s" AND price.meta_value != ""
 					WHERE post_type IN ( "product", "product_variation" )
 					AND post_status = "publish"					
-					AND IF(IFNULL(price_method.meta_value, "exchange_rate") = "exchange_rate", wc_price.meta_value * %5$s, price.meta_value) BETWEEN %6$d AND %7$d'
+					AND IF(IFNULL(price_method.meta_value, "exchange_rate") = "exchange_rate", wc_price.meta_value * %5$s, price.meta_value + 0) BETWEEN %6$d AND %7$d'
 			, $wpdb->posts, $wpdb->postmeta, $_price_method, $_price, $this->customer->exchange_rate, $min, $max);
 
-			$matched_products_query = $wpdb->get_results( $sql, OBJECT_K );			
-
+			$matched_products_query = $wpdb->get_results( $sql, OBJECT_K );						
 		}
 
 		return $matched_products_query;
 	}
 
 	/**
-	 * Return de min and max value of price filter widget. Beta only works when have'nt any manually price greater or less that $min_or_max * exchage rate
+	 * Return de min and max value of product prices
 	 *
-	 * @param int $min_or_max
-	 * @return array
+	 * @param string $min_or_max
+	 * @param double $amount
+	 * @return double
 	 */	
-	public function price_filter_widget_amount( $min_or_max ) {
+	public function _price_min_amount( $amount, $min_or_max = 'min' ) {				
 
-		if ( $this->customer->exchange_rate ) {
+		global $wpdb;
 
-			$min_or_max = $min_or_max * $this->customer->exchange_rate;
+		if ( $this->customer->group_key ) {		
 
-			if ($this->filter_widget_min_or_max == 'min') {
-				
-				$min_or_max = floor($min_or_max);
-				$this->filter_widget_min_or_max = 'max';
+			$cache_key = 'wcpbc_amount' . md5( json_encode( array(						
+				$min_or_max,
+				$this->customer->group_key,
+				implode( ',', array_map( 'absint', WC()->query->layered_nav_product_ids ) ),
+				WC_Cache_Helper::get_transient_version( 'product' )
+			) ) );			
 
-			} else {
-				$min_or_max = ceil($min_or_max);
+			if ( WP_DEBUG || false === ( $amount = get_transient( $cache_key ) ) ) {					
+
+				$_price_method = '_' . $this->customer->group_key . '_price_method';
+				$_price = '_' . $this->customer->group_key . '_price';
+
+				$sql = 'SELECT ' . $min_or_max .'( IF(IFNULL(price_method.meta_value, "exchange_rate") = "exchange_rate", wc_price.meta_value * %1$s, price.meta_value + 0) ) as amount
+						FROM %2$s posts
+						INNER JOIN %3$s wc_price ON ID = wc_price.post_id and wc_price.meta_key = "_price" AND wc_price.meta_value != ""
+						LEFT JOIN %3$s price_method ON ID = price_method.post_id and price_method.meta_key = "%4$s"
+						LEFT JOIN %3$s price ON ID = price.post_id and price.meta_key = "%5$s" AND price.meta_value != ""
+						WHERE post_type IN ( "product", "product_variation" ) AND post_status = "publish"';
+
+				if ( count( WC()->query->layered_nav_product_ids )!== 0 ) {
+
+					$sql .= ' AND ( ';
+					$sql .= ' posts.ID IN (' . implode( ',', array_map( 'absint', WC()->query->layered_nav_product_ids ) ) . ')';
+					$sql .= ' OR ( posts.post_parent IN (' . implode( ',', array_map( 'absint', WC()->query->layered_nav_product_ids ) ) . ')';
+					$sql .= ' AND posts.post_parent != 0 )';
+					$sql .= ' )';
+				}
+
+				$sql = $wpdb->prepare( $sql, $this->customer->exchange_rate, $wpdb->posts, $wpdb->postmeta, $_price_method, $_price);								
+
+				$amount = $wpdb->get_var( $sql);
+
+				set_transient( $cache_key, $amount, HOUR_IN_SECONDS );
 			}
 		}
 
-		return $min_or_max;
+		return $amount;
 	}
-		 
+	
+	/** 
+	 * Filter for price_filter_widget_min_amount
+	 * @param $amount Min amount
+	 */
+	 public function price_filter_widget_min_amount( $amount ) {	 
+	 	return floor( $this->_price_min_amount( $amount ) );	 	
+	 }
+
+	 /** 
+	 * Filter for price_filter_widget_max_amount
+	 * @param $amount Max amount
+	 */
+	 public function price_filter_widget_max_amount( $amount ) {	 
+	 	 	return ceil( $this->_price_min_amount( $amount, 'max' ) );
+	 }
+	 
+
+
 }
 
 endif;
