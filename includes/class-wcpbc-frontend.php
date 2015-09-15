@@ -12,7 +12,7 @@ require_once 'class-wcpbc-customer.php';
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.3.5
+ * @version		1.4.1
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -398,16 +398,17 @@ class WCPBC_Frontend {
 
 		global $wpdb;
 
-		if ( $this->customer->group_key ) {		
+		if ( $this->customer->group_key && $this->customer->exchange_rate ) {		
 
 			$cache_key = 'wcpbc_amount' . md5( json_encode( array(						
 				$min_or_max,
 				$this->customer->group_key,
+				$this->customer->exchange_rate,
 				implode( ',', array_map( 'absint', WC()->query->layered_nav_product_ids ) ),
 				WC_Cache_Helper::get_transient_version( 'product' )
 			) ) );			
 
-			if ( WP_DEBUG || false === ( $amount = get_transient( $cache_key ) ) ) {					
+			if ( false === ( $amount = get_transient( $cache_key ) ) ) {					
 
 				$_price_method = '_' . $this->customer->group_key . '_price_method';
 				$_price = '_' . $this->customer->group_key . '_price';

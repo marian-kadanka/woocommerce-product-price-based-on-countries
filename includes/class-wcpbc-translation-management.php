@@ -10,7 +10,7 @@ if ( ! class_exists( 'WCPBC_Translation_Management' ) ) :
  * Translation Management for WooCommerce Price Based Country
  *
  * @class 		WCPBC_Tranlation_Management
- * @version		1.3.6
+ * @version		1.4.1
  * @author 		oscargare
  * @category	Class
  */
@@ -91,11 +91,35 @@ class WCPBC_Translation_Management {
         	}
 
 		}
-	}		
+	}
+
+	/**
+	 *  Check WCML Multi currency	 
+	 */	
+	public static function check_wcml_multicurrency(){
+		
+		global $woocommerce_wpml;
+
+		if ( isset($woocommerce_wpml) &&  is_object( $woocommerce_wpml ) && get_class($woocommerce_wpml) == 'woocommerce_wpml' && $woocommerce_wpml->settings['enable_multi_currency'] > 0 ) {
+			add_action( 'admin_notices', array( __CLASS__, 'disable_wcml_multicurrency_notice' ) );			
+		}
+	}
+
+	/**
+	 * Diable WCML Multicurrency notice
+	 */
+	public static function disable_wcml_multicurrency_notice(){
+		?>
+		<div class="error">
+			<p><?php _e( '<strong>WooCommerce Price Based Country incompatiblity found!</strong><br />WooCommerce Multilingual Multiple currencies is incompatible with WooCommerce Price Based on Country. While WooCommerce Multilingual Multiple currencies option is active can cause unexpected results. Go to <a href="' . admin_url( 'admin.php?page=wpml-wcml' ) . '">WooCommerce Multilingual settings page</a> and disables WooCommerce Multilingual Multi Currency option.', 'wc-price-based-country' ); ?></p>						
+		</div>		
+		<?php
+	}
 
 }
 
 add_action( 'init', 'WCPBC_Translation_Management::add_custom_fields', 1510 );
+add_action( 'admin_init', 'WCPBC_Translation_Management::check_wcml_multicurrency' );
 add_action( 'admin_enqueue_scripts', 'WCPBC_Translation_Management::wpml_scripts' );
 
 endif;

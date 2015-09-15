@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.6.1
 Tested up to: 4.2.2
-Stable tag: 1.3.5
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,7 @@ You have two ways to set product's price for each region:
 * Automatically detects of customer's country, with price and currency set accordingly.
 * Refresh price and currency on order preview, cart and shop when country changes on checkout page.
 * Included action hook and shortcode to add a country selector to front-end.
+* Compatible With WPML.
 
 
 **Requirements**
@@ -82,6 +83,10 @@ You should do the test in a private browsing window to prevent data stored in th
 4. /assets/screenshot-4.png
 
 == Changelog ==
+
+= 1.4.1 =
+* Added: Ready for WPML.
+* Fixed: Max And Min Values in Price Filter Widget not works.
 
 = 1.3.5 =
 * Added: Ready for WooCommerce 2.4

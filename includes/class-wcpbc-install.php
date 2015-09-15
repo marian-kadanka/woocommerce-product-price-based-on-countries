@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Installation related functions and actions.
  *
  * @author 		oscargare 
- * @version     1.3.3
+ * @version     1.4.1
  */
 
 class WCPBC_Install {
@@ -88,7 +88,7 @@ class WCPBC_Install {
 	 */	
 	public static function update_notice() {
 		?>
-		<div class="updated woocommerce-message wc-connect">
+		<div class="error">
 			<p><?php _e( '<strong>WooCommerce Price Based Country Database Update Required</strong> &#8211; We just need to update your install to the latest version', 'wc-price-based-country' ); ?></p>
 			<p class="submit"><a href="<?php echo esc_url( add_query_arg( 'do_update_wc_price_based_country', 'true', admin_url( 'admin.php?page=wc-settings&tab=price_based_country' ) ) ); ?>" class="wc-update-now button-primary"><?php _e( 'Run the updater', 'woocommerce' ); ?></a></p>
 		</div>
