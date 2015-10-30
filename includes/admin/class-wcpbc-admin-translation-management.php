@@ -2,19 +2,17 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( ! class_exists( 'WCPBC_Translation_Management' ) ) :
-
 /**
- * WCPBC_Translation_Management
+ * WCPBC_Admin_Translation_Management
  *
  * Translation Management for WooCommerce Price Based Country
  *
- * @class 		WCPBC_Tranlation_Management
+ * @class 		WCPBC_Admin_Translation_Management
  * @version		1.4.1
  * @author 		oscargare
  * @category	Class
  */
-class WCPBC_Translation_Management {
+class WCPBC_Admin_Translation_Management {
 
 	/**
 	 * Get Custom plugin fields
@@ -118,10 +116,6 @@ class WCPBC_Translation_Management {
 
 }
 
-add_action( 'init', 'WCPBC_Translation_Management::add_custom_fields', 1510 );
-add_action( 'admin_init', 'WCPBC_Translation_Management::check_wcml_multicurrency' );
-add_action( 'admin_enqueue_scripts', 'WCPBC_Translation_Management::wpml_scripts' );
-
-endif;
-
-?>
+add_action( 'init', 'WCPBC_Admin_Translation_Management::add_custom_fields', 1510 );
+add_action( 'admin_init', 'WCPBC_Admin_Translation_Management::check_wcml_multicurrency' );
+add_action( 'admin_enqueue_scripts', 'WCPBC_Admin_Translation_Management::wpml_scripts' );

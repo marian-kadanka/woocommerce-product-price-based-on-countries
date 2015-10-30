@@ -1,28 +1,29 @@
+/* global wcpbc_regions_keys */
 jQuery(document).ready(function($){
 
-	var inpt_name = '';	
-	var inpt_names = ['_regular_price', '_sale_price'];
-	
-	for(var i = 0; i<wcpbc_regions_keys.length; i++ ) {
+	var wcpbc_wpml_lock_fields = {
 
-		for (var j = 0; j<inpt_names.length; j++) {		
+		lock_input : function(input_name, disable_attr ) {		
+			for(var i = 0; i<wcpbc_regions_keys.length; i++ ) {	
+				$('input[name="_'+wcpbc_regions_keys[i]+input_name+'"]').attr(disable_attr, disable_attr);
+	        	$('input[name="_'+wcpbc_regions_keys[i]+input_name+'"]').after($('.wcml_lock_img').clone().removeClass('wcml_lock_img').show());
+	        }
+		},
 
-			inpt_name = '_' + wcpbc_regions_keys[i] + inpt_names[j];
+		init: function(){
+			this.lock_input('_regular_price', 'readonly');
+			this.lock_input('_sale_price', 'readonly');
+			this.lock_input('_price_method', 'disabled');
 
-			$('input[name="'+inpt_name+'"]').attr('readonly','readonly');
-        	$('input[name="'+inpt_name+'"]').after($('.wcml_lock_img').clone().removeClass('wcml_lock_img').show());
-
-        	inpt_name = '_' + wcpbc_regions_keys[i] + '_variable' + inpt_names[j];
-
-        	$('input[name^="'+inpt_name+'"]').attr('readonly','readonly');
-        	$('input[name^="'+inpt_name+'"]').after($('.wcml_lock_img').clone().removeClass('wcml_lock_img').show());        	
+			$( '#woocommerce-product-data' ).on( 'woocommerce_variations_loaded', function(){
+				//this.lock_input('_variable_regular_price', 'readonly');
+				//this.lock_input('_variable_sale_price', 'readonly');
+				//this.lock_input('_variable_price_method', 'disabled');				
+				alert('aa');
+			} );
 		}
+	};
 
-		$('input[name="_' + wcpbc_regions_keys[i] + '_price_method"').attr('disabled','disabled');
-    	$('input[name="_' + wcpbc_regions_keys[i] + '_price_method"').after($('.wcml_lock_img').clone().removeClass('wcml_lock_img').show());
-
-		$('input[name^="_' + wcpbc_regions_keys[i] + '_variable_price_method"').attr('disabled','disabled');
-    	$('input[name^="_' + wcpbc_regions_keys[i] + '_variable_price_method"').after($('.wcml_lock_img').clone().removeClass('wcml_lock_img').show());
-	}	
+	wcpbc_wpml_lock_fields.init();	
 			
 });

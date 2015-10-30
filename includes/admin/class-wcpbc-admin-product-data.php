@@ -2,64 +2,39 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( ! class_exists( 'WCPBC_Admin' ) ) :
-
 /**
- * WCPBC_Admin
+ * WCPBC_Admin_Product_Data 
  *
- * WooCommerce Price Based Country Admin 
- *
- * @class 		WCPBC_Admin
- * @version		1.3.3
+ * @class 		WCPBC_Admin_Product_Data
+ * @version		1.4.2
  * @author 		oscargare
  * @category	Class
  */
-class WCPBC_Admin {
-
-	function __construct(){
-		
-		add_action('init', array(&$this, 'init'));
-
-		add_action( 'admin_enqueue_scripts', array( &$this, 'load_admin_script' ) );	
-	}
+class WCPBC_Admin_Product_Data {
 
 	/**
-	 * Hook actions and filters
+	 * Hook in methods
 	 */
-	function init() {
+	public static function init() {
 
-		add_filter('woocommerce_get_settings_pages', array( &$this, 'settings_price_based_country' ) );
+		add_action( 'woocommerce_product_options_general_product_data', array( __CLASS__, 'product_options_countries_prices' ) );
 		
-		add_action( 'woocommerce_product_options_general_product_data', array( &$this, 'product_options_countries_prices' ) );
+		add_action( 'woocommerce_process_product_meta_simple', array( __CLASS__, 'process_product_simple_countries_prices' ) ) ;						
+
+		add_action( 'woocommerce_process_product_meta_external', array( __CLASS__, 'process_product_simple_countries_prices' ) ) ;						
 		
-		add_action( 'woocommerce_process_product_meta_simple', array( &$this, 'process_product_simple_countries_prices' ) ) ;						
-
-		add_action( 'woocommerce_process_product_meta_external', array( &$this, 'process_product_simple_countries_prices' ) ) ;						
+		add_action( 'woocommerce_product_after_variable_attributes', array( __CLASS__, 'product_variable_attributes_countries_prices') , 10, 3 );				
 		
-		add_action( 'woocommerce_product_after_variable_attributes', array( &$this, 'product_variable_attributes_countries_prices') , 10, 3 );				
-		
-		add_action( 'woocommerce_save_product_variation', array( &$this, 'save_product_variation_countries_prices' ), 10, 2 );
+		add_action( 'woocommerce_save_product_variation', array( __CLASS__, 'save_product_variation_countries_prices' ), 10, 2 );
 
-		add_action( 'woocommerce_variable_product_sync', array( &$this, 'variable_product_sync' ), 10, 2 );
-
-		add_filter( 'woocommerce_currency',  array( &$this, 'order_currency' ) );			
-
+		add_action( 'woocommerce_variable_product_sync', array( __CLASS__, 'variable_product_sync' ), 10, 2 );		
 	}
 
-	/**
-	 * Add Price Based Country settings tab to woocommerce settings
-	 */
-	function settings_price_based_country( $settings ) {
-
-		$settings[] = include( 'class-wc-settings-price-based-country.php' );
-
-		return $settings;
-	}	
 
 	/**
 	 * Add price input to product simple metabox
 	 */
-	function product_options_countries_prices() {					
+	public static function product_options_countries_prices() {					
 
 		foreach ( WCPBC()->get_regions() as $key => $value ) {	
 
@@ -109,7 +84,7 @@ class WCPBC_Admin {
 	/**
 	 * Save meta data product simple
 	 */
-	function process_product_simple_countries_prices( $post_id, $i = false, $variable = '' ) {				
+	public static function process_product_simple_countries_prices( $post_id, $i = false, $variable = '' ) {				
 		
 		foreach ( WCPBC()->get_regions() as $key => $value ) {
 			
@@ -160,7 +135,7 @@ class WCPBC_Admin {
 	/**	
 	 * Add price input to product variation metabox
 	 */
-	function product_variable_attributes_countries_prices( $loop, $variation_data, $variation ) {							
+	public static function product_variable_attributes_countries_prices( $loop, $variation_data, $variation ) {							
 
 		foreach ( WCPBC()->get_regions() as $key => $value) {
 
@@ -211,15 +186,15 @@ class WCPBC_Admin {
 	/**
 	 * Save meta data product variation
 	 */
-	function save_product_variation_countries_prices( $variation_id, $i ) {	
+	public static function save_product_variation_countries_prices( $variation_id, $i ) {	
 
-		$this->process_product_simple_countries_prices( $variation_id, $i, '_variable');		
+		self::process_product_simple_countries_prices( $variation_id, $i, '_variable');		
 	}
 
 	/**
 	 * Sync product variation prices with parent
 	 */
-	function variable_product_sync( $product_id, $children ) {		
+	public static function variable_product_sync( $product_id, $children ) {		
 		
 		foreach ( WCPBC()->get_regions() as $region_key => $region ) {
 			
@@ -289,37 +264,6 @@ class WCPBC_Admin {
 			}			
 		}		
 	}
-
-	/**
-	 * default currency in order
-	 */
-	function order_currency( $currency )	{
-
-		global $post;
-
-		if ($post && $post->post_type == 'shop_order' ) {
-			
-			global $theorder;
-			if ( $theorder ) 
-				return $theorder->order_currency;
-
-		}
-			
-		return $currency;
-	}	
-
-	function load_admin_script( ) {	
-
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		wp_enqueue_script( 'wc-price-based-country-admin', WCPBC()->plugin_url() . 'assets/js/wcpbc-admin' . $suffix . '.js', array('jquery'), WCPBC()->version, true );		
-
-	}
-
 }
 
-endif;
-
-$wcpbc_admin = new WCPBC_Admin();
-
-?>
+WCPBC_Admin_Product_Data::init();

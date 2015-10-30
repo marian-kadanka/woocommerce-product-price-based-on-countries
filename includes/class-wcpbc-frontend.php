@@ -12,7 +12,7 @@ require_once 'class-wcpbc-customer.php';
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.4.1
+ * @version		1.4.2
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -34,21 +34,27 @@ class WCPBC_Frontend {
 
 		add_filter( 'woocommerce_currency',  array( &$this, 'currency' ) );
 
-		add_filter('woocommerce_get_price', array( &$this, 'get_price' ), 10, 2 );
+		/* WC_Product Price Filters */
+		add_filter( 'woocommerce_get_price', array( &$this, 'get_price' ), 10, 2 );
 
 		add_filter( 'woocommerce_get_regular_price', array( &$this, 'get_regular_price') , 10, 2 );
 
 		add_filter( 'woocommerce_get_sale_price', array( &$this, 'get_sale_price') , 10, 2 );								
+
+		/* WC_Product_Variable Price Filters */
+		add_filter( 'woocommerce_variation_prices_price', array( &$this, 'get_price' ), 10, 3 );
+
+		add_filter( 'woocommerce_variation_prices_regular_price', array( &$this, 'get_regular_price' ), 10, 3 );
+
+		add_filter( 'woocommerce_variation_prices_sale_price', array( &$this, 'get_sale_price' ), 10, 3 );
 						
 		add_filter( 'woocommerce_get_variation_price', array( &$this, 'get_variation_price' ), 10, 4 );		
 
 		add_filter( 'woocommerce_get_variation_regular_price', array( &$this, 'get_variation_regular_price' ), 10, 4 );	
 
-		add_filter( 'woocommerce_get_variation_sale_price', array( &$this, 'get_variation_sale_price' ), 10, 4 );		
-
-		add_filter( 'woocommerce_variation_prices', array( &$this, 'get_variation_prices_array' ), 10, 3 );		
+		add_filter( 'woocommerce_get_variation_sale_price', array( &$this, 'get_variation_sale_price' ), 10, 4 );				
 		
-		// Price Filter
+		/* Widget Price Filter */
 		add_filter( 'woocommerce_price_filter_results', array( &$this, 'price_filter_results' ), 10, 3 );
 
 		add_filter( 'woocommerce_price_filter_widget_min_amount', array( &$this, 'price_filter_widget_min_amount' ) );
@@ -168,12 +174,12 @@ class WCPBC_Frontend {
 		
 		return $wppbc_currency;
 	}		
-	
+
 	/**
-	 * Returns the product's active price.
+	 * Returns the product price.
 	 * @return string price
 	 */
-	public function get_price ( $price, $product, $price_type = '_price' ) {	
+	protected function get_product_price ( $price, $product, $price_type ) {	
 		
 		$wcpbc_price = $price;
 		
@@ -207,21 +213,27 @@ class WCPBC_Frontend {
 	}
 
 	/**
+	 * Returns the product's price.
+	 * @return string price
+	 */
+	public function get_price ($price, $product, $parent = NULL) {			
+		return $this->get_product_price( $price, $product, '_price');
+	}
+
+	/**
 	 * Returns the product's regular price.
 	 * @return string price
 	 */
-	public function get_regular_price ($price, $product) {			
-		
-		return $this->get_price( $price, $product, '_regular_price');
+	public function get_regular_price ($price, $product, $parent = NULL) {					
+		return $this->get_product_price( $price, $product, '_regular_price');
 	}	
 	
 	/**
 	 * Returns the product's sale price
 	 * @return string price
 	 */
-	public function get_sale_price ( $price, $product ) {	
-		
-		return $this->get_price( $price, $product, '_sale_price');
+	public function get_sale_price ( $price, $product, $parent = NULL ) {			
+		return $this->get_product_price( $price, $product, '_sale_price');
 	}
 	
 	/**
@@ -282,78 +294,7 @@ class WCPBC_Frontend {
 	public function get_variation_sale_price( $price, $product, $min_or_max, $display ) {		
 		
 		return $this->get_variation_price( $price, $product, $min_or_max, $display, '_sale_price' );
-	}
-
-	/**
-	 * Get an array of all sale and regular prices from all variations.
-	 * @since WooCommerce 2.4
-	 * @param array() sale and regular prices for default location
-	 * @param WC_Product_Variable 
-	 * @param  bool Are prices for display? If so, taxes will be calculated.
-	 * @return array()
-	 */
-	public function get_variation_prices_array( $prices_array, $product, $display ) {
-
-		if ( $this->customer->group_key ) {
-
-			$cache_key = 'var_prices_' . md5( json_encode( array(
-				$product->id,
-				$display ? WC_Tax::get_rates() : '',
-				$this->customer->group_key,
-				WC_Cache_Helper::get_transient_version( 'product' )
-			) ) );
-
-			if ( false === ( $prices_array = get_transient( $cache_key ) ) ) {				
-
-				$prices            = array();
-				$regular_prices    = array();
-				$sale_prices       = array();
-				$tax_display_mode  = get_option( 'woocommerce_tax_display_shop' );
-
-				foreach ( $product->get_children( true ) as $variation_id ) {
-
-					if ( $variation = $product->get_child( $variation_id ) ) {
-							
-						$price 			= $variation->get_price();
-						$regular_price 	= $variation->get_regular_price();
-						$sale_price 	= $variation->get_sale_price();
-
-						// If sale price does not equal price, the product is not yet on sale
-						if ( $price != $sale_price ) {
-							$sale_price = $regular_price;
-						}
-						// If we are getting prices for display, we need to account for taxes
-						if ( $display ) {
-							$price         = $tax_display_mode == 'incl' ? $variation->get_price_including_tax( 1, $price ) : $variation->get_price_excluding_tax( 1, $price );
-							$regular_price = $tax_display_mode == 'incl' ? $variation->get_price_including_tax( 1, $regular_price ) : $variation->get_price_excluding_tax( 1, $regular_price );
-							$sale_price    = $tax_display_mode == 'incl' ? $variation->get_price_including_tax( 1, $sale_price ) : $variation->get_price_excluding_tax( 1, $sale_price );
-						}													
-
-						$prices[ $variation_id ]         = $price;
-						$regular_prices[ $variation_id ] = $regular_price;
-						$sale_prices[ $variation_id ]    = $sale_price;
-
-					}
-					
-				}
-
-				asort( $prices );
-				asort( $regular_prices );
-				asort( $sale_prices );
-
-				$prices_array  = array(
-					'price'         => $prices,
-					'regular_price' => $regular_prices,
-					'sale_price'    => $sale_prices
-				);
-
-				set_transient( $cache_key, $prices_array, DAY_IN_SECONDS * 30 );				
-			}
-
-		}			
-
-		return $prices_array;
-	}
+	}	
 
 	/**
 	 * Return matched produts where price between min and max
@@ -454,9 +395,7 @@ class WCPBC_Frontend {
 	 */
 	 public function price_filter_widget_max_amount( $amount ) {	 
 	 	 	return ceil( $this->_price_min_amount( $amount, 'max' ) );
-	 }
-	 
-
+	 }	 
 
 }
 
