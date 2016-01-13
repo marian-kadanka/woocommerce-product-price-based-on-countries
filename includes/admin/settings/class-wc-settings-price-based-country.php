@@ -1,4 +1,3 @@
-
 <?php
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -9,9 +8,8 @@ if ( ! class_exists( 'WC_Settings_Price_Based_Country' ) ) :
  * WC_Settings_Price_Based_Country
  *
  * WooCommerce Price Based Country settings page
- *
- * @class 		WC_Settings_Price_Based_Country
- * @version		1.3.4
+ * 
+ * @version		1.5.0
  * @author 		oscargare
  */
 class WC_Settings_Price_Based_Country extends WC_Settings_Page {
@@ -21,14 +19,16 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 */
 	public function __construct() {
 
-		$this->id    = 'price_based_country';
+		$this->id    = 'price-based-country';
 		$this->label = __( 'Price Based on Country', 'wc-price-based-country' );
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 20 );
-		add_action( 'woocommerce_sections_' . $this->id, array( $this, 'output_sections' ) );
 		add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
-		add_action( 'woocommerce_admin_field_country_groups', array( $this, 'country_groups_table' ) );		
-		add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save' ) );						
+		add_action( 'woocommerce_sections_' . $this->id, array( $this, 'output_sections' ) );			
+		add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save' ) );		
+
+		//table list row actions
+		self::regions_list_row_actions();
 	}
 
 	/**
@@ -36,49 +36,13 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 *
 	 * @return array
 	 */
-	public function get_sections() {					
-
+	public function get_sections() {
 		$sections = array(
-			''         => __( 'Price Based on Country Options', 'wc-price-based-country' )
+			''         => __( 'Settings', 'woocommerce' ),
+			'regions'     => __( 'Regions', 'wc-price-based-country' )		
 		);
 
-		foreach ( get_option( 'wc_price_based_country_regions', array() ) as $key => $country_group ) {
-			$sections[$key] = $country_group['name'];
-		}		
-		
-		return $sections;
-	}
-
-	/**
-	 * Display donate notices
-	 */
-	function donate_notice() {
-
-		if ( get_option('wc_price_based_country_hide_ads', 'no') == 'no' ) {
-
-			global $pagenow;		
-		
-			if ( 'admin.php' == $pagenow && isset( $_GET['page'] ) && $_GET['page'] == 'wc-settings' && isset( $_GET['tab'] ) && $_GET['tab'] == 'price_based_country' ) {
-				?>
-				<div class="updated">
-					<p><strong>Donate to Price Based Country</strong></p>
-					<p><?php _e('It is difficult to provide, support, and maintain free software. Every little bit helps is greatly appreciated!','wc-price-based-country') ; ?></p>
-					<p class="submit">
-						<a class="button-primary" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG75SHRLAX28L"><?php _e( 'Donate now', 'woocommerce' ); ?></a>
-						<a class="skip button-secondary" href="<?php echo esc_url( add_query_arg( 'wc_price_based_country_donate_hide', 'true', admin_url( 'admin.php?page=wc-settings&tab=price_based_country' ) ) ); ?>">Don't show me again</a>
-					</p>
-		   		</div>
-				<?php							
-			}
-		}		
-	}
-
-	/**
-	 * Display donate notice and after display sections
-	 */
-	public function output_sections() {
-		$this->donate_notice();
-		parent::output_sections();		
+		return apply_filters( 'wc_price_based_country_get_sections', $sections );
 	}
 
 	/**
@@ -86,20 +50,41 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 *
 	 * @return array
 	 */
-	public function get_settings() {						
-			
-		return array(			
-		
-			array( 
-				'title' => __( 'Pricing groups', 'wc-price-based-country' ), 
-				'type' => 'title', 
-				'desc' => 'Pricing groups are listed below. Add a group for each price you need to add to products and include the countries for which this price will be displayed. For deleted a group, check "Delete" and save changes', 
-				'id' => 'price_based_country_groups'
+	public function get_settings() {
+		$settings = apply_filters( 'wc_price_based_country_settings', array(
+			array(
+				'title' => __( 'General Options', 'woocommerce' ),
+				'type'  => 'title',
+				'desc'  => '',
+				'id'    => 'general_options'
 			),
 
-			array( 'type' => 'country_groups' ),				
+			array(
+				'title'    => __( 'Price Based On', 'wc-price-based-country' ),
+				'desc'     => __( 'This controls which address is used to refresh products prices on checkout.' ),
+				'id'       => 'wc_price_based_country_based_on',
+				'default'  => 'billing',
+				'type'     => 'select',
+				'class'    => 'wc-enhanced-select',				
+				'desc_tip' =>  true,
+				'options'  => array(
+					'billing'      => __( 'Customer billing country', 'wc-price-based-country' ),
+					'shipping' => __( 'Customer shipping country', 'wc-price-based-country' )
+				)
+			),
+			
+			array(
+				'title'    => __( 'Shipping', 'wc-price-based-country' ),
+				'desc' 		=> __( 'Enabled currency conversion to "Flat Rate" And "International Flat Rate"', 'wc-price-based-country' ),
+				'id' 		=> 'wc_price_based_shipping_conversion',
+				'default'	=> 'no',
+				'type' 		=> 'checkbox'				
+			),
 
-			array( 'type' => 'sectionend', 'id' => 'price_based_country_groups' ),				
+			array(
+				'type' => 'sectionend',
+				'id' => 'general_options'
+			),
 
 			array( 
 				'title' => __( 'Test Mode', 'wc-price-based-country' ), 
@@ -127,333 +112,300 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 			),
 			
 			array( 'type' => 'sectionend', 'id' => 'price_based_country_test' )
+		));
 
-		);			
+		return $settings;
+	}
 	
-	}
-
-	/**
-	 * Output country groups table.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function country_groups_table() {
-		?>
-		<tr valign="top">
-			<th scope="row" class="titledesc"><?php _e( 'Groups', 'wc-price-based-country' ) ?></th>
-		    <td class="forminp">
-				<table class="widefat" cellspacing="0">
-					<thead>
-						<tr>
-							<th style="width:5px;"></th>							
-							<th><?php _e( 'Group Name', 'wc-price-based-country' ) ?></th>
-							<th><?php _e( 'Countries', 'wc-price-based-country' ) ?></th>
-							<th><?php _e( 'Currency', 'woocommerce' ); ?></th>							
-							<th style="width:120px;"></th>
-							<th style="width:80px;"><?php _e( 'Delete', 'woocommerce' ); ?></th>
-						</tr>
-					</thead>
-					<tbody>						
-						<?php
-
-							$currencies = get_woocommerce_currencies();							
-							$base_currency = get_option( 'woocommerce_currency' );						
-
-							echo '<tr><td></td>';								
-							echo '<td>' . __('Default Zone', 'wc-price-based-country') . '</td>';
-							echo '<td>' . __('All countries not are included in other zones', 'wc-price-based-country') . '</td>';							
-							echo '<td>' . $currencies[ $base_currency ] . '(' . get_woocommerce_currency_symbol( $base_currency ) . ')<br /> <span class="description">Default</span></td>';
-							echo '<td></td></tr>';
-
-							foreach ( get_option( 'wc_price_based_country_regions', array() ) as $key => $region) {
-
-								echo '<tr id="' . $key . '">';							
-
-								echo '<td></td>';
-
-								echo '<td>' . $region['name'] . '</td>';
-
-								echo '<td>';
-
-								$country_display = array();
-								
-								foreach( $region['countries'] as $iso_code ) {
-									$country_display[] = WC()->countries->countries[$iso_code];										
-								}
-
-								echo  implode($country_display, ', ');
-
-								echo '</td>';
-
-								echo '<td>';
-								echo $currencies[$region['currency']] . ' (' . get_woocommerce_currency_symbol($region['currency']) . ') <br />';
-								echo '<span class="description">1 ' . $base_currency .' = ' . wc_format_localized_decimal( $region['exchange_rate'] ) . ' ' . $region['currency'] . '</span>';
-								echo '</td>';								
-
-								echo '<td>';
-								echo '<a class="button" href="' . admin_url( 'admin.php?page=wc-settings&tab=' . $this->id . '&section=' . $key) . '">' . __( 'Settings', 'woocommerce' ) . '</a>';								
-								echo '</td>';
-
-								echo '<td style="padding:15px 10px;"><input type="checkbox" value="' . $key . '" name="delete_group[]" /></td>';
-
-								echo '</tr>';							
-							}													
-							
-						?>					
-					</tbody>
-					<tfoot>
-						<tr>							
-							<th style="width:5px;"></th>
-							<th colspan="5">
-								<a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=' . $this->id . '&section=new_group') ?>" class="button">+ Add group</a>								
-							</th>							
-						</tr>						
-					</tfoot>
-				</table>
-			</td>
-		</tr>
-		<?php					
-
-	}
-
-	/**
-	 * Output section.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function section_settings( $not_available_countries, $group = array() ) {
-
-		if ( ! isset( $group['name'] ) ) $group['name'] = '';
-		if ( ! isset( $group['countries'] ) ) $group['countries'] = array();
-		if ( ! isset( $group['currency'] ) ) $group['currency'] = get_option('woocommerce_currency');
-		if ( ! isset( $group['empty_price_method'] ) ) $group['empty_price_method'] = '';
-		if ( ! isset( $group['exchange_rate'] ) ) $group['exchange_rate'] = '1';
-
-		?>
-		<h3><?php echo $group['name'] ? esc_html( $group['name'] ) : __( 'Add Group', 'wc-price-based-country' ); ?></h3>
-		<table class="form-table">
-
-			<!-- Region name -->
-			<tr valign="top">
-				<th scope="row" class="titledesc">
-					<label for="group_name"><?php _e( 'Region Name', 'wc-price-based-country' ); ?></label>
-					<?php //echo $tip; ?>
-				</th>
-                <td class="forminp forminp-text">
-                	<input name="group_name" id="group_name" type="text" value="<?php echo esc_attr( $group['name'] ); ?>"/> 
-                	<?php //echo $description; ?>
-                </td>
-			</tr>
-
-			<!-- Country multiselect -->			
-			<tr valign="top">
-				<th scope="row" class="titledesc">
-					<label for="group_countries"><?php _e( 'Countries', 'wc-price-based-country' ); ?></label>
-				</th>
-				<td class="forminp">
-					<select multiple="multiple" name="group_countries[]" style="width:350px" data-placeholder="<?php _e( 'Choose countries&hellip;', 'woocommerce' ); ?>" title="Country" class="chosen_select">
-						<?php 	
-							
-							$countries = WC()->countries->countries;							
-
-							asort( $countries );
-							
-		        			foreach ( $countries as $key => $val ) {
-		        				if ( ! in_array( $key, $not_available_countries ) ) {
-                					echo '<option value="' . esc_attr( $key ) . '" ' . selected( in_array( $key, $group['countries'] ), true, false ).'>' . $val . '</option>';
-                				}
-                			}
-						?>
-					</select>
-					<!-- <a class="select_all button" href="#"><?php _e( 'Select all', 'woocommerce' ); ?></a> <a class="select_none button" href="#"><?php _e( 'Select none', 'woocommerce' ); ?></a> -->
-				</td>
-			</tr>
-
-			<!-- Currency select -->			
-			<tr valign="top">
-				<th scope="row" class="titledesc">
-					<label for="group_currency"><?php _e( 'Currency', 'woocommerce' ); ?></label>
-					<?php //echo $tip; ?>
-				</th>
-				<td class="forminp forminp-select">
-					<select name="group_currency" id="group_currency" class="chosen_select">
-						<?php
-							foreach ( get_woocommerce_currencies() as $code => $name ) {
-								echo '<option value="' . esc_attr( $code ) . '" ' . selected( $group['currency'], $code ) .'>' . $name . ' (' . get_woocommerce_currency_symbol( $code ) . ')' . '</option>';
-							}
-						?>
-					</select>
-				</td>
-			</tr>
-			
-
-			<!-- Exchange rate -->			
-			<tr valign="top">
-				<th scope="row" class="titledesc">
-					<label for="exchange_rate"><?php _e( 'Exchange Rate', 'wc-price-based-country' ); ?></label>
-					<img class="help_tip" data-tip="<?php echo esc_attr( __( "For each product, if select autocalculate, product's price will be the result of multiplying the default price by this exchange rate.", 'wc-price-based-country' ) ); ?>" src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" />
-				</th>
-                <td class="forminp forminp-text">                	
-                	1 <?php echo get_option( 'woocommerce_currency' );	?> = <input name="exchange_rate" id="exchange_rate" type="text" class="short wc_input_decimal" value="<?php echo wc_format_localized_decimal( $group['exchange_rate'] ); ?>"/> 
-                	<?php //echo $description; ?>
-                </td>
-			</tr>
-
-		</table>
-
-		<?php				
-
-	}
-
 	/**
 	 * Output the settings
 	 */
 	public function output() {
-		global $current_section;		
-
-		if ( $current_section ) {			
-
-			$base_country = wc_get_base_location();			
-			
-			$not_available_countries = array();
-			
-			$regions = get_option( 'wc_price_based_country_regions', array() );
-
-			foreach ( $regions  as $key => $value ) {					
-
-				foreach ( $value['countries'] as $code ) {
-
-					if ( $current_section !== $key ) $not_available_countries[] = $code;							
-				}
-			}					
-
-			if ( $current_section == 'new_group' ) {
-				
-				$this->section_settings( $not_available_countries );
-
-			} else {			
-				
-				if ( isset( $regions[$current_section] ) ) {								
-
-					$this->section_settings( $not_available_countries, $regions[$current_section] );
-				}					
-			}								
-
-		} else {
-			parent::output();			
-		}			
-	}	
-
-	/**
-	 * Save section settings
-	 */
-	public function section_save() {
-
 		global $current_section;
-
-		$save = false;
-
-		if ( ! $_POST['group_name'] ) {
-
-			WC_Admin_Settings::add_error( __( 'Group name is required.', 'wc-price-based-country' ) );
-
-		} elseif ( ! isset( $_POST['group_countries'] ) ) {
-
-			WC_Admin_Settings::add_error( __( 'Add at least one country to the list.', 'wc-price-based-country' ) );
-
-		} elseif ( empty( $_POST['exchange_rate'] ) ||  wc_format_decimal( $_POST['exchange_rate'] ) == 0 ) {
-			
-			WC_Admin_Settings::add_error( __( 'Exchange rate must be nonzero.', 'wc-price-based-country' ) );			
-
+		
+		self::display_donate_notice();	//display de donate notice
+		
+		if ( 'regions' == $current_section ) {										
+			self::regions_output();
 		} else {
-
-			$section_settings = get_option( 'wc_price_based_country_regions', array() );
-
-			$key = ( $current_section == 'new_group' ) ? sanitize_title( $_POST['group_name'] ) : $current_section;
-			
-			$section_settings[$key]['name'] = $_POST['group_name'];
-			$section_settings[$key]['countries'] = $_POST['group_countries'];
-			$section_settings[$key]['currency'] = $_POST['group_currency'];			
-			$section_settings[$key]['exchange_rate'] = wc_format_decimal( $_POST['exchange_rate'] );
-			
-			update_option( 'wc_price_based_country_regions', $section_settings );
-			
-			if ( $current_section == 'new_group' ) {
-				$current_section = $key ;					
-			}
-
-			$save = true;
-			
+			$settings = $this->get_settings( $current_section );
+			WC_Admin_Settings::output_fields( $settings );
 		}
-
-		return $save;
-
 	}
 
 	/**
-	 * Save global settings 
+	 * Save settings
 	 */
 	public function save() {
-		
 		global $current_section;
 		
-		if ( $current_section ) {
+		if( $current_section == 'regions' && ( isset( $_GET['edit_region'] ) || isset( $_GET['add_region'] ) ) ) {			
+			self::regions_save();
 			
-			if (  $this->section_save() ) {
-				update_option( 'wc_price_based_country_timestamp', time() );
-			}			
-
-		} else {
-													
-			if ( isset( $_POST['delete_group'] ) ) {
-				
-				$section_settings = WCPBC()->get_regions();
-				
-				global $wpdb;
-
-				foreach ( $_POST['delete_group'] as $region_key ) {
-
-					unset( $section_settings[$region_key] );
-
-					foreach ( array('_price', '_regular_price', '_sale_price', '_price_method') as $price_type ) {
-						
-						foreach ( array('', '_variable') as $variable) {
-							
-							$meta_key = '_' . $region_key . $variable . $price_type;
-
-							$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => $meta_key ) );			
-						}	
-
-						if ( $price_type !== '_price_method') {
-
-							foreach ( array('_min', '_max' ) as $min_or_max ) {
-
-								$meta_key = '_' . $region_key . $min_or_max . $price_type . '_variation_id';
-
-								$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => $meta_key ) );			
-							}		
-						}		
-					}					
-				}
-
-				update_option( 'wc_price_based_country_regions', $section_settings );							
-
-			}						
-
+		} elseif( $current_section == 'regions' && isset( $_POST['action'] ) && $_POST['action'] == 'remove' && isset( $_POST['region_key'] ) ) {
+			self::regions_delete_bulk();
+			
+		} elseif( $current_section !== 'regions' ) {			
 			//save settings				
 			$settings = $this->get_settings();
-			WC_Admin_Settings::save_fields( $settings );							
+			WC_Admin_Settings::save_fields( $settings );										
 
-			update_option( 'wc_price_based_country_timestamp', time() );			
+			update_option( 'wc_price_based_country_timestamp', time() );	
 		}		
 	}
 	
+	/**
+	 * Display donate notices
+	 */
+	private static function display_donate_notice() {
+
+		if ( get_option('wc_price_based_country_hide_ads', 'no') == 'no' ) {
+
+			global $pagenow;		
+		
+			if ( isset( $_GET['wc_price_based_country_donate_hide'] ) && $_GET['wc_price_based_country_donate_hide'] == 'true' ) {
+				update_option('wc_price_based_country_hide_ads', 'yes');
+			} else {
+				?>
+				<div class="updated">
+					<p><strong>Donate to Price Based Country</strong></p>
+					<p><?php _e('It is difficult to provide, support, and maintain free software. Every little bit helps is greatly appreciated!','wc-price-based-country') ; ?></p>
+					<p class="submit">
+						<a class="button-primary" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG75SHRLAX28L"><?php _e( 'Donate now', 'woocommerce' ); ?></a>
+						<a class="skip button-secondary" href="<?php echo esc_url( add_query_arg( 'wc_price_based_country_donate_hide', 'true', admin_url( 'admin.php?page=wc-settings&tab=price-based-country' ) ) ); ?>">Don't show me again</a>
+					</p>
+		   		</div>
+				<?php							
+			}
+		}		
+	}
+	
+	/**
+	 * Regions Page output
+	 */
+	private static function regions_output() {
+		// Hide the save button
+		$GLOBALS['hide_save_button'] = true;
+
+		if ( isset( $_GET['add_region'] ) || isset( $_GET['edit_region'] ) ) {
+			$region_key   = isset( $_GET['edit_region'] ) ? $_GET['edit_region'] : NULL;
+			$region = self::get_regions_data( $region_key);
+			$allowed_countries = self::get_allowed_countries( $region_key );
+			include( 'views/html-regions-edit.php' );
+		} else {
+			self::regions_table_list_output();		
+		}		
+	}
+
+	/**
+	 * Regions table list output
+	 */
+	private static function regions_table_list_output() {
+		
+		include_once( WCPBC()->plugin_path() . 'includes/admin/class-wcpbc-admin-regions-table-list.php' );
+
+		echo '<h3>' .  __( 'Regions', 'wc-price-based-country' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=regions&add_region=1' ) ) . '" class="add-new-h2">' . __( 'Add Region', 'wc-price-based-country' ) . '</a></h3>';
+
+		 $keys_table_list = new WCPBC_Admin_Regions_Table_List();
+		 $keys_table_list->prepare_items();
+		 $keys_table_list->views();		
+		 $keys_table_list->display();
+	}
+
+	/**
+	 * Get region data
+	 *
+	 * @param  string $key
+	 * @return array
+	 */
+	private static function get_regions_data( $key, $values = FALSE ) {	
+
+		$region = apply_filters( 'wc_price_based_country_default_region_data', array(
+			'name'        			=> '',
+			'countries'       		=> array(),
+			'currency'   			=> get_option('woocommerce_currency'),
+			'empty_price_method'   	=> '',
+			'exchange_rate' 		=> '1'
+		));
+
+		$regions = get_option( 'wc_price_based_country_regions', array() );	
+
+		if ( array_key_exists($key, $regions) ) {
+			$region = $regions[$key];
+		}
+
+		if ( is_array($values) ) {
+			 $region = array_intersect_key( $values, $region);			
+			 $region['exchange_rate'] = isset( $region['exchange_rate'] ) ? wc_format_decimal($region['exchange_rate']) : 0;
+		}
+
+		return $region;
+	}		
+	
+	/**
+	 * Get allowed countries
+	 *
+	 * @param  string $selected_key
+	 * @return array
+	 */
+	private static function get_allowed_countries( $selected_key ) {			
+		
+		$regions = get_option( 'wc_price_based_country_regions', array() );		
+		$countries_in_regions = array();		
+		
+		foreach ( $regions as $key => $region) {
+			if ( $key !== $selected_key ) {
+				$countries_in_regions = array_merge( $region['countries'], $countries_in_regions );
+			}
+		}				
+		
+		if ( 'specific' === get_option('woocommerce_allowed_countries') ) {
+			$allowed_countries = array_diff( get_option('woocommerce_specific_allowed_countries'), $countries_in_regions );
+		} else {
+			$allowed_countries = array_diff( array_keys( WC()->countries->countries ), $countries_in_regions );
+		}
+		
+		return $allowed_countries;
+	}
+	
+	/**
+	 * Get a unique slug that indentify a region
+	 *
+	 * @param  string $slug
+	 * @param  array $slugs
+	 * @return array
+	 */
+	private static function get_unique_slug( $slug, $slugs ){
+		$cont = count(array_filter($slugs, function($a_slug) use (&$slug) { return $a_slug == $slug; }));
+		if ($cont>0 ) {
+			$slug = $slug .'-' . $cont;
+		}
+		return $slug;
+	}
+	
+	/**
+	 * Validate region data
+	 * @param array $fields
+	 * @return boolean
+	 */
+	private static function validate_region_fields( $fields ) {
+		
+		$valid = false;
+		
+		if ( empty( $fields['name'] ) ) {
+			WC_Admin_Settings::add_error( __( 'Group name is required.', 'wc-price-based-country' ) );
+
+		} elseif ( ! isset($fields['countries']) || empty( $fields['countries'] ) ) {
+			WC_Admin_Settings::add_error( __( 'Add at least one country to the list.', 'wc-price-based-country' ) );
+
+		} elseif ( empty( $fields['exchange_rate'] ) ||  $fields['exchange_rate'] == 0 ) {				
+			WC_Admin_Settings::add_error( __( 'Exchange rate must be nonzero.', 'wc-price-based-country' ) );
+			
+		} else {
+			$valid = true;
+		}
+		
+		return apply_filters( 'wc_price_based_country_admin_region_fields_validate', $valid, $fields );
+	}
+	
+	/**
+	 * Save region
+	 */
+	private static function regions_save() {											
+
+		$region_key   = isset( $_GET['edit_region'] ) ? wc_clean( $_GET['edit_region'] ) : NULL;
+
+		$region = self::get_regions_data($region_key, $_POST );
+		
+		if ( self::validate_region_fields( $region ) ) {
+
+			$regions = get_option( 'wc_price_based_country_regions', array() );			
+
+		 	if (is_null($region_key)) {
+		 		$region_key = self::get_unique_slug( sanitize_title( $region['name']), array_keys( $regions ) );
+		 	}
+		 	$regions[$region_key] = $region;
+
+		 	update_option( 'wc_price_based_country_regions', $regions );			
+
+		 	update_option( 'wc_price_based_country_timestamp', time() );
+
+		 	$_GET['edit_region'] = $region_key;
+		}		
+				
+	}
+
+	/**
+	 * Regions table list row actions
+	 */
+	private static function regions_list_row_actions(){
+		if ( isset( $_GET['remove_region'] ) && 
+			 isset( $_GET['page'] ) && 'wc-settings' == $_GET['page'] && 
+			 isset( $_GET['tab'] ) && 'price-based-country' == $_GET['tab'] && 
+			 isset( $_GET['section'] ) && 'regions' == isset( $_GET['section'] ) 
+			) {
+
+			self::regions_delete();				
+		}
+	}
+
+	/**
+	 * Delete region
+	 */
+	private static function regions_delete() {
+		
+		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'wc-price-based-country-remove-region' ) ) {
+			wp_die( __( 'Action failed. Please refresh the page and retry.', 'woocommerce' ) );
+		}
+
+		$region_key = wc_clean( $_GET['remove_region'] );		
+		$regions = get_option( 'wc_price_based_country_regions', array() );		
+
+		if ( isset($regions[$region_key]) ) {	
+
+			unset($regions[$region_key]);			
+			self::regions_delete_post_meta($region_key);
+			
+			update_option( 'wc_price_based_country_regions', $regions );			
+			update_option( 'wc_price_based_country_timestamp', time() );
+
+			WC_Admin_Settings::add_message( __( 'Region have been deleted.', 'wc-price-based-country' ) );
+		}					
+	}
+
+	/**
+	 * Bulk delete regions
+	 */
+	private static function regions_delete_bulk() {
+		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'woocommerce-settings' ) ) {
+			wp_die( __( 'Action failed. Please refresh the page and retry.', 'woocommerce' ) );
+		}
+
+		$region_keys = wc_clean( $_POST['region_key'] );
+		$regions = get_option( 'wc_price_based_country_regions', array() );		
+
+		foreach ($region_keys as $region_key) {			
+			if ( isset( $regions[$region_key] ) ) {			
+				unset($regions[$region_key]);
+				self::regions_delete_post_meta($region_key);
+			}			
+		}		
+
+		update_option( 'wc_price_based_country_regions', $regions );
+		update_option( 'wc_price_based_country_timestamp', time() );			
+	}
+	
+	/**
+	 * Delete postmeta data 
+	 */
+	private static function regions_delete_post_meta( $region_key ) {
+		global $wpdb;
+		foreach ( wcpbc_get_product_meta_keys( $region_key ) as $meta_key ) {
+			$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => $meta_key ) );	
+		}		
+	}
 }
 
 endif;
 
 return new WC_Settings_Price_Based_Country();
-
-?>

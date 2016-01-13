@@ -4,7 +4,7 @@
  *
  * @author      OscarGare
  * @category    Admin 
- * @version     1.4.2
+ * @version     1.5.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -84,7 +84,7 @@ class WCPBC_Admin_Dashboard {
 		$this->query = $query;
 
 		//Add default currency filter
-		$default_currency = WCPBC_Currency::get_base_currency();
+		$default_currency = wcpbc_get_base_currency();
 		$query['where']	.= "AND meta__order_currency.meta_value='{$default_currency}' ";
 
 		return $query;
@@ -98,7 +98,7 @@ class WCPBC_Admin_Dashboard {
 	public function order_report_query( $query ) {
 		global $wpdb;		
 		
-		$currency = is_null( $this->active_currency ) ? WCPBC_Currency::get_base_currency() : $this->active_currency;
+		$currency = is_null( $this->active_currency ) ? wcpbc_get_base_currency() : $this->active_currency;
 
 		$query['join']	.= " INNER JOIN {$wpdb->postmeta} AS meta__order_currency ON posts.ID = meta__order_currency.post_id AND meta__order_currency.meta_key='_order_currency'";				
 		$query['where']	.= "AND meta__order_currency.meta_value='{$currency}' ";
@@ -112,7 +112,7 @@ class WCPBC_Admin_Dashboard {
 	 */
 	public function dashboard_status_widget( $reports ) {
 
-		 foreach ( WCPBC_Currency::get_installed_currencies() as $currency ) {
+		 foreach ( wcpbc_get_installed_currencies() as $currency ) {
 
 		 	$sales = $this->get_sales_month( $currency );
 		 	

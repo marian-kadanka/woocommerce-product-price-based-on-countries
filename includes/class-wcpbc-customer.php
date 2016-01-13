@@ -10,7 +10,7 @@ if ( ! class_exists( 'WCPBC_Customer' ) ) :
  * Store WCPBC frontend data Handler
  *
  * @class 		WCPBC_Customer
- * @version		1.3.0
+ * @version		1.5.0
  * @category	Class
  * @author 		oscargare
  */
@@ -29,12 +29,14 @@ class WCPBC_Customer {
 	 */
 
 	public function __construct() {		
-
+		
 		$this->_data = WC()->session->get( 'wcpbc_customer' );	
 		
-		if ( empty( $this->_data ) || ! in_array( WC()->customer->country, $this->countries ) || ( $this->timestamp < get_option( 'wc_price_based_country_timestamp' ) ) ) {
+		$wc_customer_country = wcpbc_get_woocommerce_country();					
 
-			$this->set_country( WC()->customer->country );
+		if ( empty( $this->_data ) || ! in_array( $wc_customer_country, $this->countries ) || ( $this->timestamp < get_option( 'wc_price_based_country_timestamp' ) ) ) {
+
+			$this->set_country( $wc_customer_country );
 		}
 
 		if ( ! WC()->session->has_session() ) {
@@ -81,15 +83,19 @@ class WCPBC_Customer {
 	 *
 	 * @access public
 	 * @param mixed $country
+	 * @return boolean
 	 */
 	public function set_country( $country ) {
+		
+		$has_region = false;
 
 		$this->_data = array();	
-				
+		
 		foreach ( WCPBC()->get_regions() as $key => $group_data ) {				
 
 			if ( in_array( $country, $group_data['countries'] ) ) {
 				$this->_data = array_merge( $group_data, array( 'group_key' => $key, 'timestamp' => time() ) );
+				$has_region = true;
 				break;
 			}			
 					
@@ -97,8 +103,8 @@ class WCPBC_Customer {
 		
 		$this->_changed = true;
 
-	}
-
+		return $has_region;
+	}		
 }
 
 endif;

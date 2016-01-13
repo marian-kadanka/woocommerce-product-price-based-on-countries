@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Admin 
  *
  * @class 		WCPBC_Admin
- * @version		1.4.2
+ * @version		1.5.0
  * @author 		oscargare
  * @category	Class
  */
@@ -20,15 +20,19 @@ class WCPBC_Admin {
 	public static function init(){
 		
 		add_action( 'init', array( __CLASS__, 'includes' ) );
-
+		
+		add_action( 'init', array( __CLASS__, 'about_hooks' ) );
+		
+		add_action( 'current_screen', array( __CLASS__, 'dashboard_includes' ) );
+		
+		add_action( 'admin_init', array( __CLASS__, 'admin_redirects' ) );
+		
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_admin_script' ) );	
 
 		add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'settings_price_based_country' ) );					
 
 		add_filter( 'woocommerce_currency',  array( __CLASS__, 'order_currency' ) );			
-		
-		add_action( 'current_screen', array( __CLASS__, 'conditional_includes' ) );
-		
+				
 	}
 
 	/**
@@ -42,16 +46,46 @@ class WCPBC_Admin {
 			include_once('class-wcpbc-admin-translation-management.php');					
 		}
 	}
-
+	
+	/**
+	 * Add hooks to manage about page
+	 */
+	public static function about_hooks() {
+		if ( ! empty( $_GET['page'] ) && $_GET['page'] === 'wcpbc-about' ) {
+			add_action( 'admin_menu', array( __CLASS__, 'create_about_page' ) );			
+		}
+	}
+	
 	/**
 	 * Include admin files conditionally
 	 */
-	public static function conditional_includes() {
+	public static function dashboard_includes() {
 		$screen = get_current_screen();
 
 		if ( $screen->id == 'dashboard' ) {			
 			include( 'class-wcpbc-admin-dashboard.php' );
 		}
+	}
+	
+	/**
+	 * Handle redirects to welcome page after install and updates.
+	 *
+	 * Transient must be present, the user must have access rights, and we must ignore the network/bulk plugin updaters.
+	 */
+	public function admin_redirects() {
+		if ( ! get_transient( '_wcpbc_activation_redirect' ) ) {
+			return;
+		}
+
+		delete_transient( '_wcpbc_activation_redirect' );
+
+		if ( ( ! empty( $_GET['page'] ) && $_GET['page'] === 'wcpbc-about' ) || is_network_admin() || isset( $_GET['activate-multi'] ) || ! current_user_can( 'manage_woocommerce' ) ) {
+			return;
+		}
+		
+		wp_safe_redirect( admin_url( 'index.php?page=wcpbc-about' ) );
+		exit;
+
 	}
 	
 	/**
@@ -90,6 +124,30 @@ class WCPBC_Admin {
 		wp_enqueue_script( 'wc-price-based-country-admin', WCPBC()->plugin_url() . 'assets/js/wcpbc-admin' . $suffix . '.js', array('jquery'), WCPBC()->version, true );		
 
 	}
+	
+	/**
+	 * Display the welcome/about page after successfully upgrading to the latest version.
+	 *
+	 * @since 1.5
+	 */
+	public static function create_about_page() {
+		$about_page = add_dashboard_page( __( 'Welcome to WooCommerce Price Based On Countries', 'wc-price-based-country' ), __( 'About WooCommerce Price Based On Countries', 'wc-price-based-country' ), 'manage_options', 'wcpbc-about', array( __CLASS__, 'about_screen' ) );		
+		add_action( 'admin_head', array( __CLASS__, 'remove_about_page_link' ) );
+	}
+	
+	/**
+	 * Output the about screen.
+	 */
+	public static function about_screen() {		
+		include_once( 'views/html-about.php' );
+	}
+	
+	/**
+	 * Remove dashboard about page link.
+	 */
+	public static function remove_about_page_link() {
+		remove_submenu_page( 'index.php', 'wcpbc-about' );
+	}			
 
 }
 

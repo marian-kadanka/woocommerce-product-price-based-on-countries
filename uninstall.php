@@ -1,13 +1,13 @@
 <?php
 
 // If uninstall not called from WordPress exit
-if( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit();
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	exit;
 }
 
 global $wpdb;
 
-// Post meta
+// Delete post meta
 $regions = array_keys( get_option( 'wc_price_based_country_regions', array() ) );
 
 foreach ( $regions as $region_key ) {
@@ -33,6 +33,7 @@ foreach ( $regions as $region_key ) {
 	}	
 }
 
-$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wc_price_based_country_%'");
+// Delete options
+$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE 'wc\_price\_based_country\_%';");
 
 ?>

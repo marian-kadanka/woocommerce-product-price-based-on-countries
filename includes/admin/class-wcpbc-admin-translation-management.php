@@ -45,7 +45,7 @@ class WCPBC_Admin_Translation_Management {
 	 *  Add customs fields to WPML Translation management 
 	 */
 	public static function add_custom_fields() {		
-		
+		//wpml_copy_from_original_custom_fields
 		global $iclTranslationManagement;		
 
 		$change = false;

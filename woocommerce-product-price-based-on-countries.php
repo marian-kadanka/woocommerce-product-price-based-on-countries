@@ -5,7 +5,7 @@
  Plugin URI: https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/
  Description: Sets products prices based on country of your site's visitor.
  Author: Oscar Gare
- Version: 1.4.2
+ Version: trunk
  Author URI: google.com/+OscarGarciaArenas
  License: GPLv2
 */
@@ -39,14 +39,14 @@ if ( ! class_exists( 'WC_Product_Price_Based_Country' ) ) :
  * Main WC Product Price Based Country Class
  *
  * @class WC_Product_Price_Based_Country
- * @version	1.4.2
+ * @version	1.5.0
  */
 class WC_Product_Price_Based_Country {
 
 	/**
 	 * @var string
 	 */
-	public $version = '1.4.2';
+	public $version = '1.5.0';
 
 	/**
 	 * @var The single instance of the class		 
@@ -57,7 +57,12 @@ class WC_Product_Price_Based_Country {
 	 * @var $regions
 	 */
 	protected $regions = null;
-
+	
+	/**
+	 * @var $customer
+	 */
+	public $customer = null;
+	
 	/**
 	 * Main WC_Product_Price_Based_Country Instance
 	 *
@@ -78,27 +83,39 @@ class WC_Product_Price_Based_Country {
 	 * WC_Product_Price_Based_Country Constructor.
 	 */
 	public function __construct() {						
-
-		$this->includes();
-
-		register_activation_hook( __FILE__, array( 'WCPBC_Install', 'install' ) );	
-	}
-
+		$this->includes();	
+		$this->init_hooks();		
+	}		
 	
 	/**
-	 * Get regions
-	 *@return array
-	*/
-	public function get_regions(){
+	 * Include required files used in admin and on the frontend.
+	 */
+	private function includes() {		
 
-		if ( is_null( $this->regions ) ) {
+		include_once( 'includes/wcpbc-functions.php' );				
+		if ( $this->is_request( 'admin') ) {
+			include_once( 'includes/class-wcpbc-install.php' );
+			include_once( 'includes/admin/class-wcpbc-admin.php' );												
 
-			$this->regions = get_option( 'wc_price_based_country_regions', array() );			
-		}		
-
-		return $this->regions;
-	}	
-
+		} elseif ( $this->is_request( 'frontend') ) {
+			include_once( 'includes/class-wcpbc-frontend.php' );
+			include_once( 'includes/class-wcpbc-customer.php' );			
+			include_once( 'includes/class-wcpbc-product-price.php' );
+			include_once( 'includes/class-wcpbc-country-selector.php' );			
+		}
+	}
+	
+	/**
+	 * Hook actions
+	 */
+	private function init_hooks() {
+		register_activation_hook( __FILE__, array( 'WCPBC_Install', 'install' ) );
+		add_action( 'widgets_init', array($this, 'register_widgets') );		
+		if ( ! $this->is_request( 'admin') && $this->is_request( 'frontend') ) {			
+			add_action( 'woocommerce_init', array( $this , 'frontend_init'), 50 );				
+		}
+	}
+	
 	/**
 	 * What type of request is this?
 	 * string $type frontend or admin
@@ -114,31 +131,42 @@ class WC_Product_Price_Based_Country {
 				return ( is_admin() && !$is_ajax ) || ( is_admin() && $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], $ajax_allow_actions ) );
 			
 			case 'frontend' :
-				return ! $this->is_request('bot') && ( ! is_admin() || ( is_admin() && $is_ajax ) ) && ! defined( 'DOING_CRON' );
+				return ! $this->is_request('bot') && ( ! is_admin() || ( is_admin() && $is_ajax ) ) && ! defined( 'DOING_CRON' );			
 
 			case 'bot':
 				$user_agent = strtolower ( $_SERVER['HTTP_USER_AGENT'] );
 				return preg_match ( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent );
 		}
 	}
+	
+	/**
+	 * Register Widgets
+	 *
+	 * @since 1.5.0
+	 */
+	 public function register_widgets(){	 	
+	 	include_once( 'includes/class-wcpbc-widget-country-selector.php' );	
+	 	register_widget( 'WCPBC_Widget_Country_Selector' );
+	 }
 
 	/**
-	 * Include required files used in admin and on the frontend.
+	 * Init front-end variables
 	 */
-	public function includes() {		
-
-		include_once( 'includes/class-wcpbc-currency.php' );		
-
-		if ( $this->is_request( 'admin') ) {
-			include_once( 'includes/class-wcpbc-install.php' );
-			include_once( 'includes/admin/class-wcpbc-admin.php' );												
-
-		} elseif ( $this->is_request( 'frontend') ) {
-
-			require_once( 'includes/class-wcpbc-frontend.php' );						
-		}
+	 public function frontend_init(){	 	
+		$this->customer = new WCPBC_Customer();		
+	 }
+	 
+	/**
+	 * Get regions
+	 * @return array
+	 */
+	public function get_regions(){
+		if ( is_null( $this->regions ) ) {
+			$this->regions = get_option( 'wc_price_based_country_regions', array() );			
+		}		
+		return $this->regions;
 	}
-
+	
 	/**
 	 * Get the plugin url.
 	 * @return string

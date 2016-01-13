@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Installation related functions and actions.
  *
  * @author 		oscargare 
- * @version     1.4.1
+ * @version     1.5.0
  */
 
 class WCPBC_Install {
@@ -25,7 +25,7 @@ class WCPBC_Install {
 	/**
 	 * Get install version
 	 */
-	public static function get_install_version() {
+	private static function get_install_version() {
 
 		$install_version = get_option( 'wc_price_based_country_version', null );
 
@@ -35,20 +35,37 @@ class WCPBC_Install {
 
 		return $install_version;
 	}	
-
+	
+	/**
+	 * Update WCPBC version
+	 */
+	private static function update_wcpbc_version() {
+		
+		$current_version = self::get_install_version();
+		$major_version = substr( WCPBC()->version, 0, strrpos( WCPBC()->version, '.' ) );
+		
+		// Show welcome screen for new install and major updates only
+		if ( is_null( $current_version ) || version_compare( $current_version, $major_version, '<' ) ) {
+			set_transient( '_wcpbc_activation_redirect', 1, 30 );			
+		}
+		
+		//update wcpbc version
+		delete_option( 'wc_price_based_country_version' );
+		add_option( 'wc_price_based_country_version', WCPBC()->version );
+				
+	}
+	
 	/**
 	 * Install function 
 	 */ 
 	public static function install(){
-
-		// Queue upgrades
+		
 		$current_version = self::get_install_version();
 		
-		if ( null !== $current_version && version_compare( $current_version, '1.4.0', '<' ) ) {
+		if ( null !== $current_version && version_compare( $current_version, '1.5.0', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 		} else {
-			delete_option( 'wc_price_based_country_version' );
-			add_option( 'wc_price_based_country_version', WCPBC()->version );
+			self::update_wcpbc_version();
 		}
 	}
 
@@ -57,7 +74,7 @@ class WCPBC_Install {
 	 */
 	public static function check_version() {
 				
-		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.4.0', '<' ) ) {
+		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.5.0', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 
 		} else {
@@ -123,7 +140,8 @@ class WCPBC_Install {
 			$install_version = self::get_install_version();
 			$db_updates         = array(
 				'1.3.2' => 'updates/wcpbc-update-1.3.2.php',
-				'1.4.0' => 'updates/wcpbc-update-1.4.0.php'
+				'1.4.0' => 'updates/wcpbc-update-1.4.0.php',
+				'1.5.0' => 'updates/wcpbc-update-1.5.0.php',
 			);
 
 			foreach ( $db_updates as $version => $updater ) {
@@ -132,13 +150,8 @@ class WCPBC_Install {
 				}
 			}
 
-			update_option( 'wc_price_based_country_version', WCPBC()->version  );		
-		}
-
-		if ( isset($_GET['wc_price_based_country_donate_hide']) && $_GET['wc_price_based_country_donate_hide'] ) {
-			update_option('wc_price_based_country_hide_ads', 'yes');
-		}
-
+			self::update_wcpbc_version();		
+		}		
 	}
 }
 
