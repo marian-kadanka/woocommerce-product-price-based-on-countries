@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.6.1
 Tested up to: 4.2.2
-Stable tag: 1.4.2
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,10 +27,11 @@ You have two ways to set product's price for each region:
 * Geolocation integrated with WooCommerce Gelocation feature.
 * Multicurrency: allows to receive payments in different currencies, reducing the costs of currency conversions.
 * Include regular price and sale price by region.
+* Apply currency conversion to Flat and International Flar Rate Shipping.
 * It's possible set a exchange rate to automatically calculate price for a region.
 * Automatically detects of customer's country, with price and currency set accordingly.
 * Refresh price and currency on order preview, cart and shop when country changes on checkout page.
-* Included action hook and shortcode to add a country selector to front-end.
+* Included a Widget, action hook and shortcode to add a country selector to front-end.
 * Compatible With WPML.
 
 
@@ -67,13 +68,13 @@ do_action('wcpbc_manual_country_selector');
 
 == Frequently Asked Questions ==
 
-= That way can I test that the prices are displayed correctly for a given country? =
+= How might I test if the prices are displayed correctly for a given country? =
 
 If you are in a test environment, you can configure the test mode in the setting page.
 
 In a production environment you can use a privacy VPN tools like [hola](http://hola.org/) or [ZenMate](https://zenmate.com/)
 
-You should do the test in a private browsing window to prevent data stored in the session.
+You should do the test in a private browsing window to prevent data stored in the session. Open a private window on [Firefox](https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history#w_how-do-i-open-a-new-private-window) or on [Chrome](https://support.google.com/chromebook/answer/95464?hl=en)
 
 == Screenshots ==
 
@@ -83,6 +84,19 @@ You should do the test in a private browsing window to prevent data stored in th
 4. /assets/screenshot-4.png
 
 == Changelog ==
+
+= 1.5.0 (2016-01-14) =
+* Added: Country Selector Widget.
+* Added: Support to WooCommerce Products on Sale Widget.
+* Added: Code improvements.
+* Added: Option Price based on Billing or Shipping Country.<br />
+https://wordpress.org/support/topic/bug-with-prices-if-the-shipping-and-billing-country-are-different
+* Added: Flat and International Flar Rate Shipping currency conversion.<br />
+https://wordpress.org/support/topic/shipping-price
+* Fixed: Incorrect value for price included tax.<br />
+https://wordpress.org/support/topic/prices-are-to-high
+* Fixed: Country selector Shortcode not works properly.<br />
+https://wordpress.org/support/topic/wcpbc_country_selector-widget-should-return-not-echo
 
 = 1.4.2 =
 * Added: Multicurrency support for WooCommerce Status dashboard Widget.
