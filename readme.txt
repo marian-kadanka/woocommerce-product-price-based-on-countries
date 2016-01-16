@@ -82,6 +82,7 @@ You should do the test in a private browsing window to prevent data stored in th
 2. /assets/screenshot-2.png
 3. /assets/screenshot-3.png
 4. /assets/screenshot-4.png
+5. /assets/screenshot-5.png
 
 == Changelog ==
 
