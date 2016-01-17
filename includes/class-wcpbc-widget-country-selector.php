@@ -9,10 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @author   OscarGare
  * @category Widgets 
- * @version  1.5.0
+ * @version  1.5.1
  * @extends  WC_Widget
  */
 class WCPBC_Widget_Country_Selector extends WC_Widget {
+
+	/**
+	 * @var string
+	 */
+	private static $_other_countries_text = '';
 
 	/**
 	 * Constructor
@@ -24,7 +29,7 @@ class WCPBC_Widget_Country_Selector extends WC_Widget {
 		$this->settings           = array(
 			'other_countries_text'  => array(
 				'type'  => 'text',
-				'std'   => '',
+				'std'   => __( 'Other countries', 'wc-price-based-country' ) ,
 				'label' => __( 'Other countries text', 'wc-price-based-country' )
 			)
 		);
@@ -44,9 +49,9 @@ class WCPBC_Widget_Country_Selector extends WC_Widget {
 	 */
 	function widget( $args, $instance ) {		
 
-		add_filter('wcpbc_other_countries_text', function ( $value ) use ($instance) { 			
-			return $instance['other_countries_text'];
-		});
+		self::$_other_countries_text = $instance['other_countries_text'];
+
+		add_filter('wcpbc_other_countries_text', array( __CLASS__, 'get_other_countries_text') );
 
 		$this->widget_start( $args, $instance );
 		
@@ -54,6 +59,15 @@ class WCPBC_Widget_Country_Selector extends WC_Widget {
 
 		$this->widget_end( $args );
 	}
+
+	/**
+	 * Get other countries text
+	 * @return string
+	 */
+	public static function get_other_countries_text( $value ) {
+		return self::$_other_countries_text;
+	}
+	
 }
 
 ?>

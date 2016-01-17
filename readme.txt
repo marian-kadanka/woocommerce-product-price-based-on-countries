@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.6.1
 Tested up to: 4.2.2
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,8 +83,13 @@ You should do the test in a private browsing window to prevent data stored in th
 3. /assets/screenshot-3.png
 4. /assets/screenshot-4.png
 5. /assets/screenshot-5.png
+5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.5.1 (2016-01-17) =
+* Fixed: Anonymous functions caused a syntax error.<br />
+https://wordpress.org/support/topic/compatibility-issue-19
 
 = 1.5.0 (2016-01-14) =
 * Added: Country Selector Widget.
