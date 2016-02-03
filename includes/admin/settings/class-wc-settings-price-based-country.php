@@ -9,7 +9,7 @@ if ( ! class_exists( 'WC_Settings_Price_Based_Country' ) ) :
  *
  * WooCommerce Price Based Country settings page
  * 
- * @version		1.5.0
+ * @version		1.5.2
  * @author 		oscargare
  */
 class WC_Settings_Price_Based_Country extends WC_Settings_Page {
@@ -271,16 +271,27 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	/**
 	 * Get a unique slug that indentify a region
 	 *
-	 * @param  string $slug
+	 * @param  string $new_slug
 	 * @param  array $slugs
 	 * @return array
 	 */
-	private static function get_unique_slug( $slug, $slugs ){
-		$cont = count(array_filter($slugs, function($a_slug) use (&$slug) { return $a_slug == $slug; }));
-		if ($cont>0 ) {
-			$slug = $slug .'-' . $cont;
+	private static function get_unique_slug( $new_slug, $slugs ){				
+		
+		$seqs = array();
+
+		foreach ( $slugs as $slug ) {
+			$slug_parts = explode( '-', $slug, 2 );
+			if ( $slug_parts[0] == $new_slug && ( count( $slug_parts ) == 1 || is_numeric( $slug_parts[1] ) ) ) {
+				$seqs[] = isset( $slug_parts[1] ) ? $slug_parts[1] : 0;
+			}			
+		}		
+		
+		if ($seqs ) {
+			rsort($seqs);					
+			$new_slug = $new_slug .'-' . ( $seqs[0]+1 );		
 		}
-		return $slug;
+
+		return $new_slug;
 	}
 	
 	/**
