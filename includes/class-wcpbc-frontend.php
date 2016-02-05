@@ -37,7 +37,7 @@ class WCPBC_Frontend {
 			wcpbc_set_woocommerce_country( $test_country );
 			
 			/* add test store message */
-			add_action( 'wp_footer', array( __CLASS__, 'test_store' ) );
+			add_action( 'wp_footer', array( __CLASS__, 'test_store_message' ) );
 		}		
 	}
 	
