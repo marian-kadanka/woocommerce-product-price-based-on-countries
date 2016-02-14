@@ -5,7 +5,7 @@
  Plugin URI: https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/
  Description: Sets products prices based on country of your site's visitor.
  Author: Oscar Gare
- Version: 1.5.3
+ Version: 1.5.4
  Author URI: google.com/+OscarGarciaArenas
  License: GPLv2
 */
@@ -30,9 +30,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) :	
-
-
 if ( ! class_exists( 'WC_Product_Price_Based_Country' ) ) :
 
 /**
@@ -46,7 +43,7 @@ class WC_Product_Price_Based_Country {
 	/**
 	 * @var string
 	 */
-	public $version = '1.5.3';
+	public $version = '1.5.4';
 
 	/**
 	 * @var The single instance of the class		 
@@ -182,9 +179,11 @@ class WC_Product_Price_Based_Country {
 	
 	public function plugin_path(){
 		return plugin_dir_path( __FILE__ );
-	}
+	}		
 
-}	//End Class
+}
+
+endif; // ! class_exists( 'WC_Product_Price_Based_Country' )
 
 /**
  * Returns the main instance of WC_Product_Price_Based_Country to prevent the need to use globals.
@@ -196,34 +195,45 @@ function WCPBC() {
 	return WC_Product_Price_Based_Country::instance();
 }
 
-$wc_product_price_based_country = WCPBC();
+/**
+ * WC Detection
+ *
+ * @since  1.5.4
+ * @return boolean
+ */
+if ( ! function_exists( 'is_woocommerce_active' ) ) {
+	function is_woocommerce_active() {
+		$active_plugins = (array) get_option( 'active_plugins', array() );
 
-endif; // ! class_exists( 'WC_Product_Price_Based_Country' )
-	
-	
-else :
-	
-	add_action( 'admin_init', 'oga_wppbc_deactivate' );
-	
-	function oga_wppbc_deactivate () {
+		if ( is_multisite() ) {
+			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+		}
 		
-		deactivate_plugins( plugin_basename( __FILE__ ) );
-		
+		return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins );
 	}
-	
-   add_action( 'admin_notices', 'oga_wppbc_no_woocommerce_admin_notice' );
-   
-   function oga_wppbc_no_woocommerce_admin_notice () {
-	   	?>
-	   	<div class="updated">
-	   		<p><strong>WooCommerce Product Price Based on Countries</strong> has been deactivated because <a href="http://woothemes.com/">Woocommerce plugin</a> is required</p>
-	   	</div>
-	   	<?php
-    }	
-      	
-   
-endif;
+}
 
 
+/**
+ * WooCommerce inactive notice. 
+ *
+ * @since  1.5.4
+ */
+function wcpbc_woocommerce_inactive_notice() {
+	if ( current_user_can( 'activate_plugins' ) ) {
+		echo '<div id="message" class="error"><p>';
+		printf( __( '%1$sWooCommerce Price Based Country is inactive%2$s. %3$sWooCommerce plugin %4$s must be active for Price Based Country to work. Please %5$sinstall and activate WooCommerce &raquo;%6$s', 'wc-price-based-country' ), '<strong>', '</strong>', '<a href="http://wordpress.org/extend/plugins/woocommerce/">', '</a>', '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">', '</a>' );
+		echo '</p></div>';
+	}
+}	
+
+/*
+ * Initialize
+ */
+if ( is_woocommerce_active() ) {
+	$wc_product_price_based_country = WCPBC();
+} else {
+	add_action( 'admin_notices', 'wcpbc_woocommerce_inactive_notice' );
+}
 
 ?>

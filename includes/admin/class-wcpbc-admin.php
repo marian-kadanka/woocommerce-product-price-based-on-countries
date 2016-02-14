@@ -72,7 +72,7 @@ class WCPBC_Admin {
 	 *
 	 * Transient must be present, the user must have access rights, and we must ignore the network/bulk plugin updaters.
 	 */
-	public function admin_redirects() {
+	public static function admin_redirects() {
 		if ( ! get_transient( '_wcpbc_activation_redirect' ) ) {
 			return;
 		}
