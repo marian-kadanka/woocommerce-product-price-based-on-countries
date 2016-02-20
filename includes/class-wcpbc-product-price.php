@@ -113,7 +113,7 @@ class WCPBC_Product_Price {
 		
 		$wcpbc_price = $price;					
 		
-		if ( WCPBC()->customer->group_key ) {
+		if ( WCPBC()->customer->group_key && apply_filters( 'wc_price_based_country_get_product_price', true, $product ) ) {
 
 			$meta_key_preffix = '_' . WCPBC()->customer->group_key;
 
