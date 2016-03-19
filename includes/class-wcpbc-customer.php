@@ -85,7 +85,7 @@ class WCPBC_Customer {
 	 * @param mixed $country
 	 * @return boolean
 	 */
-	protected function set_country( $country ) {
+	public function set_country( $country ) {
 		
 		$has_region = false;
 
