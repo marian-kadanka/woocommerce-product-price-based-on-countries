@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Product_Price class.
  *
  * @class 		WCPBC_Product_Price
- * @version		1.5.0
+ * @version		1.5.6
  * @author 		oscargare
  */
 class WCPBC_Product_Price {
@@ -109,7 +109,7 @@ class WCPBC_Product_Price {
 	 * @param string $price_type
 	 * @return string
 	 */
-	protected static function get_product_price( $price, $product, $price_type ) {	
+	public static function get_product_price( $price, $product, $price_type ) {	
 		
 		$wcpbc_price = $price;					
 		
@@ -117,7 +117,7 @@ class WCPBC_Product_Price {
 
 			$meta_key_preffix = '_' . WCPBC()->customer->group_key;
 
-			if ( get_class( $product ) == 'WC_Product_Variation' ) {
+			if ( isset( $product->variation_id ) ) {
 				
 				$post_id = $product->variation_id;	
 

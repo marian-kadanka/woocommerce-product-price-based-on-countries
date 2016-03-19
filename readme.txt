@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.6.1
 Tested up to: 4.4.2
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,10 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.5.6 (2016-03-19) =
+* Fixed: Cart refresh when Country switcher widget change.
+* Tweak: Remove select button on Country switcher widget .
 
 = 1.5.5 (2016-02-20) =
 * Fixed: Bug in Country switcher widget.

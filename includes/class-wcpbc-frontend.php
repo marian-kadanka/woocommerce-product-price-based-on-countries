@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.5.0
+ * @version		1.5.6
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -21,10 +21,10 @@ class WCPBC_Frontend {
 		add_action( 'woocommerce_init', array( __CLASS__ , 'check_test_mode'), 10 );
 		
 		add_action( 'woocommerce_init', array( __CLASS__ , 'check_manual_country_widget'), 20 );		
-		
-		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_checkout_script' ) );
 
-		add_action( 'woocommerce_checkout_update_order_review', array( __CLASS__ , 'checkout_country_update' ) );	
+		add_action( 'woocommerce_init', array( __CLASS__ , 'checkout_country_update'), 20 );		
+		
+		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );		
 	}	
 		
 	/**
@@ -42,6 +42,13 @@ class WCPBC_Frontend {
 	}
 	
 	/**
+	 * Return test store message 
+	 */
+	public static function test_store_message() {
+		echo '<p class="demo_store">' . __( 'This is a demo store for testing purposes', 'wc-price-based-country') . '</p>';
+	}
+
+	/**
 	 * Check manual country widget
 	 */	
 	public static function check_manual_country_widget(){
@@ -49,24 +56,22 @@ class WCPBC_Frontend {
 		if ( isset( $_POST['wcpbc-manual-country'] ) && $_POST['wcpbc-manual-country'] ) {			
 			
 			wcpbc_set_woocommerce_country( wc_clean( $_POST['wcpbc-manual-country'] ) );			
+
+			add_action( 'wp_print_footer_scripts', array( __CLASS__, 'localize_frontend_script' ), 5 );
 		}
-	}
-		
-	/**
-	 * Return test store message 
-	 */
-	public static function test_store_message() {
-		echo '<p class="demo_store">' . __( 'This is a demo store for testing purposes', 'wc-price-based-country') . '</p>';
-	}
+	}			
 	
 	/**
-	 * Add script to checkout page	 
+	 * Add scripts
 	 */
-	public static function load_checkout_script( ) {
+	public static function load_scripts( ) {
 
-		if ( is_checkout() ) {
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		wp_register_script( 'wc-price-based-country-frontend', WCPBC()->plugin_url() . 'assets/js/wcpbc-frontend' . $suffix . '.js', array( 'wc-cart-fragments' ), WCPBC()->version, true );		
+		wp_enqueue_script( 'wc-price-based-country-frontend' );
+
+		if ( is_checkout() ) {		
 
 			if ( version_compare( WC()->version, '2.4', '<' ) ) {
 				$version = '-2.3';
@@ -74,24 +79,34 @@ class WCPBC_Frontend {
 				$version = '';
 			}
 
-			wp_enqueue_script( 'wc-price-based-country-checkout', WCPBC()->plugin_url() . 'assets/js/wcpbc-checkout' . $version . $suffix . '.js', array( 'wc-checkout', 'wc-cart-fragments' ), WC_VERSION, true );
+			wp_enqueue_script( 'wc-price-based-country-checkout', WCPBC()->plugin_url() . 'assets/js/wcpbc-checkout' . $version . $suffix . '.js', array( 'wc-checkout', 'wc-price-based-country-frontend' ), WCPBC()->version, true );
 		}
+	}
 
+	/**
+	 * Localize frontend script.
+	 */
+	public static function localize_frontend_script() {
+			
+		wp_localize_script( 'wc-price-based-country-frontend', 'wcpbc_frontend_params', array('refresh_cart' => 'true' ) );
 	}
 
 	/**
 	 * Update WCPBC Customer country when order review is update
 	 */
-	public static function checkout_country_update( $post_data ) {			
-		$country = isset( $_POST['country'] ) ? $_POST['country'] : '';
+	public static function checkout_country_update( $post_data = array() ) {			
 		
-		if ( isset( $_POST['s_country'] ) && ! wc_ship_to_billing_address_only() && get_option('wc_price_based_country_based_on', 'billing') == 'shipping' ) {			
-			$country = $_POST['s_country'];
-		}
+		if ( defined( 'WC_DOING_AJAX' ) && WC_DOING_AJAX && isset( $_GET['wc-ajax'] ) && 'update_order_review' == $_GET['wc-ajax'] ) {
+			
+			$country = isset( $_POST['country'] ) ? $_POST['country'] : '';
+		
+			if ( isset( $_POST['s_country'] ) && ! wc_ship_to_billing_address_only() && get_option('wc_price_based_country_based_on', 'billing') == 'shipping' ) {			
+				$country = $_POST['s_country'];
+			}
 
-		if ( $country && ! in_array( $country , WCPBC()->customer->countries ) ) {			
-			WCPBC()->customer->set_country( $country );
+			wcpbc_set_woocommerce_country( $country );	
 		}
+		
 	}
 }
 

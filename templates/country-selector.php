@@ -3,22 +3,35 @@
  * Country selector form
  *
  * @author 		oscargare
- * @version     1.3.0
+ * @version     1.5.6
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( $countries ) : ?>
+add_action( 'wp_print_footer_scripts', 'wcpbc_manual_country_script' );
 
-	<form name="wcpbc-country-selector" method="post">
-		<select name="wcpbc-manual-country">
+function wcpbc_manual_country_script() {
+?>
+<script type="text/javascript">
+	jQuery( document ).ready( function( $ ){
+		$('.wcpbc-widget-country-selecting').on('change', 'select.country', function(){
+			$(this).closest('form').submit();
+		} );
+	} );	
+</script>
+<?php
+}
+
+if ( $countries ) : ?>
+		
+	<form method="post" class="wcpbc-widget-country-selecting">		
+		<select class="country" name="wcpbc-manual-country">
 			<?php foreach ($countries as $key => $value) : ?>
 				<option value="<?php echo $key?>" <?php echo selected($key, $selected_country ); ?> ><?php echo $value; ?></option>
 			<?php endforeach; ?>
-		</select>
-		<input type="submit" value="select" />		
-	</form>	
+		</select>					
+	</form>			
 
 <?php endif; ?>
