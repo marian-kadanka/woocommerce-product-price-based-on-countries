@@ -2,7 +2,7 @@
 Contributors: oscargare
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG75SHRLAX28L
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
-Requires at least: 3.6.1
+Requires at least: 4.1
 Tested up to: 4.4.2
 Stable tag: 1.5.7
 License: GPLv2 or later
