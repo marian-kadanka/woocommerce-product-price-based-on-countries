@@ -2,9 +2,9 @@
 Contributors: oscargare
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG75SHRLAX28L
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
-Requires at least: 4.1
-Tested up to: 4.4.2
-Stable tag: 1.5.7
+Requires at least: 3.8
+Tested up to: 4.5
+Stable tag: 1.5.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,33 +12,40 @@ Add multicurrency support to WooCommerce, allowing you set product's prices in d
 
 == Description ==
 
-**WooCommerce Product Price Based on Countries** is a extension for WooCommerce that allows you to set prices and receive payments in different currencies.
+**WooCommerce Product Price Based on Countries** is a extension for WooCommerce that allows you to sell the same product in different currencies based on the country of the customer. 
 
-The plugin detect automatically visitor's country using geolocation features and display the currency and price you have defined previously for this country (or region). 
-You have two ways to set product's price for each region:
+= How it works =
+
+The plugin detect automatically the country of the website visitor throught the geolocation feature included in WooCommerce (2.3.0 or later) and display the currency and price you have defined previously for this country. 
+
+You have two ways to set product's price for each country:
 
 * Calculate price by applying a exchange rate.
 * Set price manually.
 
+When country changes on checkout page, the cart, the order preview and all shop are updated to display the correct currency and pricing.
 
-**Key Features**
+= Multicurrency = 
+Sell and receive payments in different currencies, reducing the costs of currency conversions.
 
-* Easy settings and integrated with Woocommerce settings page.
-* Geolocation integrated with WooCommerce Gelocation feature.
-* Multicurrency: allows to receive payments in different currencies, reducing the costs of currency conversions.
-* Include regular price and sale price by region.
-* Apply currency conversion to Flat and International Flar Rate Shipping.
-* It's possible set a exchange rate to automatically calculate price for a region.
-* Automatically detects of customer's country, with price and currency set accordingly.
-* Refresh price and currency on order preview, cart and shop when country changes on checkout page.
-* Included a Widget, action hook and shortcode to add a country selector to front-end.
-* Compatible With WPML.
+= Country Switcher =
+The extension include a country switcher widget to allow your customer change the country from the frontend of your website.
 
+= Shipping currency conversion =
+Apply currency conversion to Flat and International Flat Rate Shipping.
 
-**Requirements**
+= Compatible with WPML =
+WooCommerce Product Price Based on Countries is officially compatible with [WPML](https://wpml.org/extensions/woocommerce-product-price-based-countries/).
 
-* WordPress 3.6 or later
-* WooCommerce 2.3.0 or later.
+= Premium Addons =
+Need a specific integration with a WooCommerce extension? Perhaps add automatic daily updated to exchange rate? Have a look at the extension catalog from the oficial site at [pricebasedcountry.com](http://www.pricebasedcountry.com?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend)
+
+**Popular extensions**
+
+* [WooCommerce Subscriptions Bridge](http://www.pricebasedcountry.com/product/woocommerce-subscriptions-bridge-price-based-country/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Integration with WooCommerce Subscriptions.
+
+= Requirements =
+WooCommerce 2.3.0 or later.
 
 == Installation ==
 
@@ -87,8 +94,12 @@ You should do the test in a private browsing window to prevent data stored in th
 
 == Changelog ==
 
+= 1.5.8 (2016-04-17) =
+* Fixed: On sale shortcode display a worng price<br />
+https://wordpress.org/support/topic/onsale-shortcode-not-working
+
 = 1.5.7 (2016-03-21) =
-* Fixed: Currency not change on check-out page
+* Fixed: Currency not change on check-out page<br />
 https://wordpress.org/support/topic/changes-currency-on-check-out-page?replies=2
 
 = 1.5.6 (2016-03-19) =

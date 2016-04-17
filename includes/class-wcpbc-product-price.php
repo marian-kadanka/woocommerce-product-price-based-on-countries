@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Product_Price class.
  *
  * @class 		WCPBC_Product_Price
- * @version		1.5.6
+ * @version		1.5.8
  * @author 		oscargare
  */
 class WCPBC_Product_Price {
@@ -437,8 +437,8 @@ class WCPBC_Product_Price {
 				return $product_ids_on_sale;
 			}
 			
-			$_price_method = '_' . WCPBC()->customer->group_key . '_price';
-			$_variable_price_method = '_' . WCPBC()->customer->group_key . '_variable_price';
+			$_price_method = '_' . WCPBC()->customer->group_key . '_price_method';
+			$_variable_price_method = '_' . WCPBC()->customer->group_key . '_variable_price_method';
 			$_price = '_' . WCPBC()->customer->group_key . '_price';				
 			$_variable_price = '_' . WCPBC()->customer->group_key . '_variable_price';
 			$_sale_price = '_' . WCPBC()->customer->group_key . '_sale_price';
