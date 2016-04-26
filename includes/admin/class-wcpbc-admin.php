@@ -45,6 +45,8 @@ class WCPBC_Admin {
 		if ( in_array( 'sitepress-multilingual-cms/sitepress.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {		
 			include_once('class-wcpbc-admin-translation-management.php');					
 		}
+
+		do_action('wc_price_based_country_admin_init');
 	}
 	
 	/**

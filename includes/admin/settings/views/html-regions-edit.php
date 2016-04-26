@@ -31,8 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	        				echo '<option value="' . esc_attr( $country_code ) . '" ' . selected( in_array( $country_code, $region['countries'] ), true, false ).'>' . WC()->countries->countries[$country_code] . '</option>';	        				
 	        			}
 					?>
-				</select>
-				<!-- <a class="select_all button" href="#"><?php _e( 'Select all', 'woocommerce' ); ?></a> <a class="select_none button" href="#"><?php _e( 'Select none', 'woocommerce' ); ?></a> -->
+				</select></br><a class="select_all button" href="#"><?php _e( 'Select all', 'woocommerce' ); ?></a> <a class="select_none button" href="#"><?php _e( 'Select none', 'woocommerce' ); ?></a>				
 			</td>
 		</tr>
 
