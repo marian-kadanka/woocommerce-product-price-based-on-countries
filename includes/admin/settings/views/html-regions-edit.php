@@ -52,6 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</td>
 		</tr>
 		
+		<?php do_action( 'wc_price_based_country_before_region_exchange_rate_field', $region ); ?>			
 
 		<!-- Exchange rate -->			
 		<tr valign="top">
@@ -66,8 +67,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</tr>
 
 	</table>
-
-	<?php do_action( 'wc_price_based_country_admin_region_fields', $region ); ?>	
+	
 	
 	<input type="hidden" name="page" value="wc-settings" />
 	<input type="hidden" name="tab" value="wc_price_based_country" />

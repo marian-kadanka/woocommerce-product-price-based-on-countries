@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.5
-Stable tag: 1.5.8
+Stable tag: 1.5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,13 @@ You should do the test in a private browsing window to prevent data stored in th
 
 == Changelog ==
 
+= 1.5.9 (2016-05-17) =
+* Fixed: PHP Fatal error in country switcher template<br />
+https://wordpress.org/support/topic/price-not-showing-for-products
+* Fixed: Not apply currency conversion to free shipping min amount<br />
+https://wordpress.org/support/topic/free-shipping-issue-2?replies=2
+* Tweak: Add "select all" and "select none" tool buttons to region setting page.
+
 = 1.5.8 (2016-04-17) =
 * Fixed: On sale shortcode display a worng price<br />
 https://wordpress.org/support/topic/onsale-shortcode-not-working
@@ -104,7 +111,7 @@ https://wordpress.org/support/topic/changes-currency-on-check-out-page?replies=2
 
 = 1.5.6 (2016-03-19) =
 * Fixed: Cart refresh when Country switcher widget change.
-* Tweak: Remove select button on Country switcher widget .
+* Tweak: Remove select button on Country switcher widget.
 
 = 1.5.5 (2016-02-20) =
 * Fixed: Bug in Country switcher widget.

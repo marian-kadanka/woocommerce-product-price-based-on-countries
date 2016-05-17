@@ -231,7 +231,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		$regions = get_option( 'wc_price_based_country_regions', array() );	
 
 		if ( array_key_exists($key, $regions) ) {
-			$region = $regions[$key];
+			$region = wp_parse_args( $regions[$key], $region );
 		}
 
 		if ( is_array($values) ) {

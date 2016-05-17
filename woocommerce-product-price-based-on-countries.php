@@ -98,7 +98,7 @@ class WC_Product_Price_Based_Country {
 			include_once( 'includes/class-wcpbc-frontend.php' );
 			include_once( 'includes/class-wcpbc-customer.php' );			
 			include_once( 'includes/class-wcpbc-product-price.php' );
-			include_once( 'includes/class-wcpbc-country-selector.php' );			
+			include_once( 'includes/class-wcpbc-country-selector.php' );	
 		}
 	}
 	
@@ -213,7 +213,7 @@ if ( ! function_exists( 'is_woocommerce_active' ) ) {
 			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
 		}
 		
-		return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins );
+		return in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins ) ;
 	}
 }
 

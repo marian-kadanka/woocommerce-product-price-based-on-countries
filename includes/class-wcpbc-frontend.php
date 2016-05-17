@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.5.8
+ * @version		1.5.9
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -25,6 +25,8 @@ class WCPBC_Frontend {
 		add_action( 'woocommerce_init', array( __CLASS__ , 'checkout_country_update'), 20 );		
 		
 		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );		
+
+		add_filter( 'woocommerce_shipping_methods', array( __CLASS__ , 'overwrite_free_shipping_class' ) );
 	}	
 		
 	/**
@@ -113,6 +115,27 @@ class WCPBC_Frontend {
 			}		
 		}				
 	}
+
+	/**
+     * Replace WooCommerce Free Shipping Method
+     */
+    public static function overwrite_free_shipping_class( $shipping_methods ) {
+       	
+       	include_once( 'class-wcpbc-shipping-free-shipping.php' );
+
+        $methods = array();
+       
+        foreach ( $shipping_methods as $method ) {
+            if ( $method === 'WC_Shipping_Free_Shipping' ) {
+               
+                $methods[] = 'WCPBC_Shipping_Free_Shipping';
+            } else {
+                $methods[] = $method;
+            }
+        }
+       	
+        return $methods;
+    }
 }
 
 WCPBC_Frontend::init();
