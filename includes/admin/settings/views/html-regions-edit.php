@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="settings-panel">	
+<div class="settings-panel wcpbc-region-settings">	
 	<h3><?php _e( 'Region Data', 'wc-price-based-country' ); ?></h3>
 	<table class="form-table">
 
@@ -51,8 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</select>
 			</td>
 		</tr>
-		
-		<?php do_action( 'wc_price_based_country_before_region_exchange_rate_field', $region ); ?>			
+				
 
 		<!-- Exchange rate -->			
 		<tr valign="top">
@@ -65,6 +64,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	        	<?php //echo $description; ?>
 	        </td>
 		</tr>
+
+		<?php do_action( 'wc_price_based_country_admin_region_fields', $region ); ?>			
 
 	</table>
 	

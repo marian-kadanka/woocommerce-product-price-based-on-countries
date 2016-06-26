@@ -36,10 +36,11 @@ jQuery( function( $ ) {
 		$.ajax( $fragment_refresh );	
 		
 	} );
+	
 
-	// wcpbc_frontend_params is defined we must refresh cart fragments
+	// wcpbc_frontend_params is defined we must refresh cart fragments and price filter
 	if ( typeof wcpbc_frontend_params !== 'undefined' ) {
-		$( document.body ).trigger( 'wcpbc_refresh_cart_fragments' );
+		$( document.body ).trigger( 'wcpbc_refresh_cart_fragments' );		
 	}		
 		
 });

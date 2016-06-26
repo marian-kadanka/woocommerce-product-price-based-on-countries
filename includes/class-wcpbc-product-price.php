@@ -7,12 +7,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Product_Price class.
  *
  * @class 		WCPBC_Product_Price
- * @version		1.5.8
+ * @version		1.5.10
  * @author 		oscargare
  */
 class WCPBC_Product_Price {
 	
-	private static $current_product_id;
+	private static $current_product_data = null;
 
 	/**
 	 * Hook actions and filters
@@ -46,23 +46,26 @@ class WCPBC_Product_Price {
 
 		add_filter( 'woocommerce_get_variation_regular_price', array( __CLASS__ , 'get_variation_regular_price' ), 10, 4 );	
 
-		add_filter( 'woocommerce_get_variation_sale_price', array( __CLASS__ , 'get_variation_sale_price' ), 10, 4 );				
-		
-		/* WC_Product_Grouped */
-		add_filter( 'woocommerce_get_price_html', array( __CLASS__ , 'get_grouped_price_html' ), 10, 2 );
+		add_filter( 'woocommerce_get_variation_sale_price', array( __CLASS__ , 'get_variation_sale_price' ), 10, 4 );									
 		
 		/* Flat rate shipping */
-		add_filter( 'woocommerce_flat_rate_shipping_add_rate', array( __CLASS__ , 'flat_rate_shipping_conversion' ), 30, 3 );
-		
-		/* Widget Price Filter */
-		add_filter( 'woocommerce_price_filter_results', array( __CLASS__ , 'price_filter_results' ), 10, 3 );
+		add_action( 'woocommerce_flat_rate_shipping_add_rate', array( __CLASS__ , 'flat_rate_shipping_conversion' ), 30, 3 );
 
+		/* Free shipping min amount */		
+		self::init_free_shipping();
+
+		/* Widget Price Filter */		
 		add_filter( 'woocommerce_price_filter_widget_min_amount', array( __CLASS__ , 'price_filter_widget_min_amount' ) );
 
 		add_filter( 'woocommerce_price_filter_widget_max_amount', array( __CLASS__ , 'price_filter_widget_max_amount' ) );				
+
+		add_action ( 'woocommerce_product_query', array( __CLASS__ , 'price_filter_product_query' ), 10, 2 );
 		
 		/* Products on sale */
 		add_filter( 'pre_transient_wc_products_onsale', array( __CLASS__ , 'product_ids_on_sale' ), 10, ( version_compare( $wp_version, '4.4', '<' ) ? 1 : 2 ) );
+
+		/* Legacy for WooCommerce < 2.6 */
+		add_action( 'init', array( __CLASS__ , 'init_legacy_hooks' ) );		
 	}
 	
 	/**
@@ -73,7 +76,7 @@ class WCPBC_Product_Price {
 
 		$_currency = $currency;
 
-		if ( WCPBC()->customer->currency ) {
+		if ( WCPBC()->customer && WCPBC()->customer->currency ) {
 			$_currency = WCPBC()->customer->currency;
 		}
 
@@ -84,7 +87,7 @@ class WCPBC_Product_Price {
 	 * Returns WCPBC price.
 	 * @return string price
 	 */
-	protected static function wcpbc_get_price( $meta_key_preffix, $price_type, $post_id, $price ){
+	private static function wcpbc_get_price( $meta_key_preffix, $price_type, $post_id, $price ){
 		
 		$wcpbc_price = $price;
 		
@@ -101,7 +104,7 @@ class WCPBC_Product_Price {
 		
 		return $wcpbc_price;
 	}
-	
+
 	/**
 	 * Returns the product price.
 	 * @param decimal $price
@@ -115,19 +118,19 @@ class WCPBC_Product_Price {
 		
 		if ( WCPBC()->customer->group_key && apply_filters( 'wc_price_based_country_get_product_price', true, $product ) ) {
 
-			$meta_key_preffix = '_' . WCPBC()->customer->group_key;
+			$meta_key_prefix = '_' . WCPBC()->customer->group_key;
 
 			if ( isset( $product->variation_id ) ) {
 				
 				$post_id = $product->variation_id;	
 
-				$meta_key_preffix .= '_variable';
+				$meta_key_prefix .= '_variable';
 				
 			} else {
 				$post_id = $product->id; 
 			}
 			
-			$wcpbc_price = self::wcpbc_get_price( $meta_key_preffix, $price_type, $post_id, $price );			
+			$wcpbc_price = self::wcpbc_get_price( $meta_key_prefix, $price_type, $post_id, $price );			
 		}
 
 		return $wcpbc_price;
@@ -139,10 +142,13 @@ class WCPBC_Product_Price {
 	 */
 	public static function get_price( $price, $product, $parent = NULL) {	
 		/**
-		 * Store product Id for later use in filter "woocommerce_adjust_non_base_location_prices", 
+		 * Store product data for later use in filter "woocommerce_adjust_non_base_location_prices", 
 		 * $product must be a parameter in this filter
 		 */		
-		self::$current_product_id = $product->id;
+		self::$current_product_data = array(
+			'product_id' 		=> isset( $product->variation_id ) ? $product->variation_id : $product->id,
+			'variable_prefix' 	=> isset( $product->variation_id ) ? '_variable' : ''
+		);
 
 		return self::get_product_price( $price, $product, '_price');
 	}
@@ -169,8 +175,8 @@ class WCPBC_Product_Price {
      * @return bool
      */   
     public static function adjust_non_base_location_prices( $adjust ){        
-        if ( $meta_key_preffix = WCPBC()->customer->group_key ) {        	       
-            $adjust = ( get_post_meta( self::$current_product_id , '_' . $meta_key_preffix . '_price_method', true ) !== 'manual' );
+        if ( $region_key = WCPBC()->customer->group_key ) {        	       
+            $adjust = ( get_post_meta( self::$current_product_data['product_id'] , '_' . $region_key . self::$current_product_data['variable_prefix'] . '_price_method', true ) !== 'manual' );
         }   
         return $adjust;
     }
@@ -306,16 +312,45 @@ class WCPBC_Product_Price {
      * @param array $rate     
      * @param array $packages          
      */
-    public static function flat_rate_shipping_conversion( $method, $rate, $packages ) {       
+    public static function flat_rate_shipping_conversion( $method, $rate, $packages = array() ) {       
 
         if ( WCPBC()->customer->exchange_rate && WCPBC()->customer->exchange_rate != '1' && get_option('wc_price_based_shipping_conversion') === 'yes' ) {           
-            for( $i=0; $i< count($method->rates); $i++ ) {
-				if ( in_array( $method->rates[$i]->method_id, array( 'flat_rate', 'international_delivery' ) ) ) {
-					$method->rates[$i]->cost = $method->rates[$i]->cost * WCPBC()->customer->exchange_rate;                                                   
+        	
+            foreach( $method->rates as $index => $rate ) {
+				if ( in_array( $rate->method_id, array( 'flat_rate', 'legacy_flat_rate', 'international_delivery', 'legacy_international_delivery' ) ) ) {
+					$method->rates[$index]->cost = $method->rates[$index]->cost * WCPBC()->customer->exchange_rate;                                                   					
 				}
-            }           
+            }                       
         }       
     }
+
+    /**
+     * Init free shipping hooks
+     */
+    public static function init_free_shipping() {
+    	global $wpdb;
+
+    	add_filter( 'option_woocommerce_free_shipping_settings', array( __CLASS__ , 'free_shipping_min_amount' ), 10, 2 );
+
+    	$free_shippings =  $wpdb->get_results( "SELECT instance_id FROM wp_woocommerce_shipping_zone_methods WHERE is_enabled = 1 AND method_id = 'free_shipping';" );
+    	foreach ( $free_shippings as $free_shipping ) {
+    		add_filter( 'option_woocommerce_free_shipping_'. $free_shipping->instance_id . '_settings', array( __CLASS__ , 'free_shipping_min_amount' ), 10, 2 );
+    	}
+    }
+
+    /**
+     * Apply currency conversion to free shipping min amount
+     * @param array $value
+     * @param string $option          
+     */
+    public static function free_shipping_min_amount( $value, $option ) {		
+
+		if ( WCPBC()->customer->exchange_rate && WCPBC()->customer->exchange_rate != '1' && isset( $value['min_amount'] ) && $value['min_amount'] > 0 ) {
+			$value['min_amount'] = $value['min_amount'] * WCPBC()->customer->exchange_rate;
+		}
+		
+		return $value;
+	}
 	
 	/**
 	 * Return matched produts where price between min and max
@@ -350,13 +385,126 @@ class WCPBC_Product_Price {
 	}
 
 	/**
-	 * Return de min and max value of product prices
+	 * Set price filter query args
+	 *	 
+	 * @param WP_Query $q
+	 * @param WC_Query $wc_query	 
+	 */
+	public static function price_filter_product_query( $q, $wc_query ) {
+		$args = $q->query_vars;
+		if ( WCPBC()->customer->group_key && WCPBC()->customer->exchange_rate && isset( $args['meta_query'] ) )	{
+			$args = $args['meta_query'];
+
+			foreach ($args as $i => $query) {
+
+				if ( isset( $query['price_filter'] ) && $query['price_filter'] ) {
+
+					$min = $query['value'][0]; 
+					$max = $query['value'][1];
+
+					$matched_products = array();
+					$matched_products_query = self::price_filter_results( $matched_products, $min, $max );
+
+					if ( $matched_products_query ) {
+						foreach ( $matched_products_query as $product ) {
+							if ( $product->post_type == 'product' ) {
+								$matched_products[] = $product->ID;
+							}
+							if ( $product->post_parent > 0 ) {
+								$matched_products[] = $product->post_parent;
+							}
+						}					
+					
+						$q->set( 'post__in', array_unique( $matched_products ) );
+					}
+
+					unset($q->query_vars['meta_query'][$i]);
+
+					break;
+				}
+			}
+		}		
+	}
+
+	/**
+	 * Return de min and max value of product prices	
 	 *
 	 * @param string $min_or_max
 	 * @param double $amount
 	 * @return double
 	 */	
 	private static function _price_min_amount( $amount, $min_or_max = 'min' ) {				
+
+		global $wpdb, $wp_the_query;;
+
+		if ( WCPBC()->customer->group_key && WCPBC()->customer->exchange_rate ) {					
+
+			$cache_key = md5( json_encode( array(						
+				'wcpbc_amount',
+				$min_or_max,
+				WCPBC()->customer->group_key,
+				WCPBC()->customer->exchange_rate,
+				json_encode( $wp_the_query->query_vars ),				
+			) ) ) . WC_Cache_Helper::get_transient_version( 'product' );			
+
+			if ( false === ( $amount = get_transient( $cache_key ) ) ) {					
+
+				$_price_method = '_' . WCPBC()->customer->group_key . '_price_method';
+				$_price = '_' . WCPBC()->customer->group_key . '_price';
+
+				$args       = $wp_the_query->query_vars;
+				$tax_query  = isset( $args['tax_query'] ) ? $args['tax_query'] : array();
+				$meta_query = isset( $args['meta_query'] ) ? $args['meta_query'] : array();
+
+				if ( ! empty( $args['taxonomy'] ) && ! empty( $args['term'] ) ) {
+					$tax_query[] = array(
+						'taxonomy' => $args['taxonomy'],
+						'terms'    => array( $args['term'] ),
+						'field'    => 'slug',
+					);
+				}
+
+				foreach ( $meta_query as $key => $query ) {
+					if ( ! empty( $query['price_filter'] ) || ! empty( $query['rating_filter'] ) ) {
+						unset( $meta_query[ $key ] );
+					}
+				}
+
+				$meta_query = new WP_Meta_Query( $meta_query );
+				$tax_query  = new WP_Tax_Query( $tax_query );
+
+				$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
+				$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
+
+				$sql = 'SELECT ' . $min_or_max .'( IF(IFNULL(price_method.meta_value, "exchange_rate") = "exchange_rate", wc_price.meta_value * %1$s, price.meta_value + 0) ) as amount ';
+				$sql .= 'FROM %2$s ' . $tax_query_sql['join'] . $meta_query_sql['join'];
+				$sql .= 'INNER JOIN %3$s wc_price ON ID = wc_price.post_id and wc_price.meta_key = "_price" AND wc_price.meta_value != "" ';
+				$sql .= 'LEFT JOIN %3$s price_method ON ID = price_method.post_id and price_method.meta_key = "%4$s" ';
+				$sql .= 'LEFT JOIN %3$s price ON ID = price.post_id and price.meta_key = "%5$s" AND price.meta_value != "" ';
+				$sql .= 'WHERE post_type IN ( "product", "product_variation" ) AND post_status = "publish" ';
+
+				$sql .= $tax_query_sql['where'] . $meta_query_sql['where'];								
+
+				$sql = $wpdb->prepare( $sql, WCPBC()->customer->exchange_rate, $wpdb->posts, $wpdb->postmeta, $_price_method, $_price);								
+
+				$amount = $wpdb->get_var( $sql);
+
+				set_transient( $cache_key, $amount, DAY_IN_SECONDS );
+			}
+		}
+
+		return $amount;
+	}
+
+	/**
+	 * Return de min and max value of product prices
+	 * This function is here for backwards commpatility with WooCommerce < 2.6.
+	 *
+	 * @param string $min_or_max
+	 * @param double $amount
+	 * @return double
+	 */	
+	private static function _legacy_price_min_amount( $amount, $min_or_max = 'min' ) {				
 
 		global $wpdb;
 
@@ -407,6 +555,10 @@ class WCPBC_Product_Price {
 	 * @param $amount Min amount
 	 */
 	 public static function price_filter_widget_min_amount( $amount ) {	 
+	 	if ( version_compare( WC()->version, '2.6', '<' ) ) {
+	 		return floor( self::_legacy_price_min_amount( $amount ) );	 	
+	 	}
+	 	
 	 	return floor( self::_price_min_amount( $amount ) );	 	
 	 }
 
@@ -415,7 +567,10 @@ class WCPBC_Product_Price {
 	 * @param $amount Max amount
 	 */
 	 public static function price_filter_widget_max_amount( $amount ) {	 
-	 	 	return ceil( self::_price_min_amount( $amount, 'max' ) );
+	 	if ( version_compare( WC()->version, '2.6', '<' ) ) {
+	 		return ceil( self::_legacy_price_min_amount( $amount, 'max' ) );	 	
+	 	}
+	 	return ceil( self::_price_min_amount( $amount, 'max' ) );
 	 }	 
 	 
 	/**
@@ -469,7 +624,21 @@ class WCPBC_Product_Price {
 		} else {
 			return false;
 		}
-	}	
+	}
+
+	/**
+	 * Init legacy hooks
+	 * @return array
+	 */
+	public static function init_legacy_hooks() {
+		
+		if ( version_compare( WC()->version, '2.6', '<' ) ) {
+
+			add_filter( 'woocommerce_price_filter_results', array( __CLASS__ , 'price_filter_results' ), 10, 3 );	
+
+			add_filter( 'woocommerce_get_price_html', array( __CLASS__ , 'get_grouped_price_html' ), 10, 2 );
+		}	
+	}
 }
 
 WCPBC_Product_Price::init();

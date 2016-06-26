@@ -24,11 +24,9 @@ class WCPBC_Frontend {
 
 		add_action( 'woocommerce_init', array( __CLASS__ , 'checkout_country_update'), 20 );		
 		
-		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );		
-
-		add_filter( 'woocommerce_shipping_methods', array( __CLASS__ , 'overwrite_free_shipping_class' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );			
 	}	
-		
+	
 	/**
 	 * Check test mode
 	 */	
@@ -123,18 +121,9 @@ class WCPBC_Frontend {
        	
        	include_once( 'class-wcpbc-shipping-free-shipping.php' );
 
-        $methods = array();
-       
-        foreach ( $shipping_methods as $method ) {
-            if ( $method === 'WC_Shipping_Free_Shipping' ) {
-               
-                $methods[] = 'WCPBC_Shipping_Free_Shipping';
-            } else {
-                $methods[] = $method;
-            }
-        }
+        $shipping_methods['legacy_free_shipping'] = 'WCPBC_Shipping_Free_Shipping';       	
        	
-        return $methods;
+        return $shipping_methods;
     }
 }
 

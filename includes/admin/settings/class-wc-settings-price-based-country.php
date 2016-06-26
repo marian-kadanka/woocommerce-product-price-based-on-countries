@@ -9,7 +9,7 @@ if ( ! class_exists( 'WC_Settings_Price_Based_Country' ) ) :
  *
  * WooCommerce Price Based Country settings page
  * 
- * @version		1.5.2
+ * @version		1.5.10
  * @author 		oscargare
  */
 class WC_Settings_Price_Based_Country extends WC_Settings_Page {
@@ -121,18 +121,40 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 * Output the settings
 	 */
 	public function output() {
-		global $current_section;
+		global $current_section;				
 		
-		self::display_donate_notice();	//display de donate notice
-		
+		ob_start();
+
 		if ( 'regions' == $current_section ) {										
 			self::regions_output();
 		} else {
 			$settings = $this->get_settings( $current_section );
 			WC_Admin_Settings::output_fields( $settings );
+		}		
+
+		$output = ob_get_clean();
+
+		if ( class_exists('WCPBC_Avanced_Currency_Options') || class_exists('WCPBC_Subscriptions') ) {
+			echo $output;
+		} else {
+			self::output_ads($output);
 		}
 	}
 
+	/**
+	 * Output the settings with ads
+	 * @param string $output the setting page
+	 */
+	public function output_ads( $output ) {
+		?>
+		<div style="display:table;width:100%">
+			<div style="display:table-cell;min-width:800px;vertical-align:top;"><?php echo $output; ?></div>
+			<div style="display:table-cell;width:330px;vertical-align:top;padding-left:30px;"><?php include( 'views/html-addons-banner.php' ); ?></div>
+		</div>
+		<?php
+	}
+
+	
 	/**
 	 * Save settings
 	 */
@@ -326,16 +348,18 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 
 		$region_key   = isset( $_GET['edit_region'] ) ? wc_clean( $_GET['edit_region'] ) : NULL;
 
-		$region = self::get_regions_data($region_key, $_POST );
+		do_action( 'wc_price_based_country_before_region_data_save');
+
+		$region = self::get_regions_data( $region_key, $_POST ) ;
 		
-		if ( self::validate_region_fields( $region ) ) {
+		if ( self::validate_region_fields( $region ) ) {			
 
 			$regions = get_option( 'wc_price_based_country_regions', array() );			
 
 		 	if (is_null($region_key)) {
 		 		$region_key = self::get_unique_slug( sanitize_title( $region['name']), array_keys( $regions ) );
 		 	}
-		 	$regions[$region_key] = $region;
+		 	$regions[$region_key] = $region;		 	
 
 		 	update_option( 'wc_price_based_country_regions', $regions );			
 

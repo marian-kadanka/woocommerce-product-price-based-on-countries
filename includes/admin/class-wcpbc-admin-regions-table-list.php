@@ -157,7 +157,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 		} else {
 			$output .= '<span class="description">1 ' . $this->base_currency .' = ' . wc_format_localized_decimal( $region['exchange_rate'] ) . ' ' . $region['currency'] . '</span>';
 		}
-		return $output;
+		return apply_filters( 'wc_price_based_country_table_region_column_currency', $output, $region, $this->default_region_key );
 	}
 
 	/**

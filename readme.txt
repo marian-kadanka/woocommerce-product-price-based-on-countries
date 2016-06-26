@@ -4,15 +4,15 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.5
-Stable tag: 1.5.9
+Stable tag: 1.5.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add multicurrency support to WooCommerce, allowing you set product's prices in different currencies based on country of your site's visitor.
+Add multicurrency support to WooCommerce, allowing you set product's prices in multiple currencies based on country of your site's visitor.
 
 == Description ==
 
-**WooCommerce Product Price Based on Countries** is a extension for WooCommerce that allows you to sell the same product in different currencies based on the country of the customer. 
+**WooCommerce Product Price Based on Countries** is a extension for WooCommerce that allows you to sell the same product in multiple currencies based on the country of the customer. 
 
 = How it works =
 
@@ -43,6 +43,7 @@ Need a specific integration with a WooCommerce extension? Perhaps add automatic 
 **Popular extensions**
 
 * [WooCommerce Subscriptions Bridge](http://www.pricebasedcountry.com/product/woocommerce-subscriptions-bridge-price-based-country/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Integration with WooCommerce Subscriptions.
+* [Avanced Currency Options](http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Extra features to manage multiple currencies with WooCommerce Price Based on Country.
 
 = Requirements =
 WooCommerce 2.3.0 or later.
@@ -93,6 +94,12 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.5.10 (2016-06-25) =
+* Fixed: Bug with shippings methods of WooCommerce 2.6
+* Fixed: Bug on price filter of WooCommerce 2.6
+* Fixed: Check if customer has been initialized in woocommerce_currency hook
+* Fixed: Wrong price for variation products when price included tax.
 
 = 1.5.9 (2016-05-17) =
 * Fixed: PHP Fatal error in country switcher template<br />
