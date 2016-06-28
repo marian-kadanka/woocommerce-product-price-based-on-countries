@@ -9,7 +9,7 @@ if ( ! class_exists( 'WC_Settings_Price_Based_Country' ) ) :
  *
  * WooCommerce Price Based Country settings page
  * 
- * @version		1.5.10
+ * @version		1.5.11
  * @author 		oscargare
  */
 class WC_Settings_Price_Based_Country extends WC_Settings_Page {
@@ -356,9 +356,11 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 
 			$regions = get_option( 'wc_price_based_country_regions', array() );			
 
-		 	if (is_null($region_key)) {
-		 		$region_key = self::get_unique_slug( sanitize_title( $region['name']), array_keys( $regions ) );
+		 	if (is_null($region_key)) {						 																
+
+		 		$region_key = self::get_unique_slug( sanitize_key( sanitize_title( $region['name'] ) ), array_keys( $regions ) );
 		 	}
+
 		 	$regions[$region_key] = $region;		 	
 
 		 	update_option( 'wc_price_based_country_regions', $regions );			

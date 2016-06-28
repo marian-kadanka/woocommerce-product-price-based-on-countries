@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.5
-Stable tag: 1.5.10
+Stable tag: 1.5.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ Add multicurrency support to WooCommerce, allowing you set product's prices in m
 
 = How it works =
 
-The plugin detect automatically the country of the website visitor throught the geolocation feature included in WooCommerce (2.3.0 or later) and display the currency and price you have defined previously for this country. 
+The plugin detects automatically the country of the website visitor throught the geolocation feature included in WooCommerce (2.3.0 or later) and display the currency and price you have defined previously for this country. 
 
 You have two ways to set product's price for each country:
 
@@ -43,7 +43,7 @@ Need a specific integration with a WooCommerce extension? Perhaps add automatic 
 **Popular extensions**
 
 * [WooCommerce Subscriptions Bridge](http://www.pricebasedcountry.com/product/woocommerce-subscriptions-bridge-price-based-country/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Integration with WooCommerce Subscriptions.
-* [Avanced Currency Options](http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Extra features to manage multiple currencies with WooCommerce Price Based on Country.
+* [Avanced Currency Options](http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Show currency code in price, automatic updates of exchange rates and more
 
 = Requirements =
 WooCommerce 2.3.0 or later.
@@ -94,6 +94,12 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.5.11 (2016-06-28) =
+* Fixed: Mysql Database error on WooCommerce free shipping conversion<br />
+https://wordpress.org/support/topic/database-error-222
+* Fixed: Incompatibility with non-latin chars in region name.<br/>
+https://wordpress.org/support/topic/i-cant-set-manual-price
 
 = 1.5.10 (2016-06-25) =
 * Fixed: Bug with shippings methods of WooCommerce 2.6

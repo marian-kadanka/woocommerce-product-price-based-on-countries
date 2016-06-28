@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Product_Price class.
  *
  * @class 		WCPBC_Product_Price
- * @version		1.5.10
+ * @version		1.5.11
  * @author 		oscargare
  */
 class WCPBC_Product_Price {
@@ -52,7 +52,7 @@ class WCPBC_Product_Price {
 		add_action( 'woocommerce_flat_rate_shipping_add_rate', array( __CLASS__ , 'flat_rate_shipping_conversion' ), 30, 3 );
 
 		/* Free shipping min amount */		
-		self::init_free_shipping();
+		add_action( 'init', array( __CLASS__ , 'init_free_shipping_min_amount' ) );		
 
 		/* Widget Price Filter */		
 		add_filter( 'woocommerce_price_filter_widget_min_amount', array( __CLASS__ , 'price_filter_widget_min_amount' ) );
@@ -327,16 +327,18 @@ class WCPBC_Product_Price {
     /**
      * Init free shipping hooks
      */
-    public static function init_free_shipping() {
+    public static function init_free_shipping_min_amount() {
     	global $wpdb;
 
     	add_filter( 'option_woocommerce_free_shipping_settings', array( __CLASS__ , 'free_shipping_min_amount' ), 10, 2 );
-
-    	$free_shippings =  $wpdb->get_results( "SELECT instance_id FROM wp_woocommerce_shipping_zone_methods WHERE is_enabled = 1 AND method_id = 'free_shipping';" );
-    	foreach ( $free_shippings as $free_shipping ) {
-    		add_filter( 'option_woocommerce_free_shipping_'. $free_shipping->instance_id . '_settings', array( __CLASS__ , 'free_shipping_min_amount' ), 10, 2 );
-    	}
-    }
+						
+		if ( version_compare( WC()->version, '2.6', '>=' ) ) {
+			$free_shippings =  $wpdb->get_results( "SELECT instance_id FROM {$wpdb->prefix}woocommerce_shipping_zone_methods WHERE is_enabled = 1 AND method_id = 'free_shipping';" );
+			foreach ( $free_shippings as $free_shipping ) {
+				add_filter( 'option_woocommerce_free_shipping_'. $free_shipping->instance_id . '_settings', array( __CLASS__ , 'free_shipping_min_amount' ), 10, 2 );
+			}
+		}
+    }	
 
     /**
      * Apply currency conversion to free shipping min amount
