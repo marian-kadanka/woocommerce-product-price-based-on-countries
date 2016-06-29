@@ -98,7 +98,7 @@ You should do the test in a private browsing window to prevent data stored in th
 = 1.5.11 (2016-06-28) =
 * Fixed: Mysql Database error on WooCommerce free shipping conversion<br />
 https://wordpress.org/support/topic/database-error-222
-* Fixed: Incompatibility with non-latin chars in region name.<br/>
+* Fixed: Incompatibility with non-latin chars in region name.<br />
 https://wordpress.org/support/topic/i-cant-set-manual-price
 
 = 1.5.10 (2016-06-25) =
