@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Country_Selector class.
  *
  * @class 		WCPBC_Country_Selector
- * @version		1.5.0
+ * @version		1.5.12
  * @author 		oscargare
  */
 class WCPBC_Country_Selector {
@@ -56,11 +56,23 @@ class WCPBC_Country_Selector {
 	 * Return manual country select form
 	 */
 	public static function shortcode_country_selector(){	
-	
+		
+		$countries = self::get_countries();
+		$selected_country = wcpbc_get_woocommerce_country();
+
+		if ( ! array_key_exists( $selected_country, $countries ) ) {
+			//find other countries
+			foreach ($countries as $key => $value) {
+				if ($value == apply_filters( 'wcpbc_other_countries_text', __( 'Other countries' ) ) ) {
+					$selected_country = $key;
+				}
+			}
+		}
+
 		ob_start();
 		
 		echo '<div class="wc-price-based-country">';
-		wc_get_template('country-selector.php', array( 'countries' => self::get_countries(), 'selected_country' => wcpbc_get_woocommerce_country() ), 'woocommerce-product-price-based-on-countries/',  WCPBC()->plugin_path()  . '/templates/' );
+		wc_get_template('country-selector.php', array( 'countries' => $countries, 'selected_country' => $selected_country ), 'woocommerce-product-price-based-on-countries/',  WCPBC()->plugin_path()  . '/templates/' );
 		echo '</div>';
 		
 		return ob_get_clean();

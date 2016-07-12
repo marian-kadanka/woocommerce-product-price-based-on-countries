@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.5
-Stable tag: 1.5.11
+Stable tag: 1.5.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,11 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.5.12 (2016-07-12) =
+* Fixed: Cart prices not updated after calculate shipping<br />
+https://wordpress.org/support/topic/cart-prices-not-updated-on-calculate-shipping
+* Fixed: Country switcher not works fine when the country is changed in shipping calculator.
 
 = 1.5.11 (2016-06-28) =
 * Fixed: Mysql Database error on WooCommerce free shipping conversion<br />

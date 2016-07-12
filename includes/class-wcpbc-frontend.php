@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.5.9
+ * @version		1.5.12
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -23,6 +23,8 @@ class WCPBC_Frontend {
 		add_action( 'woocommerce_init', array( __CLASS__ , 'check_manual_country_widget'), 20 );		
 
 		add_action( 'woocommerce_init', array( __CLASS__ , 'checkout_country_update'), 20 );		
+		
+		add_action( 'woocommerce_init', array( __CLASS__ , 'calculate_shipping_country_update'), 20 );		
 		
 		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );			
 	}	
@@ -92,7 +94,7 @@ class WCPBC_Frontend {
 	}
 
 	/**
-	 * Update WCPBC Customer country when order review is update
+	 * Update WooCommerce Customer country on checkout
 	 */
 	public static function checkout_country_update( $post_data = array() ) {			
 		
@@ -115,16 +117,22 @@ class WCPBC_Frontend {
 	}
 
 	/**
-     * Replace WooCommerce Free Shipping Method
-     */
-    public static function overwrite_free_shipping_class( $shipping_methods ) {
-       	
-       	include_once( 'class-wcpbc-shipping-free-shipping.php' );
+	 * Update WooCommerce Customer country on calculate shipping
+	 */
+	public static function calculate_shipping_country_update(){
 
-        $shipping_methods['legacy_free_shipping'] = 'WCPBC_Shipping_Free_Shipping';       	
-       	
-        return $shipping_methods;
-    }
+		if ( isset( $_POST['calc_shipping'] ) && $_POST['calc_shipping'] ) {
+			if ( isset( $_POST['calc_shipping_country'] ) && $country = wc_clean( $_POST['calc_shipping_country'] ) ) {
+				
+				WC()->customer->set_country( $country );	
+				WC()->customer->set_shipping_country( $country );
+
+			} else{
+				WC()->customer->set_to_base();
+				WC()->customer->set_shipping_to_base();
+			}
+		} 
+	}	
 }
 
 WCPBC_Frontend::init();

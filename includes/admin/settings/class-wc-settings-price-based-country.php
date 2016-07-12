@@ -149,7 +149,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		?>
 		<div style="display:table;width:100%">
 			<div style="display:table-cell;min-width:800px;vertical-align:top;"><?php echo $output; ?></div>
-			<div style="display:table-cell;width:330px;vertical-align:top;padding-left:30px;"><?php include( 'views/html-addons-banner.php' ); ?></div>
+			<div style="display:table-cell;width:330px;vertical-align:top;padding-left:15px;"><?php include( 'views/html-addons-banner.php' ); ?></div>
 		</div>
 		<?php
 	}
