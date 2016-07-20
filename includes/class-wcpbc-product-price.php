@@ -18,8 +18,8 @@ class WCPBC_Product_Price {
 	 * Hook actions and filters
 	 */
 	public static function init(){
-		global $wp_version;
-		
+		global $wp_version;		
+
 		/* Currency */
 		add_filter( 'woocommerce_currency',  array( __CLASS__ , 'currency' ) );
 
