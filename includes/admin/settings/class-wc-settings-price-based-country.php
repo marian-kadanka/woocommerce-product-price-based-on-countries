@@ -9,7 +9,7 @@ if ( ! class_exists( 'WC_Settings_Price_Based_Country' ) ) :
  *
  * WooCommerce Price Based Country settings page
  * 
- * @version		1.5.11
+ * @version		1.6.0
  * @author 		oscargare
  */
 class WC_Settings_Price_Based_Country extends WC_Settings_Page {
@@ -20,7 +20,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	public function __construct() {
 
 		$this->id    = 'price-based-country';
-		$this->label = __( 'Price Based on Country', 'wc-price-based-country' );
+		$this->label = __( 'Zone Pricing', 'wc-price-based-country' );
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 20 );
 		add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
@@ -38,8 +38,8 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 */
 	public function get_sections() {
 		$sections = array(
-			''         => __( 'Settings', 'woocommerce' ),
-			'regions'     => __( 'Regions', 'wc-price-based-country' )		
+			''         => __( 'General options', 'woocommerce' ),
+			'zones'     => __( 'Zones', 'wc-price-based-country' )		
 		);
 
 		return apply_filters( 'wc_price_based_country_get_sections', $sections );
@@ -75,8 +75,8 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 			
 			array(
 				'title'    => __( 'Shipping', 'wc-price-based-country' ),
-				'desc' 		=> __( 'Enabled currency conversion to "Flat Rate" And "International Flat Rate"', 'wc-price-based-country' ),
-				'id' 		=> 'wc_price_based_shipping_conversion',
+				'desc' 		=> __( 'Calculate shipping rates by exchange rate.', 'wc-price-based-country' ),
+				'id' 		=> 'wc_price_based_country_shipping_exchange_rate',
 				'default'	=> 'no',
 				'type' 		=> 'checkbox'				
 			),
@@ -125,7 +125,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		
 		ob_start();
 
-		if ( 'regions' == $current_section ) {										
+		if ( 'zones' == $current_section ) {										
 			self::regions_output();
 		} else {
 			$settings = $this->get_settings( $current_section );
@@ -149,7 +149,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		?>
 		<div style="display:table;width:100%">
 			<div style="display:table-cell;min-width:800px;vertical-align:top;"><?php echo $output; ?></div>
-			<div style="display:table-cell;width:330px;vertical-align:top;padding-left:15px;"><?php include( 'views/html-addons-banner.php' ); ?></div>
+			<div style="display:table-cell;width:250px;vertical-align:top;padding-left:15px;"><?php include( 'views/html-addons-banner.php' ); ?></div>
 		</div>
 		<?php
 	}
@@ -161,13 +161,14 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	public function save() {
 		global $current_section;
 		
-		if( $current_section == 'regions' && ( isset( $_GET['edit_region'] ) || isset( $_GET['add_region'] ) ) ) {			
-			self::regions_save();
+		if( $current_section == 'zones' && ( isset( $_GET['edit_region'] ) || isset( $_GET['add_region'] ) ) ) {			
 			
-		} elseif( $current_section == 'regions' && isset( $_POST['action'] ) && $_POST['action'] == 'remove' && isset( $_POST['region_key'] ) ) {
+			self::regions_save();			
+		} elseif( $current_section == 'zones' && isset( $_POST['action2'] ) && $_POST['action2'] == 'remove' && isset( $_POST['region_key'] ) ) {
+			
 			self::regions_delete_bulk();
 			
-		} elseif( $current_section !== 'regions' ) {			
+		} elseif( $current_section !== 'zones' ) {			
 			//save settings				
 			$settings = $this->get_settings();
 			WC_Admin_Settings::save_fields( $settings );										
@@ -226,7 +227,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		
 		include_once( WCPBC()->plugin_path() . 'includes/admin/class-wcpbc-admin-regions-table-list.php' );
 
-		echo '<h3>' .  __( 'Regions', 'wc-price-based-country' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=regions&add_region=1' ) ) . '" class="add-new-h2">' . __( 'Add Region', 'wc-price-based-country' ) . '</a></h3>';
+		echo '<h3>' .  __( 'Zones', 'wc-price-based-country' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=zones&add_region=1' ) ) . '" class="add-new-h2">' . __( 'Add Zone', 'wc-price-based-country' ) . '</a></h3>';
 
 		 $keys_table_list = new WCPBC_Admin_Regions_Table_List();
 		 $keys_table_list->prepare_items();
@@ -286,6 +287,8 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		} else {
 			$allowed_countries = array_diff( array_keys( WC()->countries->countries ), $countries_in_regions );
 		}
+		
+		wcpbc_maybe_asort_locale( $allowed_countries );
 		
 		return $allowed_countries;
 	}
@@ -367,6 +370,9 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 
 		 	update_option( 'wc_price_based_country_timestamp', time() );
 
+		 	// sync product prices with exchange rate		 	
+		 	wcpbc_sync_exchange_rate_prices( $region_key, $region['exchange_rate'] );
+
 		 	$_GET['edit_region'] = $region_key;
 		}		
 				
@@ -379,7 +385,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		if ( isset( $_GET['remove_region'] ) && 
 			 isset( $_GET['page'] ) && 'wc-settings' == $_GET['page'] && 
 			 isset( $_GET['tab'] ) && 'price-based-country' == $_GET['tab'] && 
-			 isset( $_GET['section'] ) && 'regions' == isset( $_GET['section'] ) 
+			 isset( $_GET['section'] ) && 'zones' == isset( $_GET['section'] ) 
 			) {
 
 			self::regions_delete();				
@@ -421,7 +427,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		$region_keys = wc_clean( $_POST['region_key'] );
 		$regions = get_option( 'wc_price_based_country_regions', array() );		
 
-		foreach ($region_keys as $region_key) {			
+		foreach ($region_keys as $region_key ) {			
 			if ( isset( $regions[$region_key] ) ) {			
 				unset($regions[$region_key]);
 				self::regions_delete_post_meta($region_key);
@@ -437,8 +443,12 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 */
 	private static function regions_delete_post_meta( $region_key ) {
 		global $wpdb;
-		foreach ( wcpbc_get_product_meta_keys( $region_key ) as $meta_key ) {
-			$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => $meta_key ) );	
+		
+		$meta_keys = wcpbc_get_overwrite_meta_keys();
+		array_push( $meta_keys, '_price_method' );		
+		
+		foreach ( $meta_keys as $meta_key ) {
+			$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => '_' . $region_key . $meta_key ) );	
 		}		
 	}
 }

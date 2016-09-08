@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Handle integrations between PBC and 3rd-Party plugins
  *
  * @class    WCPBC_Integrations
- * @version  1.5.13 
+ * @version  1.6.0
  * @author   oscargare
  */
 class WCPBC_Integrations {		
@@ -20,11 +20,13 @@ class WCPBC_Integrations {
 	 */
 	public static function add_third_party_plugin_integrations(){
 		
-		$third_party_integrations = array(
-			'Woo_Bulk_Discount_Plugin_t4m' => 'integrations/class-wcpbc-bulk-discount-t4m.php'		
+		$third_party_integrations = array(			
+			'AngellEYE_Gateway_Paypal'		=> 'integrations/class-wcpbc-paypal-express-angelleye.php',
+			'Sitepress'						=> 'integrations/class-wcpbc-admin-translation-management.php'
 		);
 		
 		foreach ($third_party_integrations as $class => $integration_file ) {
+
 			if( class_exists( $class ) ) {
 				include_once( $integration_file );
 			}

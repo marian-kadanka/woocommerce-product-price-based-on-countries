@@ -22,22 +22,17 @@ class WCPBC_Admin_Translation_Management {
 		$custom_fields = array();
 
 		$region_keys = array_keys( WCPBC()->get_regions() );
-
+	
+		$meta_keys = wcpbc_get_overwrite_meta_keys();
+		array_push( $meta_keys, '_price_method' );
+		
 		foreach ( $region_keys as $key ) {
+			
+			foreach ( $meta_keys as $field ) {
 
-			foreach ( array( '_price', '_regular_price','_sale_price', '_price_method' ) as $field ) {
-
-				$custom_fields[] = '_' . $key . $field;
-				$custom_fields[] = '_' . $key . '_variable' . $field;
-
-				if ( $field !== '_price_method' ) {
-					foreach ( array('min', 'max') as $min_or_max ) {
-						$custom_fields[] = '_' . $key . '_' . $min_or_max . $field . '_variation_id';	
-					}					
-				}
+				$custom_fields[] = '_' . $key . $field;								
 			}
 		}
-
 		return $custom_fields;
 	}
 

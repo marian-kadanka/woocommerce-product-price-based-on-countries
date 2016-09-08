@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Installation related functions and actions.
  *
  * @author 		oscargare 
- * @version     1.5.0
+ * @version     1.6.0
  */
 
 class WCPBC_Install {
@@ -56,17 +56,31 @@ class WCPBC_Install {
 	}
 	
 	/**
+	 * Sync product prices 
+	 */
+	private static function sync_exchange_rate_prices(){
+		$zones = get_option( 'wc_price_based_country_regions', array() );
+		foreach ( $zones as $zone_id => $zone ) {
+			wcpbc_sync_exchange_rate_prices( $zone_id, $zone['exchange_rate'] );
+		}
+	}
+	
+	/**
 	 * Install function 
 	 */ 
 	public static function install(){
 		
 		$current_version = self::get_install_version();
 		
-		if ( null !== $current_version && version_compare( $current_version, '1.5.0', '<' ) ) {
+		if ( null !== $current_version && version_compare( $current_version, '1.6.0', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 		} else {
+			// Update version
 			self::update_wcpbc_version();
-		}
+			
+			// Sync exchange rate prices
+			self::sync_exchange_rate_prices();			
+		}				
 	}
 
 	/**
@@ -74,7 +88,7 @@ class WCPBC_Install {
 	 */
 	public static function check_version() {
 				
-		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.5.0', '<' ) ) {
+		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.6.0', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 
 		} else {
@@ -142,6 +156,7 @@ class WCPBC_Install {
 				'1.3.2' => 'updates/wcpbc-update-1.3.2.php',
 				'1.4.0' => 'updates/wcpbc-update-1.4.0.php',
 				'1.5.0' => 'updates/wcpbc-update-1.5.0.php',
+				'1.6.0' => 'updates/wcpbc-update-1.6.0.php'
 			);
 
 			foreach ( $db_updates as $version => $updater ) {
@@ -152,7 +167,7 @@ class WCPBC_Install {
 
 			self::update_wcpbc_version();		
 		}		
-	}
+	}		
 }
 
 WCPBC_Install::init();

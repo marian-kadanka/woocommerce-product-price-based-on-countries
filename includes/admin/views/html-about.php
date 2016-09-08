@@ -1,10 +1,10 @@
 <?php
 /**
- * About page for WooCommerce Price Based Country 1.5.0
+ * About page for WooCommerce Price Based Country 1.6.0
  *
  * @author		oscargare
  * @category	Admin 
- * @version		1.5.0
+ * @version		1.6.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,52 +17,59 @@ $major_version = substr( WCPBC()->version, 0, 3 );
 
 <div class="wrap about-wrap">
 
-	<h1><?php printf( __( 'Welcome to Price Based On Countries %s', 'wc-price-based-country' ), $major_version ); ?></h1>
+	<h1><?php printf( __( 'Welcome to Price Based On Country %s', 'wc-price-based-country' ), $major_version ); ?></h1>
 	
-	<div class="about-text woocommerce-about-text">
-		<?php _e( 'Thank you for installing the latest version of WooCommerce Product Price Based On Countries.', 'wc-price-based-country' ); ?>
-		<?php printf( __( 'Version %s is more powerful and secure than ever before. I hope you enjoy it!', 'wc-price-based-country' ), $major_version ) ; ?>		
+	<p class="about-text"><?php printf( __( 'Thank you for updating to the latest version. Price Based On Country %s includes much-needed improvements to make WooCommerce multi-currency.', 'wc-price-based-country' ), $major_version ); ?></p>	
+	<div class="wcpbc-badge"><?php printf( __( 'Version %s' ), $major_version ); ?></div>
+	
+	<h2 class="nav-tab-wrapper wp-clearfix">
+		<span href="#" class="nav-tab nav-tab-active"><?php _e( 'What&#8217;s New', 'wc-price-based-country' ); ?></span>
+	</h2>	
+	
+	<div class="feature-section one-col">
+		<h2><?php _e( 'Schedule Sale Price' ); ?></h2>		
+		<img src="" />
+		<p><?php printf( __( 'Schedule the sale prices is a powerful feature included by WooCommerce. PBC extends this feature to allows you to set different %ssale price dates%s by zone.' ), '<em>', '</em>'); ?></p>
 	</div>
-
-	<p class="woocommerce-actions">
-		<a href="<?php echo esc_url( $settings_page ); ?>" class="button button-primary"><?php _e( 'Settings', 'wc-price-based-country' ); ?></a>
-	</p>
 	
+	<div class="feature-section one-col">
+		<h2><?php _e( 'Reports' ); ?></h2>		
+		<img src="" />
+		<p><?php printf( __( 'The older versions don\'t support sales reports for multi-currency, showing a wrong result. PBC %s shows sales reports in your base currency and calculates amounts of orders made in a different currency by exchange rate.' ), $major_version ); ?></p>
+	</div>
+	
+	<div class="feature-section one-col">
+		<h2><?php _e( 'Coupons' ); ?></h2>		
+		<img src="" />
+		<p><?php _e( 'For countries included in a zone pricing you can choose if the coupon amount should be calculated using exchange rate. Great for multi-currency stores.' ); ?></p>
+	</div>
+	
+	<hr />
+
 	<div class="changelog">
-	
-		<h2><?php _e( "What's New", 'wc-price-based-country' ); ?></h2>
-		<hr/>
+		<h2><?php _e( 'Under the Hood' ); ?></h2>
 		
-		<div class="feature-section three-col">
+		<div class="feature-section two-col">
+			
 			<div class="col">
-				<h3><?php _e( 'Price Based On Shipping Country', 'wc-price-based-country' ); ?></h3>
-				<p><?php printf( __( 'Now you can choose between products prices based on customer billing country or customer shipping country so improve integration with taxes settings. Enable this in the %ssettings%s.', 'wc-price-based-country' ), '<a href="' . $settings_page . '">', '</a>' ); ?></p>
+				<h3><?php _e( 'New Core', 'wc-price-based-country' ); ?></h3>
+				<p><?php  _e( 'The plugin core has been rewritten with the goal that make PBC more compatible with most WooCommerce plugins, especially with discount and shipping plugins.', 'wc-price-based-country' ); ?></p>
 			</div>
+			
+			
 			<div class="col">
-				<h3><?php _e( 'Country Selector Widget', 'wc-price-based-country' ); ?></h3>
-				<p><?php printf( __( 'Add a country selector to store was very complex for non-developers in previous versions of WCPBC, I\'ve made simpler by adding a widget that allows add a country selector through Wordpress widgets interface. %sAdd a Country Selector Widget%s', 'wc-price-based-country' ), '<a href="' . admin_url( 'widgets.php' ) . '">', '</a>' ) ; ?></p>	
-			</div>
-			<div class="col last-feature">
-				<h3><?php _e( 'New Interface to Manage Regions', 'wc-price-based-country' ); ?></h3>
-				<p><?php _e( 'The new interface to manage regions is also built on WordPress list table.', 'wc-price-based-country' ); ?></p>
-			</div>						
+				<h3><?php _e( 'Developer Friendly', 'wc-price-based-country' ); ?></h3>
+				<p><?php _e( 'New filters and actions does the plugin more extendible and adaptable than ever before. I hope you enjoy using it!', 'wc-price-based-country' ) ; ?></p>	
+			</div>				
+			
 		</div>
-
-		<div class="feature-section two-col">		
-			<div class="col">
-				<h3><?php _e( 'Support to WooCommerce Products Widget', 'wc-price-based-country' ); ?></h3>
-				<p><?php _e( 'To improve integration with WooCommerce features I have added support to "Woocommerce Products Widget". Now you can add a list of products on sale to your store that lists different products depending on country.', 'wc-price-based-country' ) ; ?></p>
-			</div>
-			<div class="col last-feature">
-				<h3><?php _e( 'Shipping Currency Conversion', 'wc-price-based-country' ); ?></h3>
-				<p><?php _e( 'If you use Flat Rate and International Shipping you may have found did not apply a exchange rate. I have now introduced a automatically currency conversion for  Flat Rate and International Shipping.', 'wc-price-based-country' ) ; ?></p>
-			</div>
-		</div>
-				
-	</div>
+		
+	</div>			
+	
+	<hr />
 	
 	<div class="return-to-dashboard">
-		<a href="<?php echo esc_url( $settings_page ); ?>"><?php _e( 'Go to WooCommerce Price Based On Countries Settings', 'wc-price-based-country' ); ?></a>		
+		<a href="<?php echo esc_url( $settings_page ); ?>"><?php _e( 'Go to Price Based on Country settings', 'wc-price-based-country' ); ?></a>		
 	</div>
 	
 </div>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- Plugin Name: WooCommerce Product Price Based on Countries
+ Plugin Name: WooCommerce Price Based on Country
  Plugin URI: https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/
  Description: Sets products prices based on country of your site's visitor.
  Author: Oscar Gare
@@ -36,14 +36,14 @@ if ( ! class_exists( 'WC_Product_Price_Based_Country' ) ) :
  * Main WC Product Price Based Country Class
  *
  * @class WC_Product_Price_Based_Country
- * @version	1.5.6
+ * @version	1.6.0
  */
 class WC_Product_Price_Based_Country {
 
 	/**
 	 * @var string
 	 */
-	public $version = '1.5.13';
+	public $version = '1.6.0';
 
 	/**
 	 * @var The single instance of the class		 
@@ -95,11 +95,11 @@ class WC_Product_Price_Based_Country {
 		if ( $this->is_request( 'admin') ) {
 			include_once( 'includes/class-wcpbc-install.php' );
 			include_once( 'includes/admin/class-wcpbc-admin.php' );												
-
-		} elseif ( $this->is_request( 'frontend') ) {
-			include_once( 'includes/class-wcpbc-frontend.php' );
-			include_once( 'includes/class-wcpbc-customer.php' );			
-			include_once( 'includes/class-wcpbc-product-price.php' );
+			
+		} elseif( $this->is_request( 'frontend') ) {
+			include_once( 'includes/class-wcpbc-frontend.php' );			
+			include_once( 'includes/class-wcpbc-frontend-pricing.php' );
+			include_once( 'includes/class-wcpbc-customer.php' );						
 			include_once( 'includes/class-wcpbc-country-selector.php' );	
 		}
 	}
@@ -112,9 +112,9 @@ class WC_Product_Price_Based_Country {
 		
 		add_action( 'widgets_init', array($this, 'register_widgets') );		
 
-		if ( ! $this->is_request( 'admin') && $this->is_request( 'frontend') ) {			
+		if ( $this->is_request( 'frontend') ) {			
 
-			add_action( 'woocommerce_init', array( $this , 'frontend_init'), 50 );				
+			add_action( 'woocommerce_init', array( $this , 'frontend_init') , 100 );				
 		}
 	}
 	
@@ -124,23 +124,22 @@ class WC_Product_Price_Based_Country {
 	 * @return bool
 	 */
 	private function is_request( $type ) {
-
+		
 		$is_ajax = defined('DOING_AJAX') && DOING_AJAX;
-
+		
 		switch ( $type ) {
-			case 'admin' :							
-				$ajax_allow_actions = array( 'woocommerce_add_variation', 'woocommerce_load_variations', 'woocommerce_save_variations' );
-				return ( is_admin() && !$is_ajax ) || ( is_admin() && $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], $ajax_allow_actions ) );
-			
-			case 'frontend' :
-				return ! $this->is_request('bot') && ( ! is_admin() || ( is_admin() && $is_ajax ) ) && ! defined( 'DOING_CRON' );			
-
+			case 'admin' :
+				$ajax_allow_actions = array( 'woocommerce_add_variation', 'woocommerce_load_variations', 'woocommerce_save_variations', 'woocommerce_bulk_edit_variations', 'inline-save' );
+				return ( is_admin() && !$is_ajax ) || ( is_admin() && $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], $ajax_allow_actions ) );				
 			case 'bot':
 				$user_agent = strtolower ( $_SERVER['HTTP_USER_AGENT'] );
-				return preg_match ( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent );
+				return preg_match ( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent );				
+			case 'frontend' :
+				$is_heartbeat = $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], array( 'heartbeat', 'get-comments', 'wp-remove-post-lock', 'wp-compression-test' ) );
+				return ! $is_heartbeat && ! defined( 'DOING_CRON' ) && ! ( $this->is_request('admin') ) && ! ( $this->is_request('bot') );
 		}
 	}
-	
+
 	/**
 	 * Register Widgets
 	 *
@@ -155,7 +154,19 @@ class WC_Product_Price_Based_Country {
 	 * Init front-end variables
 	 */
 	 public function frontend_init(){	 	
+	 	do_action( 'wc_price_based_country_before_frontend_init' );
+
 		$this->customer = new WCPBC_Customer();		
+
+		if ( $this->customer->zone_id ) {
+
+			WCPBC_Frontend_Pricing::init( 
+				$this->customer->zone_id, 
+				$this->customer->currency, 
+				$this->customer->exchange_rate 
+			);
+		}
+		
 		do_action('wc_price_based_country_frontend_init');
 	 }
 	 

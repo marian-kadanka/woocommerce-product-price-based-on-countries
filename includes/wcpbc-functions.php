@@ -5,7 +5,7 @@
  * General functions available on both the front-end and admin.
  *
  * @author 		oscargare
- * @version     1.5.0
+ * @version     1.6.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -48,98 +48,379 @@ function wcpbc_set_woocommerce_country( $country ) {
 		WC()->customer->set_country( $country );
 		WC()->customer->set_shipping_country( $country );
 	}
+}
 
+/**
+ * Return base currency
+ *
+ * @retrun string
+ */
+function wcpbc_get_base_currency() {
+	return get_option( 'woocommerce_currency');
+}
+
+
+/**
+ * Return product prices meta keys
+ *
+ * @since 1.6.0
+ * @return array
+ */
+function wcpbc_get_price_meta_keys() {
+	return array_unique( apply_filters( 'wc_price_based_country_price_meta_keys', array( '_price', '_regular_price', '_sale_price' ) ) );
+}
+
+/**
+ * Returns all meta keys that must be overwriten
+ *
+ * @since 1.6.0
+ * @return array
+ */
+function wcpbc_get_overwrite_meta_keys() {
+	
+	$meta_keys = wcpbc_get_price_meta_keys();
+	
+	array_push( $meta_keys, 
+		'_min_variation_price', '_min_variation_regular_price' , '_min_variation_sale_price',
+		'_max_variation_price', '_max_variation_regular_price' , '_max_variation_sale_price',
+		'_min_price_variation_id', '_min_regular_price_variation_id' , '_min_sale_price_variation_id',
+		'_max_price_variation_id', '_max_regular_price_variation_id' , '_max_sale_price_variation_id'
+	);
+	
+	return $meta_keys;
+}
+
+/**
+ * Returns variable product types
+ *
+ * @since 1.6.0
+ * @return array
+ */
+function wcpbc_get_parent_product_types() {
+	return array_unique( apply_filters( 'wc_price_based_country_parent_product_types', array( 'variable', 'grouped' ) ) );
+}
+/**
+ * Get a max or min price in a postmeta row of children products
+ *
+ * @param string $zone_price_meta_key
+ * @param int $parent_id
+ * @param string $min_or_max
+ * @return object
+ */
+function wcpbc_get_children_price( $zone_price_meta_key, $parent_id, $min_or_max = 'min' ){
+	global $wpdb;	
+	
+	$query = array(
+		'select'	=> 'SELECT _zone_price.post_id, _zone_price.meta_value as value', 
+		'from'		=> "FROM {$wpdb->posts} posts INNER JOIN {$wpdb->postmeta} _zone_price ON posts.ID = _zone_price.post_id AND _zone_price.meta_key = %s",
+		'where'		=> "WHERE _zone_price.meta_value <> '' AND posts.post_status = 'publish' AND posts.post_parent = %d",
+		'order by'	=> "ORDER BY _zone_price.meta_value +0 " . ( $min_or_max == 'max' ? 'desc' : 'asc' ) . " LIMIT 1"
+	);
+	
+	$query_params = array( $zone_price_meta_key, $parent_id );
+	
+	// Skip hidden products
+	if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
+		$notify_no_stock_amount = get_option( 'woocommerce_notify_no_stock_amount' );
+		$query['from'] .= " LEFT JOIN {$wpdb->postmeta} _stock ON posts.ID = _stock.post_id AND _stock.meta_key = '_stock'";
+		$query['where'] .= " AND ( IFNULL(_stock.meta_value, '') = '' OR _stock.meta_value<%s)" ;
+		
+		$query_params[] = $notify_no_stock_amount;
+	}
+	
+	return $wpdb->get_row( $wpdb->prepare( implode(' ', $query), $query_params ) );	
+}
+
+/**
+ * Sync product variation prices with parent for a pricing zone
+ *
+ * @since 1.6.0
+ * @param string $zone_id
+ * @param int $product_id
+ */
+function wcpbc_zone_variable_product_sync( $zone_id, $product_id ) {
+	
+	foreach ( wcpbc_get_price_meta_keys() as $price_type ) {
+		
+		$zone_price_meta_key = '_' . $zone_id . $price_type;
+		
+		// Min price
+		$min_price_row = wcpbc_get_children_price( $zone_price_meta_key, $product_id );
+		
+		if ( $min_price_row ) {			
+			
+			// Store price
+			update_post_meta( $product_id, '_' . $zone_id . '_min_variation' . $price_type, $min_price_row->value );			
+			
+			// Store id
+			update_post_meta( $product_id, '_' . $zone_id . '_min' . $price_type . '_variation_id', $min_price_row->post_id );
+			
+			// Store min price in a variable
+			${$price_type} = $min_price_row->value;				
+			
+		} else {
+			// Store price
+			update_post_meta( $product_id, '_' . $zone_id . '_min_variation' . $price_type, '' );			
+			
+			// Store id
+			update_post_meta( $product_id, '_' . $zone_id . '_min' . $price_type . '_variation_id', '' );
+		}
+		
+		// Max price
+		$max_price_row = wcpbc_get_children_price( $zone_price_meta_key, $product_id, 'max' );
+		
+		if ( $max_price_row ) {
+			
+			// Store prices
+			update_post_meta( $product_id, '_' . $zone_id . '_max_variation' . $price_type, $max_price_row->value );
+
+			// Store ids		
+			update_post_meta( $product_id, '_' . $zone_id . '_max' . $price_type . '_variation_id', $max_price_row->post_id );
+			
+		} else {
+			// Store price
+			update_post_meta( $product_id, '_' . $zone_id . '_max_variation' . $price_type, '' );			
+			
+			// Store id
+			update_post_meta( $product_id, '_' . $zone_id . '_max' . $price_type . '_variation_id', '' );
+		}						
+	}
+	
+	if ( isset( $_price ) ) {
+		update_post_meta( $product_id, '_' . $zone_id . '_price',  $_price );
+	}	
+	
+	update_post_meta( $product_id, '_' . $zone_id . '_price_method',  'nothing' );
+}
+
+/**
+ * Sync grouped products with the children lowest price for a pricing zone
+ *
+  * @since 1.6.0
+ */
+function wcpbc_zone_grouped_product_sync( $zone_id, $product_id ) {
+	$min_price = wcpbc_get_children_price( '_' . $zone_id . '_price', $product_id );
+	if ( $min_price ) {
+		update_post_meta( $product_id, '_' . $zone_id . '_price', $min_price->value );
+	} else {
+		update_post_meta( $product_id, '_' . $zone_id . '_price', '' );
+	}	
+	
+	update_post_meta( $product_id, '_' . $zone_id . '_price_method',  'nothing' );
 }
 	
 /**
- * Get custom plugin product fields for a region
+ * Sync product variation prices with parent
  *
- * @param  string $region_key
+  * @since 1.6.0
+ */
+function wcpbc_variable_product_sync( $product_id, $children ) {
+	
+	foreach ( array_keys( WCPBC()->get_regions() ) as $zone_id ) {		
+		wcpbc_zone_variable_product_sync( $zone_id, $product_id );
+	}
+}
+add_action( 'woocommerce_variable_product_sync', 'wcpbc_variable_product_sync', 10, 2 );
+
+/**
+ * Sync products prices by exchange rate for a pricing zone
+ *
+ * @since 1.6.0
+ * @param  string $zone_id
+ * @param  float $exchange_rate
  * @return array
  */
-function wcpbc_get_product_meta_keys( $region_key ){
-
-	$custom_fields = array();
+function wcpbc_sync_exchange_rate_prices( $zone_id, $exchange_rate ){
+	global $wpdb;		
 	
-	foreach ( array( '_price', '_regular_price','_sale_price', '_price_method' ) as $field ) {
-
-		$custom_fields[ $field ] = '_' . $region_key . $field;
-		$custom_fields[ '_variable' . $field ] = '_' . $region_key . '_variable' . $field;
-
-		if ( $field !== '_price_method' ) {
-			foreach ( array('min', 'max') as $min_or_max ) {
-				$custom_fields[ '_' . $min_or_max . $field . '_variation_id' ] = '_' . $region_key . '_' . $min_or_max . $field . '_variation_id';	
-			}					
+	$price_method_meta_key = '_' . $zone_id . '_price_method';
+	
+	// variable products must haven't a price method
+	$parent_product_types = wcpbc_get_parent_product_types();
+	
+	$parent_product_ids = $wpdb->get_col( $wpdb->prepare( "
+		SELECT t_r.object_id
+		FROM {$wpdb->term_relationships} t_r 
+		INNER JOIN {$wpdb->term_taxonomy} t_t ON t_r.term_taxonomy_id = t_t.term_taxonomy_id AND t_t.taxonomy = 'product_type'
+		INNER JOIN {$wpdb->terms} t ON t.term_id = t_t.term_id
+		LEFT JOIN {$wpdb->postmeta} _price_method ON _price_method.post_id = t_r.object_id AND _price_method.meta_key = %s
+		WHERE t.slug IN (" .  implode(', ', array_fill(0, count($parent_product_types), '%s') ) . ") and ifnull(_price_method.meta_value, '')<>'nothing'
+	", array_merge( array( $price_method_meta_key ), $parent_product_types ) ) );
+	
+	if ( $parent_product_ids ) {
+		foreach ( $parent_product_ids as $parent_product_id ) {
+			update_post_meta( $parent_product_id, $price_method_meta_key, 'nothing' );
 		}
-	}	
+	}			
+	
+	// sync products prices
+	foreach ( wcpbc_get_price_meta_keys() as $price_meta_key ) {
+		
+		$zone_price_meta_key = '_' . $zone_id . $price_meta_key;		
+		
+		// Add region price meta key if not exists
+		$wpdb->query( $wpdb->prepare( "
+			INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
+			SELECT post.ID, %s, '0'
+			FROM {$wpdb->posts} post
+			LEFT JOIN {$wpdb->postmeta} _zone_price_meta_key ON _zone_price_meta_key.post_id = post.ID AND _zone_price_meta_key.meta_key = %s
+			LEFT JOIN {$wpdb->postmeta} _price_method on post.ID = _price_method.post_id AND _price_method.meta_key = %s
+			WHERE post.post_type IN ( 'product', 'product_variation' ) AND post.post_status = 'publish' 
+			AND ifnull(_price_method.meta_value, 'exchange_rate') = 'exchange_rate' AND _zone_price_meta_key.meta_id is null
+		", $zone_price_meta_key, $zone_price_meta_key, $price_method_meta_key ) );
+				
+		// Update region price meta key by exchange_rate
+		$wpdb->query( $wpdb->prepare( "
+			UPDATE {$wpdb->postmeta} _zone_price_meta_key 
+			INNER JOIN {$wpdb->posts} posts on posts.ID = _zone_price_meta_key.post_id 
+			INNER JOIN {$wpdb->postmeta} _price_meta_key on posts.ID = _price_meta_key.post_id AND _price_meta_key.meta_key = %s
+			LEFT JOIN {$wpdb->postmeta} _price_method on posts.ID = _price_method.post_id AND _price_method.meta_key = %s
+			SET _zone_price_meta_key.meta_value = CASE ifnull(_price_meta_key.meta_value, '') when '' THEN '' ELSE (_price_meta_key.meta_value + 0) * %f END
+			WHERE _zone_price_meta_key.meta_key = %s AND ifnull(_price_method.meta_value, 'exchange_rate') = 'exchange_rate'
+			AND _zone_price_meta_key.meta_value <> CASE ifnull(_price_meta_key.meta_value, '') when '' THEN '' ELSE (_price_meta_key.meta_value + 0) * %f END
+		" , $price_meta_key, $price_method_meta_key, floatval( $exchange_rate ), $zone_price_meta_key, floatval( $exchange_rate ) ) );	
+	}		
+	
+	//sync parents product prices
+	$parent_products = $wpdb->get_results( $wpdb->prepare( "
+		SELECT DISTINCT posts.post_parent AS id, posts.post_type as child_post_type
+		FROM {$wpdb->posts} posts
+		INNER JOIN {$wpdb->term_relationships} t_r ON t_r.object_id = posts.post_parent
+		INNER JOIN {$wpdb->term_taxonomy} t_t ON t_r.term_taxonomy_id = t_t.term_taxonomy_id AND t_t.taxonomy = 'product_type'
+		INNER JOIN {$wpdb->terms} t ON t.term_id = t_t.term_id
+		LEFT JOIN {$wpdb->postmeta} _price_method on posts.ID = _price_method.post_id AND _price_method.meta_key = %s
+		WHERE t.slug IN (" .  implode(', ', array_fill(0, count($parent_product_types), '%s') ) . ") 
+		AND posts.post_type in ('product_variation', 'product') and posts.post_status = 'publish'
+		AND ifnull(_price_method.meta_value, 'exchange_rate') = 'exchange_rate';
+	", array_merge( array( $price_method_meta_key ), $parent_product_types ) ) );		
 
-	return $custom_fields;
-}
+	if ( $parent_products ) {
+		foreach ( $parent_products as $parent_product ) {	
+		
+			if ( $parent_product->child_post_type == 'product_variation' ) {
+				// Clear prices transient for variable products.
+				delete_transient( 'wc_var_prices_' .  $parent_product->id );
+				
+				// Sync variable product price
+				wcpbc_zone_variable_product_sync( $zone_id, $parent_product->id );
+				
+			} else {
+				// Sync grouped product price
+				wcpbc_zone_grouped_product_sync( $zone_id, $parent_product->id );				
+			}
+		}		
+	}
+		
+	// Clear all transients cache for product data
+	wc_delete_product_transients();
+}		
 
 /**
  * Function which handles the start and end of scheduled sales via cron. 
+ *
+  * @since 1.6.0
  */
 function wcpbc_scheduled_sales() {	
 	global $wpdb;
-
-	$region_keys = array_keys( WCPBC()->get_regions() );	
 	
-	$sql =	"
-		SELECT postmeta.post_id FROM {$wpdb->postmeta} as postmeta
-		LEFT JOIN {$wpdb->postmeta} as postmeta_2 ON postmeta.post_id = postmeta_2.post_id
-		LEFT JOIN {$wpdb->postmeta} as postmeta_3 ON postmeta.post_id = postmeta_3.post_id
-		WHERE postmeta.meta_key = %s
-		AND postmeta_2.meta_key in (%s, %s)
-		AND postmeta_3.meta_key in (%s, %s)
-		AND postmeta.meta_value > 0
-		AND postmeta.meta_value < %s
-		AND postmeta_2.meta_value != postmeta_3.meta_value
-	";
-	
-	foreach ( $region_keys as $region_key ) {
+	foreach ( WCPBC()->get_regions() as $zone_id => $zone ) {
 		
-		extract( wcpbc_get_product_meta_keys( $region_key ) );
-
-		$current_time = current_time( 'timestamp' );
+		$key_sale_price_dates_from = '_' . $zone_id . '_sale_price_dates_from';
+		$key_sale_price_dates_to = '_' . $zone_id . '_sale_price_dates_to';
+		$key_price_method = '_' . $zone_id . '_price_method';
+		$key_regular_price = '_' . $zone_id . '_regular_price';
+		$key_sale_price = '_' . $zone_id . '_sale_price';
+		$key_price = '_' . $zone_id . '_price';
+		
+		$parents = array();
 		
 		// Sales which are due to start
-		$product_ids = $wpdb->get_col( $wpdb->prepare( $sql, 
-			'_sale_price_dates_from', 
-			$_price, $_variable_price,
-			$_sale_price, $_variable_sale_price,
-			$current_time  
-		));
+		$products = $wpdb->get_results( $wpdb->prepare( "
+			SELECT posts.ID as id, posts.post_parent, posts.post_type, _sale_price.meta_value as sale_price, _price.meta_value as price
+			FROM {$wpdb->posts} posts 
+			INNER JOIN {$wpdb->postmeta} _sale_price_from on posts.ID = _sale_price_from.post_id and _sale_price_from.meta_key = %s
+			LEFT JOIN  {$wpdb->postmeta} _price_method on posts.ID = _price_method.post_id and _price_method.meta_key = %s
+			LEFT JOIN  {$wpdb->postmeta} _sale_price on posts.ID = _sale_price.post_id and _sale_price.meta_key = %s
+			LEFT JOIN  {$wpdb->postmeta} _price on posts.ID = _price.post_id and _price.meta_key = %s
+			WHERE _price_method.meta_value = 'manual' AND _sale_price.meta_value != _price.meta_value
+				AND _sale_price_from.meta_value > 0 and _sale_price_from.meta_value < %s 
+		", $key_sale_price_dates_from, $key_price_method, $key_sale_price, $key_price, current_time( 'timestamp' ) ) );
 		
-		if ( $product_ids ) {			
-			foreach ( $product_ids as $product_id ) {							
-				if ( $sale_price = get_post_meta( $product_id, $meta_key_sale_price, true ) ) {
-					update_post_meta( $product_id, $meta_key_price, $sale_price );
-				}
-			}
+		if ( $products ) {
+			foreach ( $products as $product ) {				
+				if ( $product->sale_price ) {
+					update_post_meta( $product->id, $key_price, $product->sale_price );
+				} else {
+					// No sale price!
+					update_post_meta( $product->id, $key_sale_price_dates_from, '' );
+					update_post_meta( $product->id, $key_sale_price_dates_to, '' );
+				}			
 			
-			delete_transient( 'wcpbc_products_onsale_' . $region_key );
+				// Store parent for sync
+				if ( $product->post_parent ) {
+					if ( ! isset( $parents[$product->post_type] ) ) {
+						$parents[$product->post_type] = array();
+					}
+					$parents[$product->post_type][] = $product->post_parent;
+				}			
+			}
 		}
 		
 		// Sales which are due to end
-		$product_ids = $wpdb->get_col( $wpdb->prepare( $sql, 
-			'_sale_price_dates_to', 
-			$_price, $_variable_price,
-			$_sale_price, $_variable_sale_price,
-			$current_time  
-		));
+		$products = $wpdb->get_results( $wpdb->prepare( "
+			SELECT posts.ID as id, posts.post_parent, posts.post_type, _regular_price.meta_value as regular_price, _price.meta_value as price
+			FROM {$wpdb->posts} posts 
+			INNER JOIN {$wpdb->postmeta} _sale_price_to on posts.ID = _sale_price_to.post_id and _sale_price_to.meta_key = %s
+			LEFT JOIN  {$wpdb->postmeta} _price_method on posts.ID = _price_method.post_id and _price_method.meta_key = %s
+			LEFT JOIN  {$wpdb->postmeta} _regular_price on posts.ID = _regular_price.post_id and _regular_price.meta_key = %s
+			LEFT JOIN  {$wpdb->postmeta} _price on posts.ID = _price.post_id and _price.meta_key = %s
+			WHERE _price_method.meta_value = 'manual' AND _regular_price.meta_value != _price.meta_value
+				AND _sale_price_to.meta_value > 0 and _sale_price_to.meta_value < %s 
+		", $key_sale_price_dates_to, $key_price_method, $key_regular_price, $key_price, current_time( 'timestamp' ) ) );
 		
-		if ( $product_ids ) {			
-			foreach ( $product_ids as $product_id ) {							
-				$regular_price = get_post_meta( $product_id, $meta_key_regular_price, true );
-				update_post_meta( $product_id, $meta_key_price, $regular_price );
-				update_post_meta( $product_id, $meta_key_sale_price, '' );
+		if ( $products ) {
+			foreach ( $products as $product ) {								
+				update_post_meta( $product->id, $key_price, $product->regular_price );
+				update_post_meta( $product->id, $key_sale_price, '' );
+				update_post_meta( $product->id, $key_sale_price_dates_from, '' );
+				update_post_meta( $product->id, $key_sale_price_dates_to, '' );				
+						
+				// Store parent for sync
+				if ( $product->post_parent ) {
+					if ( ! isset( $parents[$product->post_type] ) ) {
+						$parents[$product->post_type] = array();
+					}
+					$parents[$product->post_type][] = $product->post_parent;
+				}			
 			}
-			
-			delete_transient( 'wcpbc_products_onsale_' . $region_key );
 		}
-	}	
+		
+		// Sync parents
+		foreach ( $parents as $post_type => $parent_ids ) {
+			if ( $post_type == 'product' ) {
+				
+				foreach ( array_unique( $parent_ids ) as $parent_id ) {
+					// Sync grouped product price
+					wcpbc_zone_grouped_product_sync( $zone_id, $parent_id );	
+				}
+			} elseif ( $post_type == 'product_variation' ) {
+				
+				foreach ( array_unique( $parent_ids ) as $parent_id ) {					
+					// Clear prices transient for variable products.
+					delete_transient( 'wc_var_prices_' .  $parent_id );
+					
+					// Sync variable product price
+					wcpbc_zone_variable_product_sync( $zone_id, $parent_id );
+				}
+			}
+		}
+				
+		// Sync exchange rate prices
+		wcpbc_sync_exchange_rate_prices( $zone_id, $zone['exchange_rate'] );				
+	}
+	
 }
-//add_action( 'woocommerce_scheduled_sales', 'wcpbc_scheduled_sales' );
+add_action( 'woocommerce_scheduled_sales', 'wcpbc_scheduled_sales', 20 );
 
 /**
  * Clear all WCPBC transients cache for product data.
@@ -159,35 +440,6 @@ function wcpbc_delete_product_transients( $post_id = 0 ) {
 	}
 }
 add_action( 'woocommerce_delete_product_transients', 'wcpbc_delete_product_transients' );
-
-/**
- * Return base currency
- *
- * @retrun string
- */
-function wcpbc_get_base_currency() {
-	return get_option( 'woocommerce_currency');
-}
-
-/**
- * Return installed currencies
- *
- * @return array
- */
-function wcpbc_get_installed_currencies() {
-	
-	$base_currency = wcpbc_get_base_currency();
-	$installed_currencies = array();
-
-	foreach (WCPBC()->get_regions() as $region) {
-		
-		if ( $base_currency !== $region['currency'] && ! in_array( $region['currency'], $installed_currencies ) ) {
-			$installed_currencies[] = $region['currency'];
-		}
-	}
-
-	return array_unique( apply_filters( 'wcpbc_installed_currencies', $installed_currencies ) );
-}
 
 /**
  * Return a a array with all currencies avaiables in WooCommerce with associate countries 
@@ -249,4 +501,20 @@ function wcpbc_get_currencies() {
 			)
 		)
 	);
+}
+
+/**
+ * Sort a array with locale-sensitive
+ *
+ * @since 1.6.0
+ * @param array $arr 
+ * return true
+ */
+function wcpbc_maybe_asort_locale( &$arr ) {
+	
+	if ( class_exists('Collator') ) {		
+		return collator_asort( new Collator( get_locale() ), $arr );
+	} else {
+		return asort( $arr );
+	}
 }

@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="settings-panel wcpbc-region-settings">	
-	<h3><?php _e( 'Region Data', 'wc-price-based-country' ); ?></h3>
+	<h3><?php echo ( isset($_GET['add_region'] ) ? __( 'Add Zone', 'wc-price-based-country' ) : __( 'Edit Zone', 'wc-price-based-country' ) ) ; ?></h3>
 	<table class="form-table">
 
 		<!-- Region name -->
 		<tr valign="top">
 			<th scope="row" class="titledesc">
-				<label for="name"><?php _e( 'Region Name', 'wc-price-based-country' ); ?></label>
+				<label for="name"><?php _e( 'Zone Name', 'wc-price-based-country' ); ?></label>
 				<?php //echo $tip; ?>
 			</th>
 	        <td class="forminp forminp-text">
@@ -72,12 +72,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	
 	<input type="hidden" name="page" value="wc-settings" />
 	<input type="hidden" name="tab" value="wc_price_based_country" />
-	<input type="hidden" name="section" value="regions" />	
+	<input type="hidden" name="section" value="zones" />	
 				
 	<p class="submit">
 		<?php submit_button( __( 'Save Changes', 'woocommerce' ), 'primary', 'update_region', false ); ?>
 		<?php if ( ! is_null($region_key) ) { ?>
-		<a style="color: #a00; text-decoration: none; margin-left: 10px;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'remove_region' => $region_key ), admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=regions' ) ), 'wc-price-based-country-remove-region' ) ); ?>"><?php _e( 'Remove region', 'wc-price-based-country' ); ?></a>
+		<a style="color: #a00; text-decoration: none; margin-left: 10px;" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'remove_region' => $region_key ), admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=zones' ) ), 'wc-price-based-country-remove-region' ) ); ?>"><?php _e( 'Remove region', 'wc-price-based-country' ); ?></a>
 		<input type="hidden" name="edit_region" value="<?php echo $region_key ?>" />		
 		<?php } else { ?>
 		<input type="hidden" name="add_region" value="1" />				

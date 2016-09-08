@@ -41,20 +41,17 @@ jQuery( function( $ ) {
 		}
 		return this;			
 
-	});
-
-
-	$('body').on( 'click', '.wcpbc_price_method[type="radio"]', function(){
-
+	});		
+	
+	$('body').on( 'click', '.wcpbc_sale_price_dates[type="radio"], .wcpbc_price_method[type="radio"]', function(){
 		var parent_class = '.' + $(this).attr('name') + '_field';					
 
 		parent_class = parent_class.replace('[', '_');
 		parent_class = parent_class.replace(']', '');
 		
-		$(this).parents(parent_class).next().toggle( $(this).val() == 'manual');
-		return this;
-	});
-
+		$(this).closest(parent_class).next('.wcpbc_show_if_manual').toggle( $(this).val() == 'manual' );		
+	});		
+	
 	$('#wc_price_based_country_test_mode').on('change', function() {
    		if ($(this).is(':checked')) {
    			$('#wc_price_based_country_test_country').closest('tr').show();
@@ -62,5 +59,22 @@ jQuery( function( $ ) {
    			$('#wc_price_based_country_test_country').closest('tr').hide();
    		}
    	}).change();
-
+	
+	$('#general_coupon_data #discount_type').on('change', function(){
+		$('#general_coupon_data #zone_pricing_type').closest('p').toggle( $(this).val()=='fixed_cart' ||  $(this).val()=='fixed_product' );
+	});
+	
+	$(document).ready( function (){
+		$('.wcpbc_sale_price_dates[type="radio"][value="manual"], .wcpbc_price_method[type="radio"][value="manual"]').each( function(){			
+			var parent_class = '.' + $(this).attr('name') + '_field';
+			parent_class = parent_class.replace('[', '_');
+			parent_class = parent_class.replace(']', '');
+			
+			$(this).closest(parent_class).next('.wcpbc_show_if_manual').toggle( $(this).prop( "checked" ) );				
+		});		
+		
+		$('#general_coupon_data #zone_pricing_type').closest('p').toggle( $('#general_coupon_data #discount_type').val()=='fixed_cart' ||  $('#general_coupon_data #discount_type').val()=='fixed_product' );
+				
+	});
+	
 });

@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.5.12
+ * @version		1.6.0
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -17,38 +17,56 @@ class WCPBC_Frontend {
 	 * Hook actions and filters
 	 */
 	public static function init(){						
-		
-		add_action( 'woocommerce_init', array( __CLASS__ , 'check_test_mode'), 10 );
-		
-		add_action( 'woocommerce_init', array( __CLASS__ , 'check_manual_country_widget'), 20 );		
 
-		add_action( 'woocommerce_init', array( __CLASS__ , 'checkout_country_update'), 20 );		
+		error_log('front-end');
+		if ( defined('DOING_AJAX') && DOING_AJAX ) {
+			error_log('is_ajax');
+			error_log($_REQUEST['action']);
+		}
+		error_log('-----');
 		
-		add_action( 'woocommerce_init', array( __CLASS__ , 'calculate_shipping_country_update'), 20 );		
+		
+		add_action( 'wp_footer', array( __CLASS__, 'test_store_message' ) );
+		
+		add_filter( 'woocommerce_customer_default_location_array', array( __CLASS__, 'test_default_location' ) );
+		
+		add_action( 'wc_price_based_country_before_frontend_init', array( __CLASS__ , 'check_manual_country_widget'), 20 );		
+
+		add_action( 'wc_price_based_country_before_frontend_init', array( __CLASS__ , 'checkout_country_update'), 20 );		
+		
+		add_action( 'wc_price_based_country_before_frontend_init', array( __CLASS__ , 'calculate_shipping_country_update'), 20 );		
 		
 		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );			
 	}	
-	
-	/**
-	 * Check test mode
-	 */	
-	public static function check_test_mode(){
 		
-		if ( get_option('wc_price_based_country_test_mode', 'no') === 'yes' && $test_country = get_option('wc_price_based_country_test_country') ) {
-			
-			wcpbc_set_woocommerce_country( $test_country );
-			
-			/* add test store message */
-			add_action( 'wp_footer', array( __CLASS__, 'test_store_message' ) );
-		}		
-	}
-	
 	/**
-	 * Return test store message 
+	 * Print test store message 
 	 */
 	public static function test_store_message() {
-		echo '<p class="demo_store">' . __( 'This is a demo store for testing purposes', 'wc-price-based-country') . '</p>';
+		if ( get_option('wc_price_based_country_test_mode', 'no') === 'yes' && $test_country = get_option('wc_price_based_country_test_country') ) {
+			$country = WC()->countries->countries[ $test_country ];		
+			echo '<p class="demo_store">' . sprintf( __( '%sPrice Based Country%s test mode enabled for testing %s. You should do tests on private browsing mode. Browse in private with %sFirefox%s, %sChrome%s and %sSafari%s', 'wc-price-based-country'), '<strong>', '</strong>', $country, '<a href="https://support.mozilla.org/en-US/kb/private-browsing-use-firefox-without-history">', '</a>', '<a href="https://support.google.com/chrome/answer/95464?hl=en">', '</a>', '<a href="https://support.apple.com/kb/ph19216?locale=en_US">', '</a>' ) . '</p>';
+		}
 	}
+	
+	/**
+	 * Return Test country as default location
+	 */
+	public static function test_default_location( $location ) {	
+		if ( get_option('wc_price_based_country_test_mode', 'no') === 'yes' && $test_country = get_option('wc_price_based_country_test_country') ) {	
+			$location = wc_format_country_state_string( get_option('wc_price_based_country_test_country') );		
+		}
+		return $location;
+	}
+	
+	/**
+	 * Return Test country as default location
+
+	public static function test_default_location( $country_code, $ip_address, $fallback, $api_fallback ) {	
+
+		return get_option('wc_price_based_country_test_country');		
+	}
+	*/
 
 	/**
 	 * Check manual country widget

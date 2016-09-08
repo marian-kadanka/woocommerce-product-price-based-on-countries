@@ -43,7 +43,7 @@ class WCPBC_Country_Selector {
 			}			
 		}
 
-		asort( $countries );
+		wcpbc_maybe_asort_locale( $countries );
 		
 		$other_country = key( array_diff_key($all_countries, $countries ) );
 		

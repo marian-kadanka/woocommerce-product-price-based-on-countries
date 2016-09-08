@@ -3,7 +3,7 @@
  * WooCommerce Price Based Country Regions Table List
  *
  * @author   oscargare
- * @version  1.5.0
+ * @version  1.6.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,8 +36,8 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 		$this->default_region_key = uniqid('wc_price_based_country_default_region_key_');
 		
 		parent::__construct( array(
-			'singular' => __( 'Region', 'wc-price-based-country' ),
-			'plural'   => __( 'Regions', 'wc-price-based-country' ),
+			'singular' => __( 'Zone', 'wc-price-based-country' ),
+			'plural'   => __( 'Zones', 'wc-price-based-country' ),
 			'ajax'     => false
 		) );
 	}
@@ -50,7 +50,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			'cb'		=> '<input type="checkbox" />',
-			'name'		=> __( 'Region name', 'wc-price-based-country' ),
+			'name'		=> __( 'Zone name', 'wc-price-based-country' ),
 			'countries'	=> __( 'Countries', 'wc-price-based-country' ),
 			'currency'	=> __( 'Currency', 'wc-price-based-country' )
 		);
@@ -66,7 +66,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 		if ( $region['key'] !== $this->default_region_key ) {
 			return sprintf( '<input type="checkbox" name="region_key[]" value="%1$s" />', $region['key'] );
 		} else{
-			return '';
+			return '<span class="wcpbc-zone-worldwide"></span>';
 		}
 	}
 
@@ -80,7 +80,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 
 		if ( $region['key'] !== $this->default_region_key ) {
 
-			$url = admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=regions&edit_region=' . $region['key'] );		
+			$url = admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=zones&edit_region=' . $region['key'] );		
 
 			$output = '<strong>';
 			$output .= '<a href="' . esc_url( $url ) . '" class="row-title">';
@@ -96,7 +96,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 			$actions = array(
 				'id'    => sprintf( 'Slug: %s', $region['key'] ),
 				'edit'  => '<a href="' . esc_url( $url ) . '">' . __( 'View/Edit', 'woocommerce' ) . '</a>',
-				'trash' => '<a class="submitdelete" title="' . esc_attr__( 'Remove region', 'wc-price-based-country' ) . '" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'remove_region' => $region['key'] ), admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=regions' ) ), 'wc-price-based-country-remove-region' ) ) . '">' . __( 'Remove region', 'wc-price-based-country' ) . '</a>'
+				'trash' => '<a class="submitdelete" title="' . esc_attr__( 'Remove region', 'wc-price-based-country' ) . '" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'remove_region' => $region['key'] ), admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=zones' ) ), 'wc-price-based-country-remove-region' ) ) . '">' . __( 'Remove region', 'wc-price-based-country' ) . '</a>'
 			);
 
 			$row_actions = array();
@@ -179,8 +179,8 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 		$data = array(
 			array(
 				'key' 		=> $this->default_region_key,
-				'name' 		=> 'Default Zone',
-				'countries'	=> 'All countries not are included in other zones',
+				'name' 		=> 'Rest of the World',
+				'countries'	=> 'This zone is used for countries that aren‘t included in any other zone.',
 				'currency'	=> $this->base_currency
 			)
 		);		

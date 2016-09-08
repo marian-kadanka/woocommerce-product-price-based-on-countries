@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Admin 
  *
  * @class 		WCPBC_Admin
- * @version		1.5.0
+ * @version		1.6.0
  * @author 		oscargare
  * @category	Class
  */
@@ -20,19 +20,14 @@ class WCPBC_Admin {
 	public static function init(){
 		
 		add_action( 'init', array( __CLASS__, 'includes' ) );
-		
-		add_action( 'init', array( __CLASS__, 'about_hooks' ) );
-		
-		add_action( 'current_screen', array( __CLASS__, 'dashboard_includes' ) );
-		
-		add_action( 'admin_init', array( __CLASS__, 'admin_redirects' ) );
-		
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_admin_script' ) );	
-
+		add_action( 'init', array( __CLASS__, 'about_hooks' ) );						
+		add_action( 'admin_init', array( __CLASS__, 'admin_redirects' ) );		
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_scripts' ) );	
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_styles' ) );	
+		add_action( 'woocommerce_coupon_options', array( __CLASS__, 'coupon_options' ) );
+		add_action( 'woocommerce_coupon_options_save', array( __CLASS__, 'coupon_options_save' ) );		
 		add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'settings_price_based_country' ) );					
-
-		add_filter( 'woocommerce_currency',  array( __CLASS__, 'order_currency' ) );			
-				
+		add_filter( 'woocommerce_currency',  array( __CLASS__, 'order_currency' ) );												
 	}
 
 	/**
@@ -41,11 +36,8 @@ class WCPBC_Admin {
 	public static function includes() {				
 
 		include_once('class-wcpbc-admin-product-data.php');					
-
-		if ( in_array( 'sitepress-multilingual-cms/sitepress.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {		
-			include_once('class-wcpbc-admin-translation-management.php');					
-		}
-
+		include_once('class-wcpbc-admin-report.php');
+		
 		do_action('wc_price_based_country_admin_init');
 	}
 	
@@ -56,18 +48,7 @@ class WCPBC_Admin {
 		if ( ! empty( $_GET['page'] ) && $_GET['page'] === 'wcpbc-about' ) {
 			add_action( 'admin_menu', array( __CLASS__, 'create_about_page' ) );			
 		}
-	}
-	
-	/**
-	 * Include admin files conditionally
-	 */
-	public static function dashboard_includes() {
-		$screen = get_current_screen();
-
-		if ( $screen->id == 'dashboard' ) {			
-			include( 'class-wcpbc-admin-dashboard.php' );
-		}
-	}
+	}		
 	
 	/**
 	 * Handle redirects to welcome page after install and updates.
@@ -118,13 +99,47 @@ class WCPBC_Admin {
 			
 		return $currency;
 	}	
-
-	public static function load_admin_script( ) {	
+	
+	/**
+	 * Enqueue styles.
+	 *
+	 * @since 1.6
+	 */
+	public static function admin_styles() {
+		// Register admin styles
+		wp_enqueue_style( 'wc-price-based-country-admin-styles', WCPBC()->plugin_url() . '/assets/css/admin.css', array(), WCPBC()->version );
+	}
+	
+	/**
+	 * Enqueue scripts.	 
+	 */	
+	public static function admin_scripts( ) {	
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
+		
+		// Register scripts		
 		wp_enqueue_script( 'wc-price-based-country-admin', WCPBC()->plugin_url() . 'assets/js/wcpbc-admin' . $suffix . '.js', array('jquery'), WCPBC()->version, true );		
-
+	}
+	
+	
+	/**
+	 * Display coupon amount options.
+	 *
+	 * @since 1.6
+	 */
+	public static function coupon_options(){
+		woocommerce_wp_checkbox( array( 'id' => 'zone_pricing_type', 'cbvalue' => 'exchange_rate', 'label' => __( 'Zone pricing calculate', 'woocommerce' ), 'description' => __( 'Check this box if for the countries defined in zone pricing the coupon amount should be calculated using exchange rate.', 'woocommerce' ) ) );	
+	}
+	
+	/**
+	 * Save coupon amount options.
+	 *
+	 * @since 1.6
+	 */
+	public static function coupon_options_save( $post_id ){
+		$type = get_post_meta( $post_id, 'discount_type' , true );
+		$zone_pricing_type = in_array( $type, array( 'fixed_cart', 'fixed_product' ) ) && isset( $_POST['zone_pricing_type'] ) ? 'exchange_rate' : 'nothig';
+		update_post_meta( $post_id, 'zone_pricing_type', $zone_pricing_type ) ;
 	}
 	
 	/**
