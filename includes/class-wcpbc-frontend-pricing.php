@@ -46,7 +46,9 @@ class WCPBC_Frontend_Pricing {
 		add_filter( 'woocommerce_price_filter_meta_keys', array( __CLASS__ , 'price_filter_meta_keys' ) );
 		add_filter( 'pre_transient_wc_products_onsale', array( __CLASS__ , 'product_ids_on_sale' ), 10, 2 );
 		add_filter( 'woocommerce_package_rates', array( __CLASS__ , 'package_rates' ), 10, 2 );
-		add_action( 'woocommerce_coupon_loaded', array( __CLASS__ , 'coupon_loaded' ) );		
+		add_action( 'woocommerce_coupon_loaded', array( __CLASS__ , 'coupon_loaded' ) );	
+
+		do_action( 'wc_price_based_country_frontend_princing_init' );
 	}
 
 	/**
@@ -185,19 +187,33 @@ class WCPBC_Frontend_Pricing {
 		
 		if ( get_option( 'wc_price_based_country_shipping_exchange_rate', 'no') == 'yes' ) {
 			
-			foreach ( $rates as $rate ) {
+			foreach ( $rates as $rate ) {				
+				$change = false;
+			
 				if ( ! isset( $rate->wcpbc_data ) ) {
+					
 					$rate->wcpbc_data = array(
 						'exchange_rate' => self::$_exchange_rate,
-						'orig_cost'		=> $rate->cost
-					);
-					
-					$rate->cost = $rate->cost * self::$_exchange_rate;
+						'orig_cost'		=> $rate->cost,
+						'orig_taxes'	=> $rate->taxes
+					);															
+					$change = true;
 					
 				} elseif ( $rate->wcpbc_data['exchange_rate'] !== self::$_exchange_rate ) {				
+					
 					$rate->wcpbc_data['exchange_rate'] = self::$_exchange_rate;				
+					$change = true;
+					
+				}	
+				
+				if ( $change ) {
+					//Apply exchange rate
 					$rate->cost = $rate->wcpbc_data['orig_cost'] * self::$_exchange_rate;
-				}			
+					//recalculate taxes
+					foreach ( $rate->wcpbc_data['orig_taxes'] as $i => $tax ){
+						$rate->taxes[$i] = ( $tax/$rate->wcpbc_data['orig_cost'] ) * $rate->cost;
+					}
+				}												
 			}
 			
 		}		

@@ -3,7 +3,7 @@
 	<ul class="products">
 		<li class="product" style="width:100%">
 			<a href="http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=pbc-settings&utm_medium=banner&utm_campaign=Extend" target="_blank">
-				<h2>Avanced Currency Options</h2>
+				<h2>Advanced Currency Options</h2>
 				<p>Custom price format, automatic updates of exchange rates, a currency switcher widget and more</p>
 			</a>
 		</li>

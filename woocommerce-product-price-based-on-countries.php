@@ -135,7 +135,7 @@ class WC_Product_Price_Based_Country {
 				$user_agent = strtolower ( $_SERVER['HTTP_USER_AGENT'] );
 				return preg_match ( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent );				
 			case 'frontend' :
-				$is_heartbeat = $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], array( 'heartbeat', 'get-comments', 'wp-remove-post-lock', 'wp-compression-test' ) );
+				$is_heartbeat = $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], array( 'heartbeat', 'get-comments', 'wp-remove-post-lock', 'wp-compression-test', 'wcs_update_one_time_shipping', 'wcs_product_has_trial_or_is_synced' ) );
 				return ! $is_heartbeat && ! defined( 'DOING_CRON' ) && ! ( $this->is_request('admin') ) && ! ( $this->is_request('bot') );
 		}
 	}
@@ -153,7 +153,8 @@ class WC_Product_Price_Based_Country {
 	/**
 	 * Init front-end variables
 	 */
-	 public function frontend_init(){	 	
+	 public function frontend_init(){	 
+	 
 	 	do_action( 'wc_price_based_country_before_frontend_init' );
 
 		$this->customer = new WCPBC_Customer();		

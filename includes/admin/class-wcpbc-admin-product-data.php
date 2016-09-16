@@ -31,9 +31,9 @@ class WCPBC_Admin_Product_Data {
 		
 		add_action( 'woocommerce_product_quick_edit_save',  array( __CLASS__, 'product_quick_bulk_edit_save' ) );
 		
-		add_action( 'woocommerce_product_bulk_edit_save',  array( __CLASS__, 'product_quick_bulk_edit_save' ) );
+		add_action( 'woocommerce_product_bulk_edit_save',  array( __CLASS__, 'product_quick_bulk_edit_save' ), 20 );
 		
-		add_action( 'woocommerce_bulk_edit_variations', array( __CLASS__, 'bulk_edit_variations' ), 10, 4 );
+		add_action( 'woocommerce_bulk_edit_variations', array( __CLASS__, 'bulk_edit_variations' ), 20, 4 );
 	}
 
 
@@ -124,6 +124,9 @@ class WCPBC_Admin_Product_Data {
 	 */
 	public static function process_product_simple_countries_prices( $post_id, $i = false ) {				
 		
+		// Get product type
+		$product_type = empty( $_POST['product-type'] ) ? 'simple' : sanitize_title( stripslashes( $_POST['product-type'] ) );
+		
 		foreach ( WCPBC()->get_regions() as $key => $value ) {
 			
 			$key_prefix = '_' . $key;						
@@ -211,7 +214,7 @@ class WCPBC_Admin_Product_Data {
 				wcpbc_zone_grouped_product_sync( $key, $_POST['previous_parent_id'] );
 			}
 			
-			do_action('wc_price_based_country_process_product_pricing', $key_prefix, $post_id, $_price_method, $i );										
+			do_action('wc_price_based_country_process_product_meta_' . $product_type , $post_id, $key_prefix, $value, $_price_method, $i );										
 		}			
 	}
 	
@@ -233,8 +236,7 @@ class WCPBC_Admin_Product_Data {
 			$_sale_price_dates = empty($_sale_price_dates) ? 'default' : $_sale_price_dates;
 			
 			?>
-				<div class="wcpbc_pricing">
-					
+				<div class="wcpbc_pricing">					
 					<p class="form-row form-row-first"><strong><?php echo __( 'Price for', 'wc-price-based-country' )  . ' ' . $value['name'] . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></strong></p>
 
 					<div class="form-row form-row-last wcpbc_wrapper_variable_price_method <?php echo '_' . $key . '_variable_price_method_' . $loop . '_field'; ?>">
@@ -253,13 +255,13 @@ class WCPBC_Admin_Product_Data {
 							</li>
 						</ul>
 					</div>
-
+					
 					<div style="display: <?php echo ($_price_method == 'exchange_rate' ? 'none' : 'block' ); ?>" class="wcpbc_show_if_manual">
-
-						<?php do_action('wc_price_based_country_before_product_variable_options_pricing', $key, $value['currency'], $loop, $variation ); ?>
-
+						
 						<div class="wpbc_variable_pricing">
-
+							
+							<?php do_action('wc_price_based_country_before_product_variable_options_pricing', $key, $value['currency'], $loop, $variation ); ?>
+							
 							<p class="form-row form-row-first">
 								<label><?php echo __( 'Regular Price:', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></label>
 								<input type="text" size="5" id="<?php echo '_' . $key . '_variable_regular_price_' . $loop; ?>" name="<?php echo '_' . $key . '_variable_regular_price[' . $loop. ']'; ?>" value="<?php if ( isset( $_regular_price ) ) echo esc_attr( $_regular_price ); ?>" class="wc_input_price" />
@@ -267,10 +269,9 @@ class WCPBC_Admin_Product_Data {
 							<p class="form-row form-row-last">
 								<label><?php echo __( 'Sale Price:', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></label>
 								<input type="text" size="5" id="<?php echo '_' . $key . '_variable_sale_price_' . $loop; ?>" name="<?php echo '_' . $key . '_variable_sale_price[' . $loop. ']'; ?>" value="<?php if ( isset( $_sale_price ) ) echo esc_attr( $_sale_price ); ?>" class="wc_input_price wcpbc_sale_price" />
-							</p>
-							
+							</p>						
+														
 							<p class="form-row form-row-first"><?php echo __( 'Sale price dates', 'wc-price-based-country' ); ?></p>
-
 							<div class="form-row form-row-last wcpbc_wrapper_variable_sale_price_dates <?php echo '_' . $key . '_variable_sale_price_dates_' . $loop . '_field'; ?>">
 								<ul>
 									<li>
@@ -312,8 +313,7 @@ class WCPBC_Admin_Product_Data {
 	/**
 	 * Save meta data product variation
 	 */
-	public static function save_product_variation_countries_prices( $variation_id, $i ) {	
-
+	public static function save_product_variation_countries_prices( $variation_id, $i ) {		
 		self::process_product_simple_countries_prices( $variation_id, $i);		
 	}
 	
@@ -336,11 +336,11 @@ class WCPBC_Admin_Product_Data {
 			$key_prefix = '_' . $key;				
 			$price_method_prop = $key . '_price_method';
 						
-			if ( $product->$price_method_prop == 'exchange_rate' ||  $product->$price_method_prop == '' ) {				
+			if ( $product->$price_method_prop == 'exchange_rate' || ! $product->$price_method_prop ) {				
 				
-				$regular_price = get_post_meta( $product->id, '_regular_price', true );
+				$regular_price 	= get_post_meta( $product->id, '_regular_price', true );
 				$sale_price 	= get_post_meta( $product->id, '_sale_price', true );
-				$price 		= get_post_meta( $product->id, '_price', true );
+				$price 			= get_post_meta( $product->id, '_price', true );
 				
 				update_post_meta( $product->id, $key_prefix . '_regular_price', $regular_price !== '' ? $regular_price * $value['exchange_rate'] : '' );							
 				update_post_meta( $product->id, $key_prefix . '_sale_price', $sale_price !== '' ? $sale_price * $value['exchange_rate'] : '' );				
@@ -350,6 +350,8 @@ class WCPBC_Admin_Product_Data {
 				if ( $product->get_parent() > 0 && $product->is_type('simple') ) {
 					wcpbc_zone_grouped_product_sync( $key,  $product->get_parent() );
 				}
+				
+				do_action( 'wc_price_based_country_quick_or_bulk_edit_save_' . $product->product_type, $product, $key_prefix, $value );
 			}						
 		}
 	}

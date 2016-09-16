@@ -34,7 +34,7 @@ class WCPBC_Admin_Report {
 			echo '<div class="notice notice-info"><p>';
 			printf( __( 'Totals in different currency to %s has been calculate by following exchange rates: %s', 'wc-price-based-country' ), $base_currency, self::get_currency_rates_string() ) ; 
 			if ( ! class_exists( 'WCPBC_Avanced_Currency_Options' ) ) {
-				printf( __( '%sIf you need more accuracy install %sAvanced Currency Options%s extension.', 'wc-price-based-country' ), '<br />', '<a href="http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wc_reports_page&utm_medium=banner&utm_campaign=Extend">', '</a>' );
+				printf( __( '%sIf you need more accuracy install %sAdvanced Currency Options%s extension.', 'wc-price-based-country' ), '<br />', '<a href="http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wc_reports_page&utm_medium=banner&utm_campaign=Extend">', '</a>' );
 			}
 			echo '</p></div>';				
 		}
@@ -50,7 +50,7 @@ class WCPBC_Admin_Report {
 		$base_currency = wcpbc_get_base_currency();						
 		
 		foreach ( WCPBC()->get_regions() as $zone ) {
-			if ( $zone['currency'] != $base_currency ) {
+			if ( $zone['currency'] != $base_currency && $zone['exchange_rate'] ) {
 				$currency_rates[ $zone['currency'] ] = $zone['exchange_rate'];
 			}
 		}			

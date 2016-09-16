@@ -153,7 +153,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 		$output = $currencies[$region['currency']] . ' (' . get_woocommerce_currency_symbol($region['currency']) . ') <br />';
 		
 		if ( $region['key'] == $this->default_region_key ) {
-			$output .= '<span class="description">' . __( 'Default', 'wc-price-based-country' ) . '</span>';
+			$output .= '<span class="description">1 ' . $this->base_currency .' = 1 ' . $this->base_currency . '</span>';
 		} else {
 			$output .= '<span class="description">1 ' . $this->base_currency .' = ' . wc_format_localized_decimal( $region['exchange_rate'] ) . ' ' . $region['currency'] . '</span>';
 		}

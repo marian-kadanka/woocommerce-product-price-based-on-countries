@@ -58,7 +58,7 @@ class WCPBC_Install {
 	/**
 	 * Sync product prices 
 	 */
-	private static function sync_exchange_rate_prices(){
+	public static function sync_exchange_rate_prices(){
 		$zones = get_option( 'wc_price_based_country_regions', array() );
 		foreach ( $zones as $zone_id => $zone ) {
 			wcpbc_sync_exchange_rate_prices( $zone_id, $zone['exchange_rate'] );
@@ -120,7 +120,7 @@ class WCPBC_Install {
 	public static function update_notice() {
 		?>
 		<div class="error">
-			<p><?php _e( '<strong>WooCommerce Price Based Country Database Update Required</strong> &#8211; We just need to update your install to the latest version', 'wc-price-based-country' ); ?></p>
+			<p><?php _e( '<strong>WooCommerce Price Based on Country Database Update Required</strong> &#8211; We just need to update your install to the latest version', 'wc-price-based-country' ); ?></p>
 			<p class="submit"><a href="<?php echo esc_url( add_query_arg( 'do_update_wc_price_based_country', 'true', admin_url( 'admin.php?page=wc-settings&tab=price_based_country' ) ) ); ?>" class="wc-update-now button-primary"><?php _e( 'Run the updater', 'woocommerce' ); ?></a></p>
 		</div>
 		<script type="text/javascript">

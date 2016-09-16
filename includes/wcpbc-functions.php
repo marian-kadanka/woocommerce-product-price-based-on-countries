@@ -78,16 +78,25 @@ function wcpbc_get_price_meta_keys() {
  */
 function wcpbc_get_overwrite_meta_keys() {
 	
-	$meta_keys = wcpbc_get_price_meta_keys();
+	$price_meta_keys = wcpbc_get_price_meta_keys();
+	$meta_keys 		 = $price_meta_keys;
 	
-	array_push( $meta_keys, 
+	foreach ( $price_meta_keys as $price_meta ) {
+		array_push( $meta_keys, 
+			"_min_variation{$price_meta}", 
+			"_max_variation{$price_meta}", 
+			"_min{$price_meta}_variation_id", 
+			"_max{$price_meta}_variation_id" 
+		);
+	}
+/*	array_push( $meta_keys, 
 		'_min_variation_price', '_min_variation_regular_price' , '_min_variation_sale_price',
 		'_max_variation_price', '_max_variation_regular_price' , '_max_variation_sale_price',
 		'_min_price_variation_id', '_min_regular_price_variation_id' , '_min_sale_price_variation_id',
 		'_max_price_variation_id', '_max_regular_price_variation_id' , '_max_sale_price_variation_id'
-	);
+	);*/
 	
-	return $meta_keys;
+	return array_unique( apply_filters( 'wc_price_based_country_overwrite_meta_keys', $meta_keys ) );
 }
 
 /**

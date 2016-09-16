@@ -9,10 +9,10 @@
 	margin-right: 20px;
 }
 
-.woocommerce_variable_attributes .wcpbc_pricing{
-	width:100%; 	
+.woocommerce_variable_attributes .wcpbc_pricing{	
 	padding-right:10px;
 	border-top:1px solid #eee;
+	overflow: auto;
 }
 
 .woocommerce_variable_attributes .wcpbc_pricing .wcpbc_wrapper_variable_price_method li, .woocommerce_variable_attributes .wcpbc_pricing .wcpbc_wrapper_variable_sale_price_dates li {
@@ -20,7 +20,9 @@
 }
 
 .woocommerce_variable_attributes .wcpbc_pricing .wcpbc_wrapper_variable_sale_price_dates li {
-	display: inline;
+	display: inline;	
+}
+.woocommerce_variable_attributes .wcpbc_pricing .wcpbc_wrapper_variable_sale_price_dates li:first-child {
 	margin-right: 20px;
 }
 
@@ -49,10 +51,8 @@
 }
 
 .wcpbc-badge {
-    background: #0073aa url(../images/w-logo-white.png?ver=20160308) no-repeat;
-    background-position: center 25px;
-    -webkit-background-size: 80px 80px;
-    background-size: 80px 80px;
+    background: #255a8c url(https://lh3.googleusercontent.com/GB3hhMiBpeVR2SsqtZieMk9N5i3OX_euoDhxELYFO9YeNKcK-VQ0JfrSQk2l2iXamJntWnN4SmRRWTv1PHN5T84dRdJhszmlpQWHrze-7sw2TTEnLMpn_ivEOgxXHPWtbkeV7imsYSYpmM0kbPyjFcvDdqOOdzO00l-LvCb2xYzjHaYpcJvMDwn42u4mkCXcwyFp8vKoZaNknvFsqd2_8XMeMcQA3z23QGhGdJo6D0yNJYk81qOeou9rcm0XkUeCZeLzxdyOkMdd-4Qr3yKye_jfhiqNsCu7b0rakw9bzMiGPndG_MbRfDJYrZh_YAXDIXsKb2fEWDJdM6-AuEFtM0rWB22XAxmvIZJKKg1jgKJe9rX_MbS76_LBmdCDMCeNCzH3pMwf_Q9qQoI5le7Za8UWibBu1PgTXShr4V1FQ2Cdx8YpuBZTiaLVNa7nYUrsK9yfQJELC7573cZEsxif9VkL8DB6e0zTxqXsM5YqwMkhisBcuTMavm9QIrW6vau6xWoYB5FZNlmK122M4gWU6A6h4wmns1wcbZHdowXaCrIztXZO9Z7RGqcl3-zJvb0W2kJeCqERBGl7QQduDfx_N4CQwGnlUW3IPGm5lXKqjdCS7Ni_=s120-no) no-repeat;
+    background-position: center top;      
     color: #fff;
     font-size: 14px;
     text-align: center;

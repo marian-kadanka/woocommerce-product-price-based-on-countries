@@ -75,10 +75,11 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 			
 			array(
 				'title'    => __( 'Shipping', 'wc-price-based-country' ),
-				'desc' 		=> __( 'Calculate shipping rates by exchange rate.', 'wc-price-based-country' ),
+				'desc' 		=> __( 'Apply exchange rates to shipping cost.', 'wc-price-based-country' ),
 				'id' 		=> 'wc_price_based_country_shipping_exchange_rate',
 				'default'	=> 'no',
-				'type' 		=> 'checkbox'				
+				'type' 		=> 'checkbox',
+				'desc_tip'	=> __('Check this box if exchange rates also gets applied to shipping cost.', 'wc-price-based-country')				
 			),
 
 			array(
@@ -99,7 +100,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 				'id' 		=> 'wc_price_based_country_test_mode',
 				'default'	=> 'no',
 				'type' 		=> 'checkbox',
-				'desc_tip'	=> __('If test mode is enabled, a demo store notice will be displayed .')
+				'desc_tip'	=> __('If test mode is enabled, a demo store notice will be displayed.', 'wc-price-based-country')
 			),
 
 			array(
