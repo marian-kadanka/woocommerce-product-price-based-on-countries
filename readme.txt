@@ -1,4 +1,4 @@
-=== WooCommerce Product Price Based on Countries ===
+=== WooCommerce Price Based on Country ===
 Contributors: oscargare
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG75SHRLAX28L
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
