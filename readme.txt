@@ -3,8 +3,8 @@ Contributors: oscargare
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG75SHRLAX28L
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
-Tested up to: 4.5
-Stable tag: 1.5.12
+Tested up to: 4.6
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,6 +94,17 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.0 (2016-07-12) =
+* Added: New core front-end pricing.
+* Added: Schecule sale prices.
+* Added: Currency conversion to all shipping methods.
+* Added: Currency conversion to coupons.
+* Added: Reports support by exchange rate.
+* Fixed: Bulk remove zones not works in settings page.
+* Fixed: Quick edit required reload page.
+* Fixed: Currency Switcher with appropriate locale-sensitive sort orderings.<br />https://wordpress.org/support/topic/order-countries-in-languages-other-than-english/
+* Fixed: Wrong shipping tax<br />https://wordpress.org/support/topic/shipping-with-vat/#post-8162704
 
 = 1.5.12 (2016-07-12) =
 * Fixed: Cart prices not updated after calculate shipping<br />
@@ -237,5 +248,5 @@ https://wordpress.org/support/topic/wcpbc_country_selector-widget-should-return-
 
 == Upgrade Notice ==
 
-= 1.3.2 =
-1.3.2 is a major update so it is important that you make backups before upgrade. Required WooCommerce 2.3.0 or later, ensure you have installed a compatible version of WooCommerce.
+= 1.6.0 =
+1.6.0 is a major update so it is important that you make backups, and ensure that PBC premium extensions are 1.6 compatible before upgrading, in particular WooCommerce Subscriptions Bridge.
