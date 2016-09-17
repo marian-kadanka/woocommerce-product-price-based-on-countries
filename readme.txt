@@ -43,7 +43,7 @@ Need a specific integration with a WooCommerce extension? Perhaps add automatic 
 **Popular extensions**
 
 * [WooCommerce Subscriptions Bridge](http://www.pricebasedcountry.com/product/woocommerce-subscriptions-bridge-price-based-country/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Integration with WooCommerce Subscriptions.
-* [Avanced Currency Options](http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Show currency code in price, automatic updates of exchange rates and more
+* [Advanced Currency Options](http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Show currency code in price, automatic updates of exchange rates and more
 
 = Requirements =
 WooCommerce 2.3.0 or later.
