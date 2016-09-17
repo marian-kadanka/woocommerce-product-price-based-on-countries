@@ -5,7 +5,7 @@
  Plugin URI: https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/
  Description: Sets products prices based on country of your site's visitor.
  Author: Oscar Gare
- Version: 1.6.0
+ Version: 1.6.1
  Author URI: google.com/+OscarGarciaArenas
  License: GPLv2
 */
@@ -43,7 +43,7 @@ class WC_Product_Price_Based_Country {
 	/**
 	 * @var string
 	 */
-	public $version = '1.6.0';
+	public $version = '1.6.1';
 
 	/**
 	 * @var The single instance of the class		 

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *  
  * @author      OscarGare
  * @category    Admin 
- * @version     1.6.0
+ * @version     1.6.1
  */
 class WCPBC_Admin_Report {	
 	
@@ -80,7 +80,7 @@ class WCPBC_Admin_Report {
 		
 		$case_ex = ' CASE meta__order_currency.meta_value ';
 		foreach ( $currency_rates as $currency => $rate ) {
-			$case_ex .= "WHEN '{$currency}' THEN ( {$field} * ({$rate})) ";
+			$case_ex .= "WHEN '{$currency}' THEN ( {$field} / ({$rate})) ";
 		}
 		$case_ex .= "ELSE {$field} END ";
 		
@@ -91,6 +91,7 @@ class WCPBC_Admin_Report {
 	 * Replace report line item totals amount in report query	 
 	 */
 	public static function reports_get_order_report_query( $query ) {
+		global $wpdb;
 		
 		$currency_rates = self::get_currency_rates();
 		if ( $currency_rates ) {
@@ -122,7 +123,7 @@ class WCPBC_Admin_Report {
 			}
 			
 			if ( $change ) {
-				$query['join'] .= " INNER JOIN wp_postmeta AS meta__order_currency ON ( posts.ID = meta__order_currency.post_id AND meta__order_currency.meta_key = '_order_currency' ) ";
+				$query['join'] .= " INNER JOIN {$wpdb->postmeta} AS meta__order_currency ON ( posts.ID = meta__order_currency.post_id AND meta__order_currency.meta_key = '_order_currency' ) ";
 			}
 		}
 		

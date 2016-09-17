@@ -18,14 +18,6 @@ class WCPBC_Frontend {
 	 */
 	public static function init(){						
 
-		error_log('front-end');
-		if ( defined('DOING_AJAX') && DOING_AJAX ) {
-			error_log('is_ajax');
-			error_log($_REQUEST['action']);
-		}
-		error_log('-----');
-		
-		
 		add_action( 'wp_footer', array( __CLASS__, 'test_store_message' ) );
 		
 		add_filter( 'woocommerce_customer_default_location_array', array( __CLASS__, 'test_default_location' ) );
@@ -57,16 +49,7 @@ class WCPBC_Frontend {
 			$location = wc_format_country_state_string( get_option('wc_price_based_country_test_country') );		
 		}
 		return $location;
-	}
-	
-	/**
-	 * Return Test country as default location
-
-	public static function test_default_location( $country_code, $ip_address, $fallback, $api_fallback ) {	
-
-		return get_option('wc_price_based_country_test_country');		
-	}
-	*/
+	}	
 
 	/**
 	 * Check manual country widget
