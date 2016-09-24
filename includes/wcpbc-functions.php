@@ -5,7 +5,7 @@
  * General functions available on both the front-end and admin.
  *
  * @author 		oscargare
- * @version     1.6.0
+ * @version     1.6.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -236,6 +236,10 @@ add_action( 'woocommerce_variable_product_sync', 'wcpbc_variable_product_sync', 
 function wcpbc_sync_exchange_rate_prices( $zone_id, $exchange_rate ){
 	global $wpdb;		
 	
+	if ( ! $exchange_rate ) {
+		return ;
+	}
+
 	$price_method_meta_key = '_' . $zone_id . '_price_method';
 	
 	// variable products must haven't a price method

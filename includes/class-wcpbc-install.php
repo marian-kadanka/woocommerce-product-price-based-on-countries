@@ -72,7 +72,7 @@ class WCPBC_Install {
 		
 		$current_version = self::get_install_version();
 		
-		if ( null !== $current_version && version_compare( $current_version, '1.6.0', '<' ) ) {
+		if ( null !== $current_version && version_compare( $current_version, '1.6.2', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 		} else {
 			// Update version
@@ -88,7 +88,7 @@ class WCPBC_Install {
 	 */
 	public static function check_version() {
 				
-		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.6.0', '<' ) ) {
+		if (  ! defined( 'IFRAME_REQUEST' ) && version_compare( self::get_install_version(), '1.6.2', '<' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'update_notice' ) );
 
 		} else {
@@ -121,7 +121,7 @@ class WCPBC_Install {
 		?>
 		<div class="error">
 			<p><?php _e( '<strong>WooCommerce Price Based on Country Database Update Required</strong> &#8211; We just need to update your install to the latest version', 'wc-price-based-country' ); ?></p>
-			<p class="submit"><a href="<?php echo esc_url( add_query_arg( 'do_update_wc_price_based_country', 'true', admin_url( 'admin.php?page=wc-settings&tab=price_based_country' ) ) ); ?>" class="wc-update-now button-primary"><?php _e( 'Run the updater', 'woocommerce' ); ?></a></p>
+			<p class="submit"><a href="<?php echo esc_url( add_query_arg( 'do_update_wc_price_based_country', 'true', admin_url( 'admin.php?page=wc-settings&tab=price-based-country' ) ) ); ?>" class="wc-update-now button-primary"><?php _e( 'Run the updater', 'woocommerce' ); ?></a></p>
 		</div>
 		<script type="text/javascript">
 			jQuery('.wc-update-now').click('click', function(){
@@ -156,11 +156,12 @@ class WCPBC_Install {
 				'1.3.2' => 'updates/wcpbc-update-1.3.2.php',
 				'1.4.0' => 'updates/wcpbc-update-1.4.0.php',
 				'1.5.0' => 'updates/wcpbc-update-1.5.0.php',
-				'1.6.0' => 'updates/wcpbc-update-1.6.0.php'
+				'1.6.0' => 'updates/wcpbc-update-1.6.0.php',
+				'1.6.2' => 'updates/wcpbc-update-1.6.2.php'				
 			);
 
 			foreach ( $db_updates as $version => $updater ) {
-				if ( version_compare( $install_version, $version, '<' ) ) {
+				if ( version_compare( $install_version, $version, '<' ) ) {					
 					include( $updater );				
 				}
 			}

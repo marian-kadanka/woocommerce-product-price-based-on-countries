@@ -28,6 +28,8 @@ class WCPBC_Frontend {
 		
 		add_action( 'wc_price_based_country_before_frontend_init', array( __CLASS__ , 'calculate_shipping_country_update'), 20 );		
 		
+		add_action( 'wc_ajax_wc_price_based_country_refresh_cart', array( __CLASS__, 'get_refreshed_fragments' ) );
+
 		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );			
 	}	
 		
@@ -54,16 +56,46 @@ class WCPBC_Frontend {
 	/**
 	 * Check manual country widget
 	 */	
-	public static function check_manual_country_widget(){
-				
-		if ( isset( $_POST['wcpbc-manual-country'] ) && $_POST['wcpbc-manual-country'] ) {			
-			
-			wcpbc_set_woocommerce_country( wc_clean( $_POST['wcpbc-manual-country'] ) );			
+	public static function check_manual_country_widget(){				
 
+		if ( isset( $_REQUEST['wcpbc-manual-country'] ) && $_REQUEST['wcpbc-manual-country'] ) {			
+			
+			//set WC country
+			wcpbc_set_woocommerce_country( wc_clean( $_REQUEST['wcpbc-manual-country'] ) );			
+			
+			//trigger refresh mini cart
 			add_action( 'wp_print_footer_scripts', array( __CLASS__, 'localize_frontend_script' ), 5 );
 		}
 	}			
 	
+	/**
+	 * Get a refreshed cart fragment.
+	 */
+	public static function get_refreshed_fragments() {
+
+		if ( ! WC()->cart->is_empty() ) {
+			WC()->cart->calculate_totals();
+		}
+
+		// Get mini cart
+		ob_start();
+
+		woocommerce_mini_cart();
+
+		$mini_cart = ob_get_clean();
+
+		// Fragments and mini cart are returned
+		$data = array(
+			'fragments' => apply_filters( 'woocommerce_add_to_cart_fragments', array(
+					'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>'
+				)
+			),
+			'cart_hash' => apply_filters( 'woocommerce_add_to_cart_hash', WC()->cart->get_cart_for_session() ? md5( json_encode( WC()->cart->get_cart_for_session() ) ) : '', WC()->cart->get_cart_for_session() )
+		);
+
+		wp_send_json( $data );
+	}
+
 	/**
 	 * Add scripts
 	 */
@@ -71,7 +103,7 @@ class WCPBC_Frontend {
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_register_script( 'wc-price-based-country-frontend', WCPBC()->plugin_url() . 'assets/js/wcpbc-frontend' . $suffix . '.js', array( 'wc-cart-fragments' ), WCPBC()->version, true );		
+		wp_register_script( 'wc-price-based-country-frontend', WCPBC()->plugin_url() . 'assets/js/wcpbc-frontend' . $suffix . '.js', array( 'wc-cart-fragments', 'wc-add-to-cart' ), WCPBC()->version, true );		
 		wp_enqueue_script( 'wc-price-based-country-frontend' );
 
 		if ( is_checkout() ) {		
