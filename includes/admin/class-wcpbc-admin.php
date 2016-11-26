@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Admin 
  *
  * @class 		WCPBC_Admin
- * @version		1.6.0
+ * @version		1.6.3
  * @author 		oscargare
  * @category	Class
  */
@@ -26,6 +26,7 @@ class WCPBC_Admin {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_styles' ) );	
 		add_action( 'woocommerce_coupon_options', array( __CLASS__, 'coupon_options' ) );
 		add_action( 'woocommerce_coupon_options_save', array( __CLASS__, 'coupon_options_save' ) );		
+		add_action( 'woocommerce_system_status_report', array( __CLASS__, 'system_status_report' ) );		
 		add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'settings_price_based_country' ) );					
 		add_filter( 'woocommerce_currency',  array( __CLASS__, 'order_currency' ) );												
 	}
@@ -128,7 +129,7 @@ class WCPBC_Admin {
 	 * @since 1.6
 	 */
 	public static function coupon_options(){
-		woocommerce_wp_checkbox( array( 'id' => 'zone_pricing_type', 'cbvalue' => 'exchange_rate', 'label' => __( 'Zone pricing calculate', 'woocommerce' ), 'description' => __( 'Check this box if for the countries defined in zone pricing the coupon amount should be calculated using exchange rate.', 'woocommerce' ) ) );	
+		woocommerce_wp_checkbox( array( 'id' => 'zone_pricing_type', 'cbvalue' => 'exchange_rate', 'label' => __( 'Calculate amount by exchange rate', 'wc-price-based-country' ), 'description' => __( 'Check this box if for the countries defined in zone pricing the coupon amount should be calculated using exchange rate.', 'wc-price-based-country' ) ) );	
 	}
 	
 	/**
@@ -142,6 +143,15 @@ class WCPBC_Admin {
 		update_post_meta( $post_id, 'zone_pricing_type', $zone_pricing_type ) ;
 	}
 	
+	/**
+	 * Add plugin info to WooCommerce System Status Report
+	 *
+	 * @since 1.6.3
+	 */
+	public static function system_status_report(){
+		include_once( 'views/html-admin-page-status-report.php' );
+	}
+		
 	/**
 	 * Display the welcome/about page after successfully upgrading to the latest version.
 	 *

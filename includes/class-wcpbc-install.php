@@ -120,7 +120,7 @@ class WCPBC_Install {
 	public static function update_notice() {
 		?>
 		<div class="error">
-			<p><?php _e( '<strong>WooCommerce Price Based on Country Database Update Required</strong> &#8211; We just need to update your install to the latest version', 'wc-price-based-country' ); ?></p>
+			<p><?php printf( __( '%sWooCommerce Price Based on Country Database Update Required%s We just need to update your install to the latest version', 'wc-price-based-country' ), '<strong>', '</strong> &#8211;' ) ; ?></p>
 			<p class="submit"><a href="<?php echo esc_url( add_query_arg( 'do_update_wc_price_based_country', 'true', admin_url( 'admin.php?page=wc-settings&tab=price-based-country' ) ) ); ?>" class="wc-update-now button-primary"><?php _e( 'Run the updater', 'woocommerce' ); ?></a></p>
 		</div>
 		<script type="text/javascript">
@@ -138,7 +138,7 @@ class WCPBC_Install {
 	public static function geolocation_notice() {
 		?>
 		<div class="updated woocommerce-message wc-connect">
-			<p><?php _e( '<strong>WooCommerce Price Based Country</strong> required Geolocation Address to determine the customers default address. Go WooCommerce settings page and set <strong>Default Customer Address</strong> to <em>Geolocate Address</em>.', 'wc-price-based-country' ); ?></p>			
+			<p><?php printf( __( '%sWooCommerce Price Based on Country%s required Geolocation. Go WooCommerce settings page and set %sDefault Customer Address%s to %sGeolocate Address%s.', 'wc-price-based-country' ), '<strong>', '</strong>', '<strong>', '</strong>', '<em>', '</em>' ); ?></p>			
 			<p class="submit"><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings' ) ); ?>" class="button-primary"><?php _e( 'Go WooCommerce General Setting', 'woocommerce' ); ?></a></p>
 		</div>		
 		<?php

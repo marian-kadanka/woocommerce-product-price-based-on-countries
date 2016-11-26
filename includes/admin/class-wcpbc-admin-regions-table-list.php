@@ -85,7 +85,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 			$output = '<strong>';
 			$output .= '<a href="' . esc_url( $url ) . '" class="row-title">';
 			if ( empty( $region['name'] ) ) {
-				$output .= esc_html__( 'Region name', 'wc-price-based-country' );
+				$output .= __( 'Zone name', 'wc-price-based-country' );
 			} else {
 				$output .= esc_html( $region['name'] );
 			}
@@ -96,7 +96,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 			$actions = array(
 				'id'    => sprintf( 'Slug: %s', $region['key'] ),
 				'edit'  => '<a href="' . esc_url( $url ) . '">' . __( 'View/Edit', 'woocommerce' ) . '</a>',
-				'trash' => '<a class="submitdelete" title="' . esc_attr__( 'Remove region', 'wc-price-based-country' ) . '" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'remove_region' => $region['key'] ), admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=zones' ) ), 'wc-price-based-country-remove-region' ) ) . '">' . __( 'Remove region', 'wc-price-based-country' ) . '</a>'
+				'trash' => '<a class="submitdelete" title="' . esc_attr__( 'Remove zone', 'wc-price-based-country' ) . '" href="' . esc_url( wp_nonce_url( add_query_arg( array( 'remove_region' => $region['key'] ), admin_url( 'admin.php?page=wc-settings&tab=price-based-country&section=zones' ) ), 'wc-price-based-country-remove-region' ) ) . '">' . __( 'Remove zone', 'wc-price-based-country' ) . '</a>'
 			);
 
 			$row_actions = array();
@@ -167,7 +167,7 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 	 */
 	protected function get_bulk_actions() {
 		return array(
-			'remove' => __( 'Remove region', 'wc-price-based-country' )
+			'remove' => __( 'Remove zone', 'wc-price-based-country' )
 		);
 	}
 
@@ -179,8 +179,8 @@ class WCPBC_Admin_Regions_Table_List extends WP_List_Table {
 		$data = array(
 			array(
 				'key' 		=> $this->default_region_key,
-				'name' 		=> 'Rest of the World',
-				'countries'	=> 'This zone is used for countries that aren‘t included in any other zone.',
+				'name' 		=> __( 'Rest of the World', 'wc-price-based-country' ),
+				'countries'	=> __( 'This zone is used for countries that aren‘t included in any other zone.', 'wc-price-based-country' ),
 				'currency'	=> $this->base_currency
 			)
 		);		

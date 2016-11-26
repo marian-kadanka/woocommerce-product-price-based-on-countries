@@ -79,12 +79,12 @@ class WCPBC_Admin_Product_Data {
 						<?php do_action('wc_price_based_country_before_product_options_pricing', $_id_prefix, $value['currency'] ); ?>
 																		
 						<p class="form-field _regular_price_field">
-							<label><?php echo __( 'Regular Price', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol($value['currency']) . ')'; ?></label>
+							<label><?php echo __( 'Regular price', 'wc-price-based-country' ) . ' (' . get_woocommerce_currency_symbol($value['currency']) . ')'; ?></label>
 							<input type="text" id="<?php echo $_id_prefix . '_regular_price'; ?>" name="<?php echo $_id_prefix . '_regular_price'; ?>" value="<?php echo wc_format_localized_price( $_regular_price ); ?>" class="short wc_input_price" placeholder="" />
 						</p>
 
 						<p class="form-field _sale_price_field">								
-							<label><?php echo __( 'Sale Price', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol($value['currency']) . ')'; ?></label>
+							<label><?php echo __( 'Sale price', 'wc-price-based-country' ) . ' (' . get_woocommerce_currency_symbol($value['currency']) . ')'; ?></label>
 							<input type="text" id="<?php echo $_id_prefix . '_sale_price'; ?>" name="<?php echo $_id_prefix . '_sale_price'; ?>" value="<?php echo wc_format_localized_price( $_sale_price ); ?>" class="short wc_input_price wcpbc_sale_price" />
 						</p>
 	
@@ -263,11 +263,11 @@ class WCPBC_Admin_Product_Data {
 							<?php do_action('wc_price_based_country_before_product_variable_options_pricing', $key, $value['currency'], $loop, $variation ); ?>
 							
 							<p class="form-row form-row-first">
-								<label><?php echo __( 'Regular Price:', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></label>
+								<label><?php echo __( 'Regular price:', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></label>
 								<input type="text" size="5" id="<?php echo '_' . $key . '_variable_regular_price_' . $loop; ?>" name="<?php echo '_' . $key . '_variable_regular_price[' . $loop. ']'; ?>" value="<?php if ( isset( $_regular_price ) ) echo esc_attr( $_regular_price ); ?>" class="wc_input_price" />
 							</p>
 							<p class="form-row form-row-last">
-								<label><?php echo __( 'Sale Price:', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></label>
+								<label><?php echo __( 'Sale price:', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></label>
 								<input type="text" size="5" id="<?php echo '_' . $key . '_variable_sale_price_' . $loop; ?>" name="<?php echo '_' . $key . '_variable_sale_price[' . $loop. ']'; ?>" value="<?php if ( isset( $_sale_price ) ) echo esc_attr( $_sale_price ); ?>" class="wc_input_price wcpbc_sale_price" />
 							</p>						
 														

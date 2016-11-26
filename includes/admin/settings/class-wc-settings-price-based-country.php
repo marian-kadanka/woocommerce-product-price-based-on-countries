@@ -38,7 +38,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 */
 	public function get_sections() {
 		$sections = array(
-			''         => __( 'General options', 'woocommerce' ),
+			''         => __( 'General options', 'wc-price-based-country' ),
 			'zones'     => __( 'Zones', 'wc-price-based-country' )		
 		);
 
@@ -78,29 +78,16 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 				'desc' 		=> __( 'Apply exchange rates to shipping cost.', 'wc-price-based-country' ),
 				'id' 		=> 'wc_price_based_country_shipping_exchange_rate',
 				'default'	=> 'no',
-				'type' 		=> 'checkbox',
-				'desc_tip'	=> __('Check this box if exchange rates also gets applied to shipping cost.', 'wc-price-based-country')				
+				'type' 		=> 'checkbox'
 			),
 
 			array(
-				'type' => 'sectionend',
-				'id' => 'general_options'
-			),
-
-			array( 
-				'title' => __( 'Test Mode', 'wc-price-based-country' ), 
-				'type' => 'title', 
-				'desc' => 'If you want to check that prices are shown successfully, enable test mode and enter the Country which you want to do the test.', 
-				'id' => 'price_based_country_test'
-			),
-
-			array(
-				'title' => __( 'Enabled/Disabled', 'wc-price-based-country' ),
-				'desc' 		=> __( 'Enabled Test Mode', 'wc-price-based-country' ),
+				'title' 	=> __( 'Test mode', 'wc-price-based-country' ),
+				'desc' 		=> __( 'Enabled test mode', 'wc-price-based-country' ),
 				'id' 		=> 'wc_price_based_country_test_mode',
 				'default'	=> 'no',
-				'type' 		=> 'checkbox',
-				'desc_tip'	=> __('If test mode is enabled, a demo store notice will be displayed.', 'wc-price-based-country')
+				'type' 		=> 'checkbox', 
+				'desc_tip' 		=> 'If you want to check that prices are shown successfully, enable test mode and enter country which you want to test.', 
 			),
 
 			array(
@@ -109,10 +96,14 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 				'default'	=> wc_get_base_location(),
 				'type' 		=> 'select',
 				'class'		=> 'chosen_select',
-				'options'	=>	WC()->countries->countries
+				'options'	=>	WC()->countries->countries,
+				'desc'	=> __('If test mode is enabled, a demo store notice will be displayed.', 'wc-price-based-country')
 			),
-			
-			array( 'type' => 'sectionend', 'id' => 'price_based_country_test' )
+
+			array(
+				'type' => 'sectionend',
+				'id' => 'general_options'
+			)			
 		));
 
 		return $settings;
@@ -176,33 +167,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 
 			update_option( 'wc_price_based_country_timestamp', time() );	
 		}		
-	}
-	
-	/**
-	 * Display donate notices
-	 */
-	private static function display_donate_notice() {
-
-		if ( get_option('wc_price_based_country_hide_ads', 'no') == 'no' ) {
-
-			global $pagenow;		
-		
-			if ( isset( $_GET['wc_price_based_country_donate_hide'] ) && $_GET['wc_price_based_country_donate_hide'] == 'true' ) {
-				update_option('wc_price_based_country_hide_ads', 'yes');
-			} else {
-				?>
-				<div class="updated">
-					<p><strong>Donate to Price Based Country</strong></p>
-					<p><?php _e('It is difficult to provide, support, and maintain free software. Every little bit helps is greatly appreciated!','wc-price-based-country') ; ?></p>
-					<p class="submit">
-						<a class="button-primary" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NG75SHRLAX28L"><?php _e( 'Donate now', 'woocommerce' ); ?></a>
-						<a class="skip button-secondary" href="<?php echo esc_url( add_query_arg( 'wc_price_based_country_donate_hide', 'true', admin_url( 'admin.php?page=wc-settings&tab=price-based-country' ) ) ); ?>">Don't show me again</a>
-					</p>
-		   		</div>
-				<?php							
-			}
-		}		
-	}
+	}	
 	
 	/**
 	 * Regions Page output
@@ -330,7 +295,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 		$valid = false;
 		
 		if ( empty( $fields['name'] ) ) {
-			WC_Admin_Settings::add_error( __( 'Group name is required.', 'wc-price-based-country' ) );
+			WC_Admin_Settings::add_error( __( 'Zone name is required.', 'wc-price-based-country' ) );
 
 		} elseif ( ! isset($fields['countries']) || empty( $fields['countries'] ) ) {
 			WC_Admin_Settings::add_error( __( 'Add at least one country to the list.', 'wc-price-based-country' ) );
@@ -413,7 +378,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 			update_option( 'wc_price_based_country_regions', $regions );			
 			update_option( 'wc_price_based_country_timestamp', time() );
 
-			WC_Admin_Settings::add_message( __( 'Region have been deleted.', 'wc-price-based-country' ) );
+			WC_Admin_Settings::add_message( __( 'Zone have been deleted.', 'wc-price-based-country' ) );
 		}					
 	}
 

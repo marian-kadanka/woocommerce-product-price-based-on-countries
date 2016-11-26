@@ -15,7 +15,7 @@ jQuery( function( $ ) {
 			}
 
 			// Trigger event so themes can refresh other areas
-			$( document.body ).trigger( 'added_to_cart', [ fragments, cart_hash ] );
+			$( document.body ).trigger( 'wcpbc_cart_refreshed', [ fragments, cart_hash ] );
 		});			
 
 		

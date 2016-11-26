@@ -4,9 +4,9 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.6
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
 Add multicurrency support to WooCommerce, allowing you set product's prices in multiple currencies based on country of your site's visitor.
 
@@ -94,6 +94,16 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.3 (2016-11-26) =
+* Fixed: 'added_to_cart' javascript event causes a issue with some themes, replace by 'wcpbc_cart_refreshed'.
+* Fixed: Undefined index HTTP_USER_AGENT.<br />https://wordpress.org/support/topic/notice-undefined-index-http_user_agent-2/
+* Fixed: Exchange rate to minimum and maximum spend of coupon usage restriction.<br />https://wordpress.org/support/topic/any-coupon-discount-usage-restriction-support/
+* Tweak: Add plugin info to WooCommerce System Status Report.
+* Added: WooCommerce 2Checkout Gateway by Krokedil Integration 
+* Added: Spanish Translation.
+* Added: French Translation.
+* Added: Netherlands translation.
 
 = 1.6.2 (2016-09-24) =
 * Fixed: Price missing for variable products with all variation with manual price.

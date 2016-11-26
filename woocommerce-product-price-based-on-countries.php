@@ -5,9 +5,11 @@
  Plugin URI: https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/
  Description: Sets products prices based on country of your site's visitor.
  Author: Oscar Gare
- Version: 1.6.2
- Author URI: google.com/+OscarGarciaArenas
- License: GPLv2
+ Version: 1.6.3
+ Author URI: https://www.linkedin.com/in/oscargare
+ Text Domain: wc-price-based-country
+ Domain Path: /languages
+ License: GPLv2 
 */
 
  /*
@@ -43,7 +45,7 @@ class WC_Product_Price_Based_Country {
 	/**
 	 * @var string
 	 */
-	public $version = '1.6.2';
+	public $version = '1.6.3';
 
 	/**
 	 * @var The single instance of the class		 
@@ -108,14 +110,16 @@ class WC_Product_Price_Based_Country {
 	 * Hook actions
 	 */
 	private function init_hooks() {
+
 		register_activation_hook( __FILE__, array( 'WCPBC_Install', 'install' ) );
 		
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'widgets_init', array($this, 'register_widgets') );		
 
 		if ( $this->is_request( 'frontend') ) {			
 
 			add_action( 'woocommerce_init', array( $this , 'frontend_init') , 100 );				
-		}
+		}		
 	}
 	
 	/**
@@ -132,13 +136,22 @@ class WC_Product_Price_Based_Country {
 				$ajax_allow_actions = array( 'woocommerce_add_variation', 'woocommerce_load_variations', 'woocommerce_save_variations', 'woocommerce_bulk_edit_variations', 'inline-save' );
 				return ( is_admin() && !$is_ajax ) || ( is_admin() && $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], $ajax_allow_actions ) );				
 			case 'bot':
-				$user_agent = strtolower ( $_SERVER['HTTP_USER_AGENT'] );
-				return preg_match ( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent );				
+				$user_agent = strtolower( ( isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' ) );
+				return preg_match( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent );				
 			case 'frontend' :
 				$is_heartbeat = $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], array( 'heartbeat', 'get-comments', 'wp-remove-post-lock', 'wp-compression-test', 'wcs_update_one_time_shipping', 'wcs_product_has_trial_or_is_synced' ) );
 				return ! $is_heartbeat && ! defined( 'DOING_CRON' ) && ! ( $this->is_request('admin') ) && ! ( $this->is_request('bot') );
 		}
 	}
+
+	/**
+	 * Register Widgets
+	 *
+	 * @since 1.6.3
+	 */
+	 public function load_textdomain(){	 	
+	 	load_plugin_textdomain( 'wc-price-based-country', false, dirname( plugin_basename(__FILE__) ) . '/languages/' );
+	 }
 
 	/**
 	 * Register Widgets

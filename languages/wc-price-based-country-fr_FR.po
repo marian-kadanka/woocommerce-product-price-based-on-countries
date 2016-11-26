@@ -1,0 +1,606 @@
+﻿msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2016-11-05 10:26+0100\n"
+"PO-Revision-Date: 2016-11-14 12:09+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"Last-Translator: \n"
+"Language: fr_FR\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:68
+#: includes/admin/class-wcpbc-admin-product-data.php:240
+msgid "Price for"
+msgstr "Prix pour"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:70
+#: includes/admin/class-wcpbc-admin-product-data.php:247
+msgid "Calculate prices by exchange rate"
+msgstr "Calculer les prix avec le taux de change"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:71
+#: includes/admin/class-wcpbc-admin-product-data.php:253
+msgid "Set prices manually"
+msgstr "Fixer les prix manuellement"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:82
+msgid "Regular price"
+msgstr "Prix habituel"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:87
+msgid "Sale price"
+msgstr "Prix de vente"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:98
+#: includes/admin/class-wcpbc-admin-product-data.php:274
+msgid "Sale price dates"
+msgstr "Dates des prix de vente"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:100
+#: includes/admin/class-wcpbc-admin-product-data.php:280
+msgid "Same as default price"
+msgstr "Égal au prix standard"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:101
+#: includes/admin/class-wcpbc-admin-product-data.php:286
+msgid "Set specific dates"
+msgstr "Fixer des dates spécifiques"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:109
+msgid "The sale will end at the beginning of the set date."
+msgstr "La vente se terminera au début de la date fixée."
+
+#: includes/admin/class-wcpbc-admin-product-data.php:266
+msgid "Regular price:"
+msgstr "Prix habituel :"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:270
+msgid "Sale price:"
+msgstr "Prix de vente :"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:294
+msgid "Sale start date"
+msgstr "Date de début de la vente"
+
+#: includes/admin/class-wcpbc-admin-product-data.php:298
+msgid "Sale end date"
+msgstr "Date de fin de la vente"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:39
+msgid "Zone"
+msgstr "Zone"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:40
+#: includes/admin/settings/class-wc-settings-price-based-country.php:42
+#: includes/admin/settings/class-wc-settings-price-based-country.php:196
+msgid "Zones"
+msgstr "Zones"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:53
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:88
+msgid "Zone name"
+msgstr "Nom de la zone"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:54
+#: includes/admin/settings/views/html-regions-edit.php:25
+msgid "Countries"
+msgstr "Pays"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:55
+#: includes/admin/settings/views/html-regions-edit.php:41
+#: wc-price-based-country-avanced-currency-options/includes/class-wcpbc-widget-currency-switcher.php:32
+msgid "Currency"
+msgstr "Devise"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:98
+msgid "View/Edit"
+msgstr "Voir/Éditer"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:99
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:170
+#: includes/admin/settings/views/html-regions-edit.php:79
+msgid "Remove zone"
+msgstr "Supprimer la zone"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:182
+msgid "Rest of the World"
+msgstr "Reste du Monde"
+
+#: includes/admin/class-wcpbc-admin-regions-table-list.php:183
+msgid "This zone is used for countries that aren‘t included in any other zone."
+msgstr "Cette zone est utilisée pour les pays qui ne sont inclus dans aucune autre zone."
+
+#: includes/admin/class-wcpbc-admin-report.php:35
+#, php-format
+msgid ""
+"Totals in different currency to %s has been calculate by following exchange "
+"rates: %s"
+msgstr "Totaux dans différentes devises en %s ont été calculés en suivant les taux de change suivants : %s"
+
+#: includes/admin/class-wcpbc-admin-report.php:37
+#, php-format
+msgid ""
+"%sIf you need more accuracy install %sAdvanced Currency Options%s extension."
+msgstr "%s Si vous souhaitez plus de précision, installez l'extension %sOptions Devise avancées%s"
+
+#: includes/admin/class-wcpbc-admin.php:131
+msgid "Calculate amount by exchange rate"
+msgstr "Calculer le montant par le taux de change"
+
+#: includes/admin/class-wcpbc-admin.php:131
+msgid ""
+"Check this box if for the countries defined in zone pricing the coupon "
+"amount should be calculated using exchange rate."
+msgstr "Cochez cette case si le montant du coupon pour les pays définis dans la zone de prix doivent être calculés en utilisant le taux de change."
+
+#: includes/admin/class-wcpbc-admin.php:151
+msgid "About Price Based on Country"
+msgstr "A propos de Price Based on Country"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:23
+msgid "Zone Pricing"
+msgstr "Prix par Zone"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:41
+msgid "General options"
+msgstr "Options générales"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:56
+msgid "General Options"
+msgstr "Options générales"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:63
+msgid "Price Based On"
+msgstr "Prix fixé par"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:64
+msgid ""
+"This controls which address is used to refresh products prices on checkout."
+msgstr "Ceci contrôle l'adresse utilisée afin d'actualiser les prix des produits dans le processus de paiement."
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:71
+msgid "Customer billing country"
+msgstr "Pays de facturation du client"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:72
+msgid "Customer shipping country"
+msgstr "Pays d'expédition du client"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:77
+msgid "Shipping"
+msgstr "Expédition"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:78
+msgid "Apply exchange rates to shipping cost."
+msgstr "Appliquer les taux de change aux frais d'expédition."
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:85
+msgid "Test mode"
+msgstr "Mode test"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:86
+msgid "Enabled test mode"
+msgstr "Mode test activé"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:94
+msgid "Test country"
+msgstr "Pays test"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:100
+msgid "If test mode is enabled, a demo store notice will be displayed."
+msgstr "Si le mode test est activé, un commentaire démo du magasin sera affiché."
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:196
+#: includes/admin/settings/views/html-regions-edit.php:7
+msgid "Add Zone"
+msgstr "Ajouter Zone"
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:298
+msgid "Zone name is required."
+msgstr "Le nom de la Zone est requis."
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:301
+msgid "Add at least one country to the list."
+msgstr "Ajoutez au moins un pays à la liste."
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:304
+msgid "Exchange rate must be nonzero."
+msgstr "Le taux de change ne peut pas être égal à zéro."
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:367
+#: includes/admin/settings/class-wc-settings-price-based-country.php:390
+msgid "Action failed. Please refresh the page and retry."
+msgstr "L'action a échoué. Veuillez actualiser la page et recommencer."
+
+#: includes/admin/settings/class-wc-settings-price-based-country.php:381
+msgid "Zone have been deleted."
+msgstr "La zone a été éliminée."
+
+#: includes/admin/settings/views/html-regions-edit.php:7
+msgid "Edit Zone"
+msgstr "Éditer la Zone"
+
+#: includes/admin/settings/views/html-regions-edit.php:13
+msgid "Zone Name"
+msgstr "Nom de la Zone"
+
+#: includes/admin/settings/views/html-regions-edit.php:28
+msgid "Choose countries&hellip;"
+msgstr "Choisir les pays&hellip;"
+
+#: includes/admin/settings/views/html-regions-edit.php:34
+msgid "Select all"
+msgstr "Tout sélectionner"
+
+#: includes/admin/settings/views/html-regions-edit.php:34
+msgid "Select none"
+msgstr "Ne rien sélectionner"
+
+#: includes/admin/settings/views/html-regions-edit.php:59
+msgid "Exchange Rate"
+msgstr "Taux de change"
+
+#: includes/admin/settings/views/html-regions-edit.php:77
+msgid "Save Changes"
+msgstr "Sauvegarder les modifications"
+
+#: includes/admin/views/html-about.php:19
+#, php-format
+msgid "Welcome to Price Based on Country %s"
+msgstr "Bienvenue chez Price Based on Country %s"
+
+#: includes/admin/views/html-about.php:21
+#, php-format
+msgid ""
+"Thank you for updating to the latest version. Price Based on Country %s "
+"includes much-needed improvements to make WooCommerce multi-currency."
+msgstr "Merci d'effectuer la mise à jour de la dernière version. Price Based on Country %s comprend des améliorations indispensables afin de créer la fonctionnalité multi-devises de WooCommerce."
+
+#: includes/admin/views/html-about.php:22
+#, php-format
+msgid "Version %s"
+msgstr "Version %s"
+
+#: includes/admin/views/html-about.php:25
+msgid "What's New"
+msgstr "Nouveautés"
+
+#: includes/admin/views/html-about.php:26
+msgid "Credits"
+msgstr "Crédits"
+
+#: includes/admin/views/html-about.php:30
+#, php-format
+msgid ""
+"Hi!, I’m Oscar Gare, the brain and hands behind Price Based on Country.%sI "
+"built Price Based on Country with the goal of help you to sell your products "
+"to anywhere of world without losing the control over prices."
+msgstr "Bonjour, je m'appelle Oscar Gare, le fondateur de Price Based on Country. %sI a créé Price Based on Country dans le but de vous aider à vendre vos produits n'importe où dans le monde sans perdre le contrôle des prix. "
+
+#: includes/admin/views/html-about.php:31
+#, php-format
+msgid "If you have any questions or just want to say hi, %scontact me!%s"
+msgstr "Si vous avez des questions ou souhaitez simplement faire connaissance, %scontactez-moi !%s"
+
+#: includes/admin/views/html-about.php:36
+msgid "Schedule Sale Price"
+msgstr "Établir le prix de vente"
+
+#: includes/admin/views/html-about.php:37
+#, php-format
+msgid ""
+"Schedule the sale prices is a powerful feature included by WooCommerce. PBC "
+"extends this feature to allows you to set different %ssale price dates%s by "
+"zone."
+msgstr "Établir les prix de vente est une fonctionnalité puissante inclue dans WooCommerce. PBC étend cette fonctionnalité pour vous permettre de fixer différentes %sdates de prix de vente%s par zone."
+
+#: includes/admin/views/html-about.php:44
+msgid "Multi-currency Improvements"
+msgstr "Améliorations multi-devises"
+
+#: includes/admin/views/html-about.php:46
+msgid "Reports"
+msgstr "Rapports"
+
+#: includes/admin/views/html-about.php:48
+msgid ""
+"The older versions don't support sales reports for multi-currency, showing a "
+"wrong result. Version 1.6 shows sales reports in your base currency and "
+"calculates amounts of orders made in a different currency by exchange rate."
+msgstr "Les versions précédentes ne prennent pas en charge les rapports de ventes pour la multi-devises et émettent un message d'erreur. La version 1.6 affiche les rapports de ventes dans votre devise de base et calcule les montants des commandes passées dans une devise différente à l'aide du taux de change. "
+
+#: includes/admin/views/html-about.php:51
+msgid "Coupons"
+msgstr "Coupons"
+
+#: includes/admin/views/html-about.php:53
+msgid ""
+"You can choose if the coupon amount should be calculated using exchange "
+"rate. Great for multi-currency stores!"
+msgstr "Vous pouvez choisir si le montant du coupon doit être calculé en utilisant le taux de change.  Super pour les magasins multi-devises !"
+
+#: includes/admin/views/html-about.php:60
+msgid "Under the Hood"
+msgstr "Sous le capot"
+
+#: includes/admin/views/html-about.php:65
+msgid "New Core"
+msgstr "Nouvelle Base"
+
+#: includes/admin/views/html-about.php:66
+msgid ""
+"The plugin core has been rewritten with the goal that make PBC more "
+"compatible with most WooCommerce plugins, especially with discount and "
+"shipping plugins."
+msgstr "La base plug-in a été réécrite dans le but d'augmenter la compatibilité de PBC avec la plupart des plug-ins WooCommerce, et tout particulièrement avec les plug-ins de réduction et d'expédition. "
+
+#: includes/admin/views/html-about.php:71
+msgid "Developer Friendly"
+msgstr "Nombreux avantages pour le développeur"
+
+#: includes/admin/views/html-about.php:72
+msgid ""
+"New filters and actions does the plugin more extendible and adaptable than "
+"ever before. I hope you enjoy using it!"
+msgstr "De nouveaux filtres et actions rendent le plug-in plus extensible et adaptable qu'auparavant. J'espère que vous prendrez du plaisir à l'utiliser !"
+
+#: includes/admin/views/html-about.php:82
+msgid "Go to Price Based on Country settings"
+msgstr "Aller aux paramètres de Price Based on Country"
+
+#: includes/class-wcpbc-country-selector.php:50
+#: includes/class-wcpbc-country-selector.php:66
+#: includes/class-wcpbc-widget-country-selector.php:37
+msgid "Other countries"
+msgstr "Autres pays"
+
+#: includes/class-wcpbc-frontend.php:42
+#, php-format
+msgid ""
+"%sPrice Based Country%s test mode enabled for testing %s. You should do "
+"tests on private browsing mode. Browse in private with %sFirefox%s, %sChrome"
+"%s and %sSafari%s"
+msgstr "Mode test de %sPrice Based Country%s activé pour tester %s. Nous vous recommandons d'effectuer les tests en mode de navigation privé. Naviguez en privé avec %sFirefox%s, %sChrome%s et %sSafari%s"
+
+#: includes/class-wcpbc-install.php:123
+#, php-format
+msgid ""
+"%sWooCommerce Price Based on Country Database Update Required%s We just need "
+"to update your install to the latest version"
+msgstr "%sWooCommerce Price Based on Country Mise à jour requise de la base de données%s Nous devons effectuer la mise à jour de la dernière version"
+
+#: includes/class-wcpbc-install.php:124
+msgid "Run the updater"
+msgstr "Lancez la mise à jour"
+
+#: includes/class-wcpbc-install.php:128
+msgid ""
+"It is strongly recommended that you backup your database before proceeding. "
+"Are you sure you wish to run the updater now?"
+msgstr "Il est fortement recommandé d'effectuer un back-up de votre base de données avant de procéder. Vous êtes sûr de vouloir lancer la mise à jour maintenant ?"
+
+#: includes/class-wcpbc-install.php:141
+#, php-format
+msgid ""
+"%sWooCommerce Price Based on Country%s required Geolocation. Go WooCommerce "
+"settings page and set %sDefault Customer Address%s to %sGeolocate Address%s."
+msgstr "%sWooCommerce Price Based on Country%s Géolocalisation requise Allez dans les paramètres WooCommerce et appliquez %sl'adresse par défaut du client%s en %sadresse géolocalisation%s."
+
+#: includes/class-wcpbc-install.php:142
+msgid "Go WooCommerce General Setting"
+msgstr "Aller dans les paramètres généraux de WooCommerce"
+
+#: includes/class-wcpbc-widget-country-selector.php:26
+msgid "A country switcher for your store."
+msgstr "Une application pays pour votre magasin."
+
+#: includes/class-wcpbc-widget-country-selector.php:28
+msgid "WooCommerce Country Switcher"
+msgstr "Application Pays WooCommerce"
+
+#: includes/class-wcpbc-widget-country-selector.php:32
+msgid "Country"
+msgstr "Pays"
+
+#: includes/class-wcpbc-widget-country-selector.php:33
+#: wc-price-based-country-avanced-currency-options/includes/class-wcpbc-widget-currency-switcher.php:33
+msgid "Title"
+msgstr "Titre"
+
+#: includes/class-wcpbc-widget-country-selector.php:38
+msgid "Other countries text"
+msgstr "Texte Autres pays"
+
+#: includes/integrations/class-wcpbc-admin-translation-management.php:107
+#, php-format
+msgid ""
+"%sWooCommerce Price Based Country incompatiblity found!%sWooCommerce "
+"Multilingual Multiple currencies is incompatible with WooCommerce Price "
+"Based on Country. While WooCommerce Multilingual Multiple currencies option "
+"is active can cause unexpected results. Go to %sWooCommerce Multilingual "
+"settings page%s and disables WooCommerce Multilingual Multi Currency option."
+msgstr "%sWooCommerce Price Based Country une incompatibilité a été trouvée !%sWooCommerce Multilingual Multiple currencies est incompatible avec WooCommerce Price Based on Country. SI l'option WooCommerce Multilingual Multiple currencies est active, cela peut causer des erreurs. Allez dans les %sparamètres WooCommerce Multilingual%s et désactivez l'option WooCommerce Multilingual Multi Currency."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/class-wcpbc-aco-admin.php:44
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:23
+msgid "Currency Format"
+msgstr "Format Devise"
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/class-wcpbc-aco-admin.php:46
+#, php-format
+msgid "Preview: %s"
+msgstr "Prévisualisation : %s"
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/class-wcpbc-aco-admin.php:47
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:24
+msgid ""
+"Enter the currency format. Supports the following placeholders: [code] = "
+"currency code, [symbol] = currency symbol, [price] = product price."
+msgstr "Entrez le format de la devise. Prend en charge les fenêtres suivantes : [code] = code devise, [symbol] = symbole devise, [price] = prix du produit"
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/class-wcpbc-aco-admin.php:95
+msgid "Exchange rate API"
+msgstr "Taux de change API"
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/class-wcpbc-aco-admin.php:96
+msgid ""
+"This controls which API provider will be used to exchange rates auto-updates."
+msgstr "Ceci vérifie le prestataire API utilisé pour les mises à jour automatiques des taux de change."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/class-wcpbc-aco-admin.php:142
+msgid "Errors on update exchange rate from API."
+msgstr "Erreurs dans la mise à jour du taux de change à partir d'API."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:4
+msgid "Auto update exchange rate"
+msgstr "Mise à jour automatique du taux de change."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:10
+msgid "Yes, Update exchange rate daily from API provider."
+msgstr "Oui, mettez à jour quotidiennement le taux de change à partir du prestataire API."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:13
+msgid "No, I will enter enter exchange rate manually."
+msgstr "Non, je sélectionnerai le taux de change manuellement."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:28
+msgid "Leave empty to use default currency format."
+msgstr "Laissez vide pour utiliser le format de devise par défaut."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:35
+msgid "Thousand Separator"
+msgstr "Séparateur de milliers"
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:36
+msgid "This sets the thousand separator of displayed prices."
+msgstr "Cela applique le séparateur de milliers des prix affichés."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:46
+msgid "Decimal Separator"
+msgstr "Séparateur décimal"
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:47
+msgid "This sets the decimal separator of displayed prices."
+msgstr "Cela applique le séparateur décimal des prix affichés."
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:57
+msgid "Number of Decimals"
+msgstr "Nombre de décimales"
+
+#: wc-price-based-country-avanced-currency-options/includes/admin/views/html-region-currency-options.php:58
+msgid "This sets the number of decimal points shown in displayed prices."
+msgstr "Cela applique le nombre de points décimaux montrés dans les prix affichés."
+
+#: wc-price-based-country-avanced-currency-options/includes/class-wcpbc-widget-currency-switcher.php:26
+msgid "A currency switcher for your store."
+msgstr "Une application de devise pour votre magasin."
+
+#: wc-price-based-country-avanced-currency-options/includes/class-wcpbc-widget-currency-switcher.php:28
+msgid "WooCommerce Currency Switcher"
+msgstr "Application de devise WooCommerce"
+
+#: wc-price-based-country-avanced-currency-options/includes/class-wcpbc-widget-currency-switcher.php:38
+msgid "Currency display style"
+msgstr "Style d'affichage devise"
+
+#: wc-price-based-country-avanced-currency-options/includes/class-wcpbc-widget-currency-switcher.php:61
+msgid ""
+"Supports the following placeholders: [name] = currency name, [code] = "
+"currency code and [symbol] = currency symbol"
+msgstr "Prend en charge les fenêtres suivantes : [name] = nom de la devise, [code] = code de la devise et [symbol] = symbole de la devise"
+
+#: wc-price-based-country-avanced-currency-options/includes/exchage-rates-providers/class-wcpbc-yahoofinance.php:69
+msgid "Error getting data from Yahoo finance API"
+msgstr "Erreur en recueillant les données à partir de Yahoo finance API"
+
+#: wc-price-based-country-avanced-currency-options/wcpbc-avanced-currency-options.php:248
+#, php-format
+msgid ""
+"%1$sWooCommerce Price Based Country Avanced Currency Options is inactive"
+"%2$s. %3$sWooCommerce Price Based Country plugin %4$s must be active for "
+"work. Please %5$sinstall and activate WooCommerce Price Based Country &raquo;"
+"%6$s"
+msgstr "Les options avancées de devise %1$sWooCommerce Price Based Country sont inactives%2$s. %3$sLe plug-in de WooCommerce Price Based Country%4$s doit $être actif pour fonctionner. Veuillez %5$sinstaller et activer WooCommerce Price Based Country &raquo;%6$s"
+
+#: wc-price-based-country-subscriptions/wcpbc-subscriptions.php:137
+#: wc-price-based-country-subscriptions/wcpbc-subscriptions.php:185
+#, php-format
+msgid "Subscription Price (%s)"
+msgstr "Prix de souscription (%s)"
+
+#: wc-price-based-country-subscriptions/wcpbc-subscriptions.php:151
+#, php-format
+msgid "Sign-up Fee (%s)"
+msgstr "Frais d'inscription (%s)"
+
+#: wc-price-based-country-subscriptions/wcpbc-subscriptions.php:153
+msgid ""
+"Optionally include an amount to be charged at the outset of the "
+"subscription. The sign-up fee will be charged immediately, even if the "
+"product has a free trial or the payment dates are synced."
+msgstr "Inclut de manière optionnelle un montant à facturer au début de la souscription. Les frais d'inscription seront facturés immédiatement, même si le produit a une période d'essai gratuit ou les dates de paiement sont synchronisées."
+
+#: wc-price-based-country-subscriptions/wcpbc-subscriptions.php:181
+#, php-format
+msgid "Sign-up Fee: (%s)"
+msgstr "Frais d'inscription : (%s)"
+
+#: wc-price-based-country-subscriptions/wcpbc-subscriptions.php:359
+#, php-format
+msgid ""
+"%1$sWooCommerce Subscriptions bridge for Price Based Country is inactive"
+"%2$s. %3$sWooCommerce Price Based Country plugin%4$s and WooCommerce "
+"Subscription must be active for work."
+msgstr "%1$sLe lien de souscriptions de WooCommerce pour Price Based Country est inactif%2$s. %3$sLe plug-in WooCommerce Price Based Country%4$s et la Souscription WooCommerce doivent être actifs pour fonctionner."
+
+#: woocommerce-product-price-based-on-countries.php:256
+#, php-format
+msgid ""
+"%1$sWooCommerce Price Based Country is inactive%2$s. %3$sWooCommerce plugin "
+"%4$s must be active for Price Based Country to work. Please %5$sinstall and "
+"activate WooCommerce &raquo;%6$s"
+msgstr "%1$sWooCommerce Price Based Country est inactif%2$s. %3$sLe plug-in WooCommerce %4$s doit être actif pour que Price Based Country fonctionne. Veuillez %5$sinstaller et activer WooCommerce &raquo;%6$s"
+
+msgid ""
+"%sWooCommerce Price Based Country%s required Geolocation Address to "
+"determine the customers default address. Go WooCommerce settings page and "
+"set %sDefault Customer Address%s to %sGeolocate Address%s."
+msgstr "%sWooCommerce Price Based Country%s Adresse de géolocalisation requise pour déterminer l'adresse par défaut du client. Allez dans les paramètres WooCommerce et appliquez %sl'adresse par défaut du client%s en %sadresse géolocalisation%s."
+
+msgid ""
+"%sPrice Based Country%s test mode enabled%s. You should do tests on private "
+"browsing mode. Browse in private with %sFirefox%s, %sChrome%s and %sSafari%s"
+msgstr "%sPrice Based Country%s mode test activé%s. Nous vous recommandons d'effectuer les tests en mode de navigation privé. Naviguez en privé avec %sFirefox%s, %sChrome%s and %sSafari%s"
+
+msgid "Check this box if exchange rates also gets applied to shipping cost."
+msgstr "Cochez cette case si les taux de change s'appliquent également aux frais d'expédition."
+
+msgid "Test Mode"
+msgstr "Mode Test"
+
+msgid "Enabled/Disabled"
+msgstr "Activé/Désactivé"
+
+msgid "Enabled Test Mode"
+msgstr "Mode Test activé"
+
+msgid "Zone pricing auto-calculate"
+msgstr "Calculer automatiquement le prix par zone"
+
+msgid "If you have any questions or just want to say hi, %scontact me!%s</p>"
+msgstr "Si vous avez des questions ou souhaitez simplement faire connaissance, %scontactez-moi !%s</p>"
+
+msgid "Regular Price"
+msgstr "Prix habituel"
+
+msgid "Sale Price"
+msgstr "Prix en solde"
+

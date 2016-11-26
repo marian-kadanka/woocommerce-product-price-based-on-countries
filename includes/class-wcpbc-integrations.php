@@ -21,8 +21,9 @@ class WCPBC_Integrations {
 	public static function add_third_party_plugin_integrations(){
 		
 		$third_party_integrations = array(			
-			'AngellEYE_Gateway_Paypal'		=> 'integrations/class-wcpbc-paypal-express-angelleye.php',
-			'Sitepress'						=> 'integrations/class-wcpbc-admin-translation-management.php'
+			 'AngellEYE_Gateway_Paypal'		=> 'integrations/class-wcpbc-paypal-express-angelleye.php'
+			,'Sitepress'					=> 'integrations/class-wcpbc-admin-translation-management.php'
+			,'WC_Gateway_Twocheckout'		=> 'integrations/class-wcpbc-gateway-2checkout.php'
 		);
 		
 		foreach ($third_party_integrations as $class => $integration_file ) {
