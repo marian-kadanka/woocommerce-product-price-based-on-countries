@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Admin 
  *
  * @class 		WCPBC_Admin
- * @version		1.6.3
+ * @version		1.6.4
  * @author 		oscargare
  * @category	Class
  */
@@ -28,7 +28,8 @@ class WCPBC_Admin {
 		add_action( 'woocommerce_coupon_options_save', array( __CLASS__, 'coupon_options_save' ) );		
 		add_action( 'woocommerce_system_status_report', array( __CLASS__, 'system_status_report' ) );		
 		add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'settings_price_based_country' ) );					
-		add_filter( 'woocommerce_currency',  array( __CLASS__, 'order_currency' ) );												
+		add_filter( 'woocommerce_currency', array( __CLASS__, 'order_currency' ) );	
+		add_filter( 'woocommerce_paypal_supported_currencies', array( __CLASS__, 'paypal_supported_currencies' ) );						
 	}
 
 	/**
@@ -101,6 +102,27 @@ class WCPBC_Admin {
 		return $currency;
 	}	
 	
+	/**
+	 * PayPal supported currencies
+	 *
+	 * @since 1.6.4
+	 */
+	public static function paypal_supported_currencies( $paypal_currencies ){
+
+		$base_currency = wcpbc_get_base_currency();
+
+		if ( ! in_array( $base_currency, $paypal_currencies ) ) {
+			foreach ( WCPBC()->get_regions() as $zone ) {
+				if ( in_array( $zone['currency'], $paypal_currencies ) ) {
+					$paypal_currencies[] = $base_currency;
+					break;
+				}
+			}	
+		}
+		
+		return $paypal_currencies;
+	}
+
 	/**
 	 * Enqueue styles.
 	 *

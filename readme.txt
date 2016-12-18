@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.6
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -92,6 +92,12 @@ You should do the test in a private browsing window to prevent data stored in th
 4. /assets/screenshot-4.png
 5. /assets/screenshot-5.png
 5. /assets/screenshot-6.png
+
+== Changelog ==
+
+= 1.6.4 (2016-12-18) =
+* Fixed: Bug with paypal express checkout by AngellEYE.<br />https://wordpress.org/support/topic/paypal-or-plugin-error/
+* Fixed: Enabled paypal standard in WooCommerce checkout settings when exists a supported country in Zone Pricing.
 
 == Changelog ==
 

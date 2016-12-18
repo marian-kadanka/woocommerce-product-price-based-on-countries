@@ -32,7 +32,7 @@ class WCPBC_Customer {
 		$this->_data = WC()->session->get( 'wcpbc_customer' );	
 		
 		$wc_customer_country = wcpbc_get_woocommerce_country();					
-		
+
 		if ( $this->is_new_country( $wc_customer_country ) ) {
 			$this->set_country( $wc_customer_country );
 		}
