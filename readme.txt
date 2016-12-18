@@ -99,8 +99,6 @@ You should do the test in a private browsing window to prevent data stored in th
 * Fixed: Bug with paypal express checkout by AngellEYE.<br />https://wordpress.org/support/topic/paypal-or-plugin-error/
 * Fixed: Enabled paypal standard in WooCommerce checkout settings when exists a supported country in Zone Pricing.
 
-== Changelog ==
-
 = 1.6.3 (2016-11-26) =
 * Fixed: 'added_to_cart' javascript event causes a issue with some themes, replace by 'wcpbc_cart_refreshed'.
 * Fixed: Undefined index HTTP_USER_AGENT.<br />https://wordpress.org/support/topic/notice-undefined-index-http_user_agent-2/
