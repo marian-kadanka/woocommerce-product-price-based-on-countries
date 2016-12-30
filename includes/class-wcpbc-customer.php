@@ -10,7 +10,7 @@ if ( ! class_exists( 'WCPBC_Customer' ) ) :
  * Store WCPBC frontend data Handler
  *
  * @class 		WCPBC_Customer
- * @version		1.5.13
+ * @version		1.6.5
  * @category	Class
  * @author 		oscargare
  */
@@ -37,9 +37,8 @@ class WCPBC_Customer {
 			$this->set_country( $wc_customer_country );
 		}
 
-		if ( ! WC()->session->has_session() ) {
-			WC()->session->set_customer_session_cookie(true);
-		}
+		//set customer session cookie after headers has been send
+		add_action( 'send_headers', array( $this, 'init_session' ), 10 );		
 
 		// When leaving or ending page load, store data
 		add_action( 'shutdown', array( $this, 'save_data' ), 10 );	
@@ -55,6 +54,18 @@ class WCPBC_Customer {
 		return apply_filters( 'wc_price_based_country_is_new_country', 
 			empty( $this->_data ) || ! in_array( $wc_customer_country, $this->countries ) || ( $this->timestamp < get_option( 'wc_price_based_country_timestamp' ) )
 		);
+	}
+
+	/**
+	 * init customer session
+	 *
+	 * @since 1.6.5
+	 * @access public
+	 */
+	public function init_session(){
+		if ( ! WC()->session->has_session() ) {
+			WC()->session->set_customer_session_cookie(true);
+		}
 	}
 
 	/**

@@ -5,7 +5,7 @@
  * General functions available on both the front-end and admin.
  *
  * @author 		oscargare
- * @version     1.6.2
+ * @version     1.6.5
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -124,9 +124,11 @@ function wcpbc_get_children_price( $zone_price_meta_key, $parent_id, $min_or_max
 	
 	// Skip hidden products
 	if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
+
 		$notify_no_stock_amount = get_option( 'woocommerce_notify_no_stock_amount' );
+		
 		$query['from'] .= " LEFT JOIN {$wpdb->postmeta} _stock ON posts.ID = _stock.post_id AND _stock.meta_key = '_stock'";
-		$query['where'] .= " AND ( IFNULL(_stock.meta_value, '') = '' OR _stock.meta_value<%s)" ;
+		$query['where'] .= " AND ( IFNULL(_stock.meta_value, '') = '' OR ( _stock.meta_value + 0 ) > ( %s + 0 ) )" ;
 		
 		$query_params[] = $notify_no_stock_amount;
 	}
