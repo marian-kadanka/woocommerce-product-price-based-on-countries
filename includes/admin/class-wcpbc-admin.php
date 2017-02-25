@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Admin 
  *
  * @class 		WCPBC_Admin
- * @version		1.6.4
+ * @version		1.6.6
  * @author 		oscargare
  * @category	Class
  */
@@ -85,19 +85,14 @@ class WCPBC_Admin {
 
 	
 	/**
-	 * default currency in order
+	 * Default currency in order	 
 	 */
 	public static function order_currency( $currency )	{
+		global $theorder;
 
-		global $post;
-
-		if ($post && $post->post_type == 'shop_order' ) {
-			
-			global $theorder;
-			if ( $theorder ) 
-				return $theorder->order_currency;
-
-		}
+		if ( ! empty( $theorder ) && is_object( $theorder ) ) {
+			return $theorder->order_currency;
+		}		
 			
 		return $currency;
 	}	

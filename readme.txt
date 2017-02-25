@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.6.5
+Stable tag: 1.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -94,6 +94,12 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.6 (2017-02-25) =
+* Fixed: Error when editing a draft variable product.<br />https://wordpress.org/support/topic/fatal-error-2460/
+* Fixed: Post object isn't instance.<br />https://wordpress.org/support/topic/error-trying-to-get-property-of-non-objec/
+* Tweak: Apply exchange rates to coupon minimum and max amounts.
+* Tweak: Load files code improvements.
 
 = 1.6.5 (2016-12-30) =
 * Fixed: Set customer session cookie after headers has been send.

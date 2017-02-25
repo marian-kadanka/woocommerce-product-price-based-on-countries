@@ -225,11 +225,12 @@ class WCPBC_Frontend_Pricing {
      * @param WC_Coupon $coupon          
      */
     public static function coupon_loaded( $coupon ) {
+		
 		if ( 'exchange_rate' === get_post_meta( $coupon->id, 'zone_pricing_type', true ) ) {
-
-			$coupon->coupon_amount 	= $coupon->coupon_amount * self::$_exchange_rate;
-			$coupon->minimum_amount = $coupon->minimum_amount * self::$_exchange_rate;
-			$coupon->maximum_amount = $coupon->maximum_amount * self::$_exchange_rate;
+			$coupon->coupon_amount 	= $coupon->coupon_amount * self::$_exchange_rate;			
 		}
+
+		$coupon->minimum_amount = $coupon->minimum_amount * self::$_exchange_rate;
+		$coupon->maximum_amount = $coupon->maximum_amount * self::$_exchange_rate;
 	}
 }

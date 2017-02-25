@@ -5,11 +5,21 @@
  * General functions available on both the front-end and admin.
  *
  * @author 		oscargare
- * @version     1.6.5
+ * @version     1.6.6
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+/**
+ * Check is WooCommerce frontend
+ *
+ * @since 1.6.6
+ * @return bool
+ */
+function wcpbc_is_woocommerce_frontend() {
+	return function_exists( 'WC' ) && isset( WC()->customer );
 }
 
 /**
@@ -19,13 +29,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function wcpbc_get_woocommerce_country() {
 	
-	$_country = WC()->customer->get_country();	
+	$_country = FALSE;	
+
+	if ( wcpbc_is_woocommerce_frontend() ) {
+
+		$_country = WC()->customer->get_country();	
 	
-	if ( $_country !== WC()->customer->get_shipping_country() && 'shipping' === get_option('wc_price_based_country_based_on', 'billing') ) {
-		$_country = WC()->customer->get_shipping_country();	
-	}		
+		if ( $_country !== WC()->customer->get_shipping_country() && 'shipping' === get_option('wc_price_based_country_based_on', 'billing') ) {
+			$_country = WC()->customer->get_shipping_country();	
+		}						
+	}
+
+	return $_country;	
 	
-	return $_country;
 }
 
 /**
@@ -35,6 +51,10 @@ function wcpbc_get_woocommerce_country() {
  */
 function wcpbc_set_woocommerce_country( $country ) {
 	
+	if ( ! wcpbc_is_woocommerce_frontend() ) {
+		return;
+	}
+
 	$ship_to_different_address = get_option( 'woocommerce_ship_to_destination' ) === 'shipping' ? 1 : 0;
 
 	if ( 
@@ -47,7 +67,8 @@ function wcpbc_set_woocommerce_country( $country ) {
 	} else {
 		WC()->customer->set_country( $country );
 		WC()->customer->set_shipping_country( $country );
-	}
+	}	
+
 }
 
 /**
