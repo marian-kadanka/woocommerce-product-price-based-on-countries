@@ -97,7 +97,7 @@ You should do the test in a private browsing window to prevent data stored in th
 
 = 1.6.7 (2017-03-10) =
 * Fixed: Broken Dependencies on script wc-price-based-country-frontend.<br />https://wordpress.org/support/topic/prices-not-showing-after-latest-update/page/2/#post-8895976
-* Tweak: * Tweak: Improvements on WooCommerce report support.
+* Tweak: Improvements on WooCommerce report support.
 
 = 1.6.6 (2017-02-25) =
 * Fixed: Error when editing a draft variable product.<br />https://wordpress.org/support/topic/fatal-error-2460/
