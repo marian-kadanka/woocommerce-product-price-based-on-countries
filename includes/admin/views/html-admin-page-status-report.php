@@ -34,7 +34,7 @@ global $wpdb;
 		<tr>
 			<td data-export-label="Test country"><?php _e( 'Test country', 'wc-price-based-country' ); ?>:</td>			
 			<td class="help">&nbsp;</td>
-			<td><?php echo empty( get_option( 'wc_price_based_country_test_country' ) ) ? '<mark class="no">&ndash;</mark>' : get_option( 'wc_price_based_country_test_country' ) ; ?></td>
+			<td><?php echo get_option( 'wc_price_based_country_test_country', false ) == false ? '<mark class="no">&ndash;</mark>' : get_option( 'wc_price_based_country_test_country' ) ; ?></td>
 		</tr>		
 	</tbody>
 </table>

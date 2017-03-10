@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.6.0
+ * @version		1.6.7
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -30,7 +30,7 @@ class WCPBC_Frontend {
 		
 		add_action( 'wc_ajax_wc_price_based_country_refresh_cart', array( __CLASS__, 'get_refreshed_fragments' ) );
 
-		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ) );			
+		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ), 20 );			
 	}	
 		
 	/**
@@ -101,9 +101,13 @@ class WCPBC_Frontend {
 	 */
 	public static function load_scripts( ) {
 
+		if ( ! did_action( 'before_woocommerce_init' ) ) {
+			return;
+		}
+
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		wp_register_script( 'wc-price-based-country-frontend', WCPBC()->plugin_url() . 'assets/js/wcpbc-frontend' . $suffix . '.js', array( 'wc-cart-fragments', 'wc-add-to-cart' ), WCPBC()->version, true );		
+		wp_register_script( 'wc-price-based-country-frontend', WCPBC()->plugin_url() . 'assets/js/wcpbc-frontend' . $suffix . '.js', array( 'woocommerce' ), WCPBC()->version, true );		
 		wp_enqueue_script( 'wc-price-based-country-frontend' );
 
 		if ( is_checkout() ) {		
@@ -122,7 +126,11 @@ class WCPBC_Frontend {
 	 * Localize frontend script.
 	 */
 	public static function localize_frontend_script() {
-			
+		
+		if ( ! did_action( 'before_woocommerce_init' ) ) {
+			return;
+		}
+
 		wp_localize_script( 'wc-price-based-country-frontend', 'wcpbc_frontend_params', array('refresh_cart' => 'true' ) );
 	}
 

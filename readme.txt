@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.6.6
+Stable tag: 1.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -94,6 +94,10 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.7 (2017-03-10) =
+* Fixed: Broken Dependencies on script wc-price-based-country-frontend.<br />https://wordpress.org/support/topic/prices-not-showing-after-latest-update/page/2/#post-8895976
+* Tweak: * Tweak: Improvements on WooCommerce report support.
 
 = 1.6.6 (2017-02-25) =
 * Fixed: Error when editing a draft variable product.<br />https://wordpress.org/support/topic/fatal-error-2460/

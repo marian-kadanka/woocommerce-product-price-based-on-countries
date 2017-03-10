@@ -1,9 +1,9 @@
-jQuery( function( $ ) {
-	
+jQuery( function( $ ) {		
+
 	$( document.body ).on( 'wcpbc_refresh_cart_fragments', function() {
 				
 		// Ajax action
-		$.post( wc_cart_fragments_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'wc_price_based_country_refresh_cart' ), function( response ) {
+		$.post( woocommerce_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'wc_price_based_country_refresh_cart' ), function( response ) {
 			var fragments = response.fragments;
 			var cart_hash = response.cart_hash;
 			
@@ -17,8 +17,6 @@ jQuery( function( $ ) {
 			// Trigger event so themes can refresh other areas
 			$( document.body ).trigger( 'wcpbc_cart_refreshed', [ fragments, cart_hash ] );
 		});			
-
-		
 
 	});
 
