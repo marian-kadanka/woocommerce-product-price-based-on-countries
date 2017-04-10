@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WooCommerce Price Based Country Front-End
  *
  * @class 		WCPBC_Frontend
- * @version		1.6.7
+ * @version		1.6.8
  * @author 		oscargare
  */
 class WCPBC_Frontend {
@@ -142,7 +142,7 @@ class WCPBC_Frontend {
 		if ( defined( 'WC_DOING_AJAX' ) && WC_DOING_AJAX && isset( $_GET['wc-ajax'] ) && 'update_order_review' == $_GET['wc-ajax'] ) {
 			
 			if ( isset( $_POST['country'] ) ) {
-				WC()->customer->set_country( $_POST['country'] );
+				wcpbc_set_wc_biling_country( $_POST['country'] );
 			}
 			
 			if ( wc_ship_to_billing_address_only() ) {
@@ -165,7 +165,7 @@ class WCPBC_Frontend {
 		if ( isset( $_POST['calc_shipping'] ) && $_POST['calc_shipping'] ) {
 			if ( isset( $_POST['calc_shipping_country'] ) && $country = wc_clean( $_POST['calc_shipping_country'] ) ) {
 				
-				WC()->customer->set_country( $country );	
+				wcpbc_set_wc_biling_country( $country );	
 				WC()->customer->set_shipping_country( $country );
 
 			} else{

@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.6.7
+Stable tag: 1.6.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -46,7 +46,7 @@ Need a specific integration with a WooCommerce extension? Perhaps add automatic 
 * [Advanced Currency Options](https://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Show currency code in price, automatic updates of exchange rates and more
 
 = Requirements =
-WooCommerce 2.3.0 or later.
+WooCommerce 2.6.0 or later.
 
 == Installation ==
 
@@ -94,6 +94,11 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.8 (2017-04-10) =
+* Added: Support for deprecated WooCommerce functions and backward compatibility to 2.6.
+* Fixed: Bug on array with locale-sensitive sort function.<br />https://wordpress.org/support/topic/fatal-error-add-zone-or-viewedit-zone/
+* Tweak: Apply exchange rates to min order amount on free shipping method. Thanks @mariankadanka.<br />https://wordpress.org/support/topic/convert-free-shipping-costs/#post-8946654
 
 = 1.6.7 (2017-03-10) =
 * Fixed: Broken Dependencies on script wc-price-based-country-frontend.<br />https://wordpress.org/support/topic/prices-not-showing-after-latest-update/page/2/#post-8895976

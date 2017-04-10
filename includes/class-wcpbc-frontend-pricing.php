@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Frontend_Pricing class.
  *
  * @class 		WCPBC_Frontend_Pricing
- * @version		1.6.3
+ * @version		1.6.8
  * @author 		oscargare
  */
 class WCPBC_Frontend_Pricing {
@@ -46,6 +46,7 @@ class WCPBC_Frontend_Pricing {
 		add_filter( 'woocommerce_price_filter_meta_keys', array( __CLASS__ , 'price_filter_meta_keys' ) );
 		add_filter( 'pre_transient_wc_products_onsale', array( __CLASS__ , 'product_ids_on_sale' ), 10, 2 );
 		add_filter( 'woocommerce_package_rates', array( __CLASS__ , 'package_rates' ), 10, 2 );
+		add_filter( 'woocommerce_shipping_zone_shipping_methods', array( __CLASS__ , 'shipping_zone_shipping_methods' ), 10, 4 );			
 		add_action( 'woocommerce_coupon_loaded', array( __CLASS__ , 'coupon_loaded' ) );	
 
 		do_action( 'wc_price_based_country_frontend_princing_init' );
@@ -220,6 +221,27 @@ class WCPBC_Frontend_Pricing {
 		return $rates;				
 	}
 	
+	/**
+      * Apply exchange rate to free shipping min amount
+	  * @param array $methods
+	  * @param array $raw_methods
+	  * @param array $allowed_classes
+	  * @param WC_Shipping_Zone $shipping
+	  */
+    public static function shipping_zone_shipping_methods( $methods, $raw_methods, $allowed_classes, $shipping ) {
+    	
+    	if ( get_option( 'wc_price_based_country_shipping_exchange_rate', 'no') == 'yes' ) {
+
+    		foreach ( $methods as $instance_id => $method ) {
+				if ( $method->id === 'free_shipping' ) {
+					$method->min_amount = $method->min_amount * self::$_exchange_rate;
+				}
+			}
+    	}		
+		
+		return $methods;
+	 }
+
 	/**
      * Apply exchange rate to coupon
      * @param WC_Coupon $coupon          
