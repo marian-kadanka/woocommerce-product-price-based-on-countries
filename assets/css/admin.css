@@ -9,10 +9,12 @@
 	margin-right: 20px;
 }
 
-.woocommerce_variable_attributes .wcpbc_pricing{	
-	padding-right:10px;
-	border-top:1px solid #eee;
-	overflow: auto;
+.woocommerce_variable_attributes .wcpbc_pricing{    
+    padding-right:10px;
+    border-top:1px solid #eee;
+    overflow: auto;
+    display: block;
+    clear: both;
 }
 
 .woocommerce_variable_attributes .wcpbc_pricing .wcpbc_wrapper_variable_price_method li, .woocommerce_variable_attributes .wcpbc_pricing .wcpbc_wrapper_variable_sale_price_dates li {

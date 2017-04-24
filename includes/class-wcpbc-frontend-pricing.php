@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Frontend_Pricing class.
  *
  * @class 		WCPBC_Frontend_Pricing
- * @version		1.6.8
+ * @version		1.6.9
  * @author 		oscargare
  */
 class WCPBC_Frontend_Pricing {
@@ -247,12 +247,36 @@ class WCPBC_Frontend_Pricing {
      * @param WC_Coupon $coupon          
      */
     public static function coupon_loaded( $coupon ) {
-		
-		if ( 'exchange_rate' === get_post_meta( $coupon->id, 'zone_pricing_type', true ) ) {
-			$coupon->coupon_amount 	= $coupon->coupon_amount * self::$_exchange_rate;			
+		$_back = version_compare( WC_VERSION, '3.0', '<' );
+
+		if ( 'exchange_rate' === get_post_meta( ( $_back ? $coupon->id : $coupon->get_id() ), 'zone_pricing_type', true ) ) {			
+			if ( $_back ) {
+				$coupon->coupon_amount 	= floatval( $_back ? $coupon->coupon_amount : $coupon->get_amount() )  * self::$_exchange_rate;			
+			} else {
+				$coupon->set_amount( floatval( $coupon->get_amount() )  * self::$_exchange_rate );		
+			}
+			
+			
 		}
 
-		$coupon->minimum_amount = $coupon->minimum_amount * self::$_exchange_rate;
-		$coupon->maximum_amount = $coupon->maximum_amount * self::$_exchange_rate;
+		$_min = $_back ? $coupon->minimum_amount : $coupon->get_minimum_amount();
+		$_max = $_back ? $coupon->maximum_amount : $coupon->get_maximum_amount();
+		
+		if ( $_min ) {
+			if ( $_back ) {
+				$coupon->minimum_amount = floatval($_min) * self::$_exchange_rate;		
+			} else {
+				$coupon->set_minimum_amount( floatval($_min) * self::$_exchange_rate );	
+			}
+			
+		}
+		if ( $_max ) {
+			if ( $_back ) {
+				$coupon->maximum_amount = floatval($_max) * self::$_exchange_rate;		
+			} else {
+				$coupon->set_maximum_amount( floatval($_max) * self::$_exchange_rate );		
+			}
+						
+		}		
 	}
 }
