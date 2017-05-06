@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.6.9
+Stable tag: 1.6.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -94,6 +94,9 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.10 (2017-05-07) =
+* Fixed: Deprecated WooCommerce functions and backward compatibility to 2.6
 
 = 1.6.9 (2017-04-24) =
 * Fixed: Deprecated WooCommerce functions and backward compatibility to 2.6

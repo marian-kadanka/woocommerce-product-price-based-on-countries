@@ -28,7 +28,6 @@ class WCPBC_Admin {
 		add_action( 'woocommerce_coupon_options_save', array( __CLASS__, 'coupon_options_save' ) );		
 		add_action( 'woocommerce_system_status_report', array( __CLASS__, 'system_status_report' ) );		
 		add_filter( 'woocommerce_get_settings_pages', array( __CLASS__, 'settings_price_based_country' ) );					
-		add_filter( 'woocommerce_currency', array( __CLASS__, 'order_currency' ) );	
 		add_filter( 'woocommerce_paypal_supported_currencies', array( __CLASS__, 'paypal_supported_currencies' ) );						
 	}
 
@@ -81,21 +80,7 @@ class WCPBC_Admin {
 		$settings[] = include( 'settings/class-wc-settings-price-based-country.php' );
 
 		return $settings;
-	}	
-
-	
-	/**
-	 * Default currency in order	 
-	 */
-	public static function order_currency( $currency )	{
-		global $theorder;
-
-		if ( ! empty( $theorder ) && is_object( $theorder ) ) {
-			return $theorder->order_currency;
-		}		
-			
-		return $currency;
-	}	
+	}			
 	
 	/**
 	 * PayPal supported currencies

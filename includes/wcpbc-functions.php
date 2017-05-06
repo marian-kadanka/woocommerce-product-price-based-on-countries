@@ -273,13 +273,28 @@ function wcpbc_zone_grouped_product_sync( $zone_id, $product_id ) {
  *
   * @since 1.6.0
  */
-function wcpbc_variable_product_sync( $product_id, $children ) {
+function wcpbc_variable_product_sync( $product_id, $children = false ) {
 	
 	foreach ( array_keys( WCPBC()->get_regions() ) as $zone_id ) {		
 		wcpbc_zone_variable_product_sync( $zone_id, $product_id );
 	}
 }
-add_action( 'woocommerce_variable_product_sync', 'wcpbc_variable_product_sync', 10, 2 );
+
+/**
+ * Sync with child variations.
+ *
+ * @since 1.6.10
+ * @param WC_Product_Variable $product 
+ */
+function wcpbc_variable_product_sync_data( $product ) {
+	wcpbc_variable_product_sync( $product->get_id() );
+}
+	
+if ( version_compare( get_option( 'woocommerce_version', null ), '3.0', '<' ) ) { 
+	add_action( 'woocommerce_variable_product_sync', 'wcpbc_variable_product_sync', 10, 2 );
+} else {
+	add_action( 'woocommerce_variable_product_sync_data', 'wcpbc_variable_product_sync_data' );
+}
 
 /**
  * Sync products prices by exchange rate for a pricing zone

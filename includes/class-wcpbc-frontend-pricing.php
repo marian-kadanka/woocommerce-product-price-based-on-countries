@@ -147,7 +147,7 @@ class WCPBC_Frontend_Pricing {
 	public static function product_ids_on_sale( $value, $transient = false ) {
 		global $wpdb;
 		
-		$cache_key = 'wcpbc_products_onsale_' . self::$_meta_key_prefix;
+		$cache_key = 'wcpbc_products_onsale' . self::$_meta_key_prefix;
 			
 		// Load from cache
 		$product_ids_on_sale = get_transient( $cache_key );
@@ -157,6 +157,8 @@ class WCPBC_Frontend_Pricing {
 			return $product_ids_on_sale;
 		}
 		
+		$decimals = absint( wc_get_price_decimals() );
+
 		$on_sale_posts = $wpdb->get_results( $wpdb->prepare( "
 			SELECT post.ID, post.post_parent FROM `{$wpdb->posts}` AS post
 			LEFT JOIN `{$wpdb->postmeta}` AS meta ON post.ID = meta.post_id
@@ -167,7 +169,7 @@ class WCPBC_Frontend_Pricing {
 				AND meta2.meta_key = %s
 				AND CAST( meta.meta_value AS DECIMAL ) >= 0
 				AND CAST( meta.meta_value AS CHAR ) != ''
-				AND CAST( meta.meta_value AS DECIMAL ) = CAST( meta2.meta_value AS DECIMAL )
+				AND CAST( meta.meta_value AS DECIMAL( 10, {$decimals} ) ) = CAST( meta2.meta_value AS DECIMAL( 10, {$decimals} ) )
 			GROUP BY post.ID
 		", self::$_meta_key_prefix . '_sale_price', self::$_meta_key_prefix .'_price' ) );
 
