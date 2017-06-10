@@ -1,10 +1,10 @@
 === WooCommerce Price Based on Country ===
 Contributors: oscargare
 Donate link: https://www.pricebasedcountry.com/
-Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
+Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip, country-targeted pricing
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.6.11
+Stable tag: 1.6.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -100,6 +100,9 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.12 (2017-06-10) =
+* Fixed: No round empty prices.
 
 = 1.6.11 (2017-06-10) =
 * Fixed: Wrong subtotal calculation with price by exchange rates and more of 10 items in cart.<br />https://wordpress.org/support/topic/wrong-subtotal-calculation/

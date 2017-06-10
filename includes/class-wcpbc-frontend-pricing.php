@@ -84,11 +84,17 @@ class WCPBC_Frontend_Pricing {
 			}
 			
 			// Return value
-			$meta_value = round( get_post_meta( $object_id, self::$_meta_key_prefix . $meta_key , true ), self::$_num_decimals );			
+			$meta_value = get_post_meta( $object_id, self::$_meta_key_prefix . $meta_key , true );			
+
+			// Round price to num decimals
+			if ( ! empty( $meta_value ) && ! empty( self::$_num_decimals ) && is_numeric( $meta_value ) && is_numeric( self::$_num_decimals ) ) {								
+				$meta_value = round( $meta_value, self::$_num_decimals );
+			}			
 			
 			// Add filter			 
 			add_filter( 'get_post_metadata', array( __CLASS__, 'get_price_metadata'), 10, 4 );
 		}
+		
 		return $meta_value;
 	}
 
