@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip
 Requires at least: 3.8
 Tested up to: 4.7
-Stable tag: 1.6.10
+Stable tag: 1.6.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -37,13 +37,19 @@ Apply currency conversion to Flat and International Flat Rate Shipping.
 = Compatible with WPML =
 WooCommerce Product Price Based on Countries is officially compatible with [WPML](https://wpml.org/extensions/woocommerce-product-price-based-countries/).
 
-= Premium Addons =
-Need a specific integration with a WooCommerce extension? Perhaps add automatic daily updated to exchange rate? Have a look at the extension catalog from the oficial site at [pricebasedcountry.com](http://www.pricebasedcountry.com?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend)
+= Upgrade to Pro =
 
-**Popular extensions**
+>This plugin offers a Pro addon which adds the following features:
 
-* [WooCommerce Subscriptions Bridge](https://www.pricebasedcountry.com/product/woocommerce-subscriptions-bridge-price-based-country/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Integration with WooCommerce Subscriptions.
-* [Advanced Currency Options](https://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend) - Show currency code in price, automatic updates of exchange rates and more
+>* Guaranteed support by private ticket system.
+>* Automatic updates of exchange rates.
+>* Display the currency code next to price.
+>* Thousand separator, decimal separator and number of decimals by pricing zone.
+>* Currency switcher widget.
+>* Support to WooCommerce Subscriptions and WooCommerce Product Bundles.
+>* More features and integrations is coming.
+ 
+>[Get Pro version now](https://www.pricebasedcountry.com?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend)
 
 = Requirements =
 WooCommerce 2.6.0 or later.
@@ -94,6 +100,11 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.11 (2017-06-10) =
+* Fixed: Wrong subtotal calculation with price by exchange rates and more of 10 items in cart.<br />https://wordpress.org/support/topic/wrong-subtotal-calculation/
+* Added: Code improvements.
+* Added: Integration with Pro Addon.
 
 = 1.6.10 (2017-05-07) =
 * Fixed: Deprecated WooCommerce functions and backward compatibility to 2.6

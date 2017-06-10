@@ -1,11 +1,11 @@
 <?php
 
 /*
- Plugin Name: WooCommerce Price Based on Country
+ Plugin Name: WooCommerce Price Based on Country (Basic)
  Plugin URI: https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/
- Description: Sets products prices based on country of your site's visitor.
+ Description: Product Pricing and Currency based on Shopper’s Country for WooCommerce.
  Author: Oscar Gare
- Version: 1.6.10
+ Version: 1.6.11
  Author URI: https://www.linkedin.com/in/oscargare
  Text Domain: wc-price-based-country
  Domain Path: /languages
@@ -45,7 +45,7 @@ class WC_Product_Price_Based_Country {
 	/**
 	 * @var string
 	 */
-	public $version = '1.6.10';
+	public $version = '1.6.11';
 
 	/**
 	 * @var The single instance of the class		 
@@ -119,6 +119,8 @@ class WC_Product_Price_Based_Country {
 
 			add_action( 'woocommerce_init', array( $this , 'frontend_init') , 100 );				
 		}		
+
+		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( $this, 'plugin_action_links' ) );
 	}
 	
 	/**
@@ -165,6 +167,26 @@ class WC_Product_Price_Based_Country {
 	 	include_once( 'includes/class-wcpbc-widget-country-selector.php' );	
 	 	register_widget( 'WCPBC_Widget_Country_Selector' );
 	 }
+
+	/**
+	 * Show action links on the plugin screen.
+	 *
+	 * @since 	1.6.11
+	 * @param	mixed $links Plugin Action links
+	 * @return	array
+	 */
+	public function plugin_action_links( $links ) {
+
+		$action_links = array(
+			'settings' => '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=price-based-country' ) . '" aria-label="' . esc_attr__( 'View Price Based on Country settings', 'wc-price-based-country' ) . '">' . esc_html__( 'Settings', 'wc-price-based-country' ) . '</a>'
+		);
+
+		if ( ! wcpbc_is_pro() ) {
+			$action_links['get-pro'] = '<a target="_blank" style="color:#46b450;" href="https://www.pricebasedcountry.com/pricing/?utm_source=action-link&utm_medium=banner&utm_campaign=Get_Pro" aria-label="' . esc_attr__( 'Get Price Based on Country Pro', 'wc-price-based-country' ) . '">' . esc_html__( 'Get Pro', 'wc-price-based-country' ) . '</a>';
+		}
+
+		return array_merge( $action_links, $links );
+	}
 
 	/**
 	 * Init front-end

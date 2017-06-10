@@ -38,8 +38,8 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	 */
 	public function get_sections() {
 		$sections = array(
-			''         => __( 'General options', 'wc-price-based-country' ),
-			'zones'     => __( 'Zones', 'wc-price-based-country' )		
+			''         		=> __( 'General options', 'wc-price-based-country' ),
+			'zones'     	=> __( 'Zones', 'wc-price-based-country' )			
 		);
 
 		return apply_filters( 'wc_price_based_country_get_sections', $sections );
@@ -119,6 +119,10 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 
 		if ( 'zones' == $current_section ) {										
 			self::regions_output();
+			
+		} elseif ( 'license' == $current_section && class_exists( 'WCPBC_License_Settings' ) ) {
+			WCPBC_License_Settings::output_fields();
+			
 		} else {
 			$settings = $this->get_settings( $current_section );
 			WC_Admin_Settings::output_fields( $settings );
@@ -126,7 +130,7 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 
 		$output = ob_get_clean();
 
-		if ( class_exists('WCPBC_Avanced_Currency_Options') || class_exists('WCPBC_Subscriptions') ) {
+		if ( wcpbc_is_pro() ) {
 			echo $output;
 		} else {
 			self::output_ads($output);
@@ -153,12 +157,17 @@ class WC_Settings_Price_Based_Country extends WC_Settings_Page {
 	public function save() {
 		global $current_section;
 		
-		if( $current_section == 'zones' && ( isset( $_GET['edit_region'] ) || isset( $_GET['add_region'] ) ) ) {			
+		if( $current_section == 'zones' && ( isset( $_GET['edit_region'] ) || isset( $_GET['add_region'] ) ) ) {						
+
+			self::regions_save();	
 			
-			self::regions_save();			
 		} elseif( $current_section == 'zones' && isset( $_POST['action2'] ) && $_POST['action2'] == 'remove' && isset( $_POST['region_key'] ) ) {
 			
 			self::regions_delete_bulk();
+			
+		} elseif( $current_section == 'license' && class_exists( 'WCPBC_License_Settings' ) ) {			
+			
+			WCPBC_License_Settings::save_fields();
 			
 		} elseif( $current_section !== 'zones' ) {			
 			//save settings				

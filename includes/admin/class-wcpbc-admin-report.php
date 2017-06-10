@@ -40,10 +40,7 @@ class WCPBC_Admin_Report {
 		if ( in_array( $screen, array( 'woocommerce_page_wc-reports', 'toplevel_page_wc-reports' ) ) && ( ! isset( $_GET['tab'] ) || in_array( $_GET['tab'], apply_filters('wc_price_based_country_tabs_report_notice', array( 'orders') ) ) ) ) {			
 			
 			echo '<div class="notice notice-info"><p>';
-			printf( __( 'Totals in different currency to %s has been calculate by following exchange rates: %s', 'wc-price-based-country' ), $base_currency, self::get_currency_rates_string() ) ; 
-			if ( ! class_exists( 'WCPBC_Avanced_Currency_Options' ) ) {
-				printf( __( '%sIf you need more accuracy install %sAdvanced Currency Options%s extension.', 'wc-price-based-country' ), '<br />', '<a href="http://www.pricebasedcountry.com/product/avanced-currency-options/?utm_source=wc_reports_page&utm_medium=banner&utm_campaign=Extend">', '</a>' );
-			}
+			printf( __( 'Totals in different currency to %s has been calculate by following exchange rates: %s', 'wc-price-based-country' ), $base_currency, self::get_currency_rates_string() ) ; 			
 			echo '</p></div>';				
 		}
 	}

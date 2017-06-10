@@ -600,6 +600,15 @@ function wcpbc_maybe_asort_locale( &$arr ) {
 
 	} catch ( Exception $e ) {
 		return asort( $arr );
-	}
-		
+	}		
+}
+
+/**
+ * Is Pro version
+ *
+ * @since 1.6.11
+ * return boolean
+ */
+function wcpbc_is_pro() {
+	return class_exists('WCPBC_Avanced_Currency_Options') || class_exists('WCPBC_Subscriptions') || class_exists( 'WC_Product_Price_Based_Country_Pro' );
 }

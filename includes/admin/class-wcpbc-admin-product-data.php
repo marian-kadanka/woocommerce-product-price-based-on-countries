@@ -57,7 +57,7 @@ class WCPBC_Admin_Product_Data {
 			$_sale_price_dates = empty($_sale_price_dates) ? 'default' : $_sale_price_dates;							
 							
 			?>
-				<div class="options_group pricing show_if_simple show_if_external wcpbc_pricing">					
+				<div class="options_group pricing show_if_simple show_if_external wcpbc_pricing<?php if ( ! wcpbc_is_pro() ) echo ' hide_if_bundle hide_if_subscription'; ?>">					
 
 					<?php
 						woocommerce_wp_radio(
@@ -115,7 +115,14 @@ class WCPBC_Admin_Product_Data {
 				</div>
 				
 			<?php		
-		}								
+		}
+		if ( ! wcpbc_is_pro() ) {
+			echo '<div class="options_group show_if_bundle show_if_subscription" style="padding: 20px 0;">
+					<h2 style="padding: 8px 18px;">Upgrade to <strong>Price Based on Country Pro</strong> and get support for Product <span class="hide_if_subscription">Bundle</span><span class="hide_if_bundle">Subscription</span>.</h2>
+					<div style="padding: 8px 12px;"><a class="button button-primary" href="https://www.pricebasedcountry.com/pricing/?utm_source=product-data&utm_medium=banner&utm_campaign=Get_Pro">Upgrade to Price Based on Country Pro now!</a></div>
+				</div>';
+		}
+		
 	}
 
 	
@@ -236,7 +243,7 @@ class WCPBC_Admin_Product_Data {
 			$_sale_price_dates = empty($_sale_price_dates) ? 'default' : $_sale_price_dates;
 			
 			?>
-				<div class="wcpbc_pricing">					
+				<div class="wcpbc_pricing<?php if ( ! wcpbc_is_pro() ) echo ' hide_if_variable-subscription'; ?>">					
 					<p class="form-row form-row-first"><strong><?php echo __( 'Price for', 'wc-price-based-country' )  . ' ' . $value['name'] . ' (' . get_woocommerce_currency_symbol( $value['currency'] ) . ')'; ?></strong></p>
 
 					<div class="form-row form-row-last wcpbc_wrapper_variable_price_method <?php echo '_' . $key . '_variable_price_method_' . $loop . '_field'; ?>">
@@ -307,6 +314,13 @@ class WCPBC_Admin_Product_Data {
 				</div>
 
 			<?php			
+		}
+		
+		if ( ! wcpbc_is_pro() ) {
+			echo '<div class="options_group show_if_variable-subscription" style="padding: 20px 0;">
+					<h2 style="padding: 8px 18px;">Upgrade to <strong>Price Based on Country Pro</strong> and get support for Product Subscription.</h2>
+					<div style="padding: 8px 12px;"><a class="button button-primary" href="https://www.pricebasedcountry.com/pricing/?utm_source=product-data&utm_medium=banner&utm_campaign=Get_Pro">Upgrade to Price Based on Country Pro now!</a></div>
+				</div>';
 		}
 	}	
 	

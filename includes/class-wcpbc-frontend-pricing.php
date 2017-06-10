@@ -26,6 +26,12 @@ class WCPBC_Frontend_Pricing {
 	 * @var float
 	 */
 	private static $_exchange_rate;
+	
+	/**
+	 * @var int
+	 * @since 1.6.11
+	 */
+	private static $_num_decimals;
 
 	/**
 	 * Hook actions and filters
@@ -35,8 +41,9 @@ class WCPBC_Frontend_Pricing {
 	public static function init( $zone_id, $currency, $exchange_rate ) { 
 
 		self::$_meta_key_prefix = '_' . $zone_id;
-		self::$_currency = $currency;
-		self::$_exchange_rate = $exchange_rate;
+		self::$_currency 		= $currency;
+		self::$_exchange_rate 	= $exchange_rate;
+		self::$_num_decimals 	=  wc_get_price_decimals();
 
 		add_filter( 'get_post_metadata', array( __CLASS__, 'get_price_metadata'), 10, 4 );
 		add_filter( 'woocommerce_currency',  array( __CLASS__ , 'get_currency' ) );
@@ -77,7 +84,7 @@ class WCPBC_Frontend_Pricing {
 			}
 			
 			// Return value
-			$meta_value = get_post_meta( $object_id, self::$_meta_key_prefix . $meta_key , true );			
+			$meta_value = round( get_post_meta( $object_id, self::$_meta_key_prefix . $meta_key , true ), self::$_num_decimals );			
 			
 			// Add filter			 
 			add_filter( 'get_post_metadata', array( __CLASS__, 'get_price_metadata'), 10, 4 );
