@@ -3,8 +3,8 @@ Contributors: oscargare
 Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip, country-targeted pricing
 Requires at least: 3.8
-Tested up to: 4.7
-Stable tag: 1.6.12
+Tested up to: 4.8
+Stable tag: 1.6.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -100,6 +100,12 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.13 (2017-06-26) =
+* Fixed: No round price set manually.<br />https://wordpress.org/support/topic/total-price-slightly-different-with-version-1-6-12-price-based-on-country/
+* Fixed: Round shipping cost after apply currency conversion.
+* Fixed: Do not echo selected() in country-selector.php.<br />https://wordpress.org/support/topic/do-not-echo-selected-in-country-selector-php/
+* Fixed: Check if class WC_Widget exists before load Country selector widget.
 
 = 1.6.12 (2017-06-10) =
 * Fixed: No round empty prices.

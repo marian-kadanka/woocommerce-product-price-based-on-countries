@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * WCPBC_Frontend_Pricing class.
  *
  * @class 		WCPBC_Frontend_Pricing
- * @version		1.6.9
+ * @version		1.6.13
  * @author 		oscargare
  */
 class WCPBC_Frontend_Pricing {
@@ -43,7 +43,7 @@ class WCPBC_Frontend_Pricing {
 		self::$_meta_key_prefix = '_' . $zone_id;
 		self::$_currency 		= $currency;
 		self::$_exchange_rate 	= $exchange_rate;
-		self::$_num_decimals 	=  wc_get_price_decimals();
+		self::$_num_decimals 	= wc_get_price_decimals();
 
 		add_filter( 'get_post_metadata', array( __CLASS__, 'get_price_metadata'), 10, 4 );
 		add_filter( 'woocommerce_currency',  array( __CLASS__ , 'get_currency' ) );
@@ -83,11 +83,13 @@ class WCPBC_Frontend_Pricing {
 				update_post_meta( $object_id, self::$_meta_key_prefix . $meta_key , $meta_value * self::$_exchange_rate );
 			}
 			
-			// Return value
+			$price_method = $price_method ? $price_method : 'exchange_rate';
+			
+			// Get the return value
 			$meta_value = get_post_meta( $object_id, self::$_meta_key_prefix . $meta_key , true );			
 
-			// Round price to num decimals
-			if ( ! empty( $meta_value ) && ! empty( self::$_num_decimals ) && is_numeric( $meta_value ) && is_numeric( self::$_num_decimals ) ) {								
+			// Round price to num decimals if price method is exchange rate
+			if ( 'exchange_rate' === $price_method && ! empty( $meta_value ) && ! empty( self::$_num_decimals ) && is_numeric( $meta_value ) && is_numeric( self::$_num_decimals ) ) {								
 				$meta_value = round( $meta_value, self::$_num_decimals );
 			}			
 			
@@ -224,7 +226,12 @@ class WCPBC_Frontend_Pricing {
 				
 				if ( $change ) {
 					//Apply exchange rate
-					$rate->cost = $rate->wcpbc_data['orig_cost'] * self::$_exchange_rate;
+					$rate->cost = $rate->wcpbc_data['orig_cost'] * self::$_exchange_rate;					
+
+					if ( ! wc_prices_include_tax() ) {
+						$rate->cost = round( $rate->cost, self::$_num_decimals );						
+					}									
+
 					//recalculate taxes
 					foreach ( $rate->wcpbc_data['orig_taxes'] as $i => $tax ){
 						$rate->taxes[$i] = ( $tax/$rate->wcpbc_data['orig_cost'] ) * $rate->cost;
@@ -269,9 +276,7 @@ class WCPBC_Frontend_Pricing {
 				$coupon->coupon_amount 	= floatval( $_back ? $coupon->coupon_amount : $coupon->get_amount() )  * self::$_exchange_rate;			
 			} else {
 				$coupon->set_amount( floatval( $coupon->get_amount() )  * self::$_exchange_rate );		
-			}
-			
-			
+			}						
 		}
 
 		$_min = $_back ? $coupon->minimum_amount : $coupon->get_minimum_amount();

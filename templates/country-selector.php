@@ -3,7 +3,7 @@
  * Country selector form
  *
  * @author 		oscargare
- * @version     1.5.9
+ * @version     1.6.13
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -33,7 +33,7 @@ if ( $countries ) : ?>
 	<form method="post" class="wcpbc-widget-country-selecting">		
 		<select class="country" name="wcpbc-manual-country">
 			<?php foreach ($countries as $key => $value) : ?>
-				<option value="<?php echo $key?>" <?php echo selected($key, $selected_country ); ?> ><?php echo $value; ?></option>
+				<option value="<?php echo $key?>" <?php selected($key, $selected_country ); ?> ><?php echo $value; ?></option>
 			<?php endforeach; ?>
 		</select>					
 	</form>			
