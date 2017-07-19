@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WCPBC_Admin_Product_Data 
  *
  * @class 		WCPBC_Admin_Product_Data
- * @version		1.6.0
+ * @version		1.6.14
  * @author 		oscargare
  * @category	Class
  */
@@ -117,9 +117,11 @@ class WCPBC_Admin_Product_Data {
 			<?php		
 		}
 		if ( ! wcpbc_is_pro() ) {
-			echo '<div class="options_group show_if_bundle show_if_subscription" style="padding: 20px 0;">
-					<h2 style="padding: 8px 18px;">Upgrade to <strong>Price Based on Country Pro</strong> and get support for Product <span class="hide_if_subscription">Bundle</span><span class="hide_if_bundle">Subscription</span>.</h2>
-					<div style="padding: 8px 12px;"><a class="button button-primary" href="https://www.pricebasedcountry.com/pricing/?utm_source=product-data&utm_medium=banner&utm_campaign=Get_Pro">Upgrade to Price Based on Country Pro now!</a></div>
+			echo '<div class="options_group wcpbc_product_data_ad show_if_bundle show_if_subscription" style="padding: 20px 0;">
+					<div class="inline notice woocommerce-message" style="margin:10px;">
+						<h2 style="padding: 8px 18px;">Upgrade to <strong>Price Based on Country Pro</strong> and get support for Product <span class="hide_if_subscription">Bundle</span><span class="hide_if_bundle">Subscription</span>.</h2>
+						<div style="padding: 8px 12px;"><a target="_blank" class="button button-primary" href="https://www.pricebasedcountry.com/pricing/?utm_source=product-data&utm_medium=banner&utm_campaign=Get_Pro">Upgrade to Price Based on Country Pro now!</a></div>
+					</div>
 				</div>';
 		}
 		
@@ -317,9 +319,11 @@ class WCPBC_Admin_Product_Data {
 		}
 		
 		if ( ! wcpbc_is_pro() ) {
-			echo '<div class="options_group show_if_variable-subscription" style="padding: 20px 0;">
-					<h2 style="padding: 8px 18px;">Upgrade to <strong>Price Based on Country Pro</strong> and get support for Product Subscription.</h2>
-					<div style="padding: 8px 12px;"><a class="button button-primary" href="https://www.pricebasedcountry.com/pricing/?utm_source=product-data&utm_medium=banner&utm_campaign=Get_Pro">Upgrade to Price Based on Country Pro now!</a></div>
+			echo '<div class="wcpbc_product_data_ad show_if_variable-subscription" style="padding: 20px 0;clear:both;">					
+				  	<div class="notice woocommerce-message" style="margin:10px;">
+						<h2 style="padding: 8px 18px;">Upgrade to <strong>Price Based on Country Pro</strong> and get support for Product Subscription.</h2>
+						<div style="padding: 8px 12px;"><a target="_blank" class="button button-primary" href="https://www.pricebasedcountry.com/pricing/?utm_source=product-data&utm_medium=banner&utm_campaign=Get_Pro">Upgrade to Price Based on Country Pro now!</a></div>
+					</div>
 				</div>';
 		}
 	}	

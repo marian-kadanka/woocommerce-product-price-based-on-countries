@@ -5,7 +5,7 @@
  Plugin URI: https://wordpress.org/plugins/woocommerce-product-price-based-on-countries/
  Description: Product Pricing and Currency based on Shopper’s Country for WooCommerce.
  Author: Oscar Gare
- Version: 1.6.13
+ Version: 1.6.14
  Author URI: https://www.linkedin.com/in/oscargare
  Text Domain: wc-price-based-country
  Domain Path: /languages
@@ -45,7 +45,7 @@ class WC_Product_Price_Based_Country {
 	/**
 	 * @var string
 	 */
-	public $version = '1.6.13';
+	public $version = '1.6.14';
 
 	/**
 	 * @var The single instance of the class		 
@@ -118,6 +118,7 @@ class WC_Product_Price_Based_Country {
 		if ( $this->is_request( 'frontend') ) {			
 
 			add_action( 'woocommerce_init', array( $this , 'frontend_init') , 100 );				
+			
 		}		
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( $this, 'plugin_action_links' ) );
@@ -139,7 +140,7 @@ class WC_Product_Price_Based_Country {
 				return preg_match( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent );				
 
 			case 'admin' :
-				$is_ajax_admin = $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], array(  'woocommerce_add_variation', 'woocommerce_load_variations', 'woocommerce_save_variations', 'woocommerce_bulk_edit_variations', 'inline-save' ) );
+				$is_ajax_admin = $is_ajax && isset( $_POST['action'] ) && in_array( $_POST['action'], array(  'woocommerce_add_variation', 'woocommerce_load_variations', 'woocommerce_save_variations', 'woocommerce_bulk_edit_variations', 'inline-save', 'woocommerce_add_order_item' ) );
 				return $is_ajax_admin || ( is_admin() && ! $is_ajax );							
 
 			case 'frontend' :
@@ -193,13 +194,13 @@ class WC_Product_Price_Based_Country {
 	/**
 	 * Init front-end
 	 */
-	 public function frontend_init(){	 
+	public function frontend_init(){	 
 	 	
 	 	if ( ! wcpbc_is_woocommerce_frontend() ) {
 	 		// Do only if woocommerce frontend have been loaded
 	 		return;	 		
-	 	}
-
+	 	}	 	
+	 	
 	 	if ( apply_filters( 'wc_price_based_country_stop_princing', false ) )  {
 	 		// Allow developers to stop base on country pricing
 	 		return;	 		
@@ -207,7 +208,7 @@ class WC_Product_Price_Based_Country {
 
 	 	do_action( 'wc_price_based_country_before_frontend_init' );
 
-		$this->customer = new WCPBC_Customer();		
+		$this->customer = new WCPBC_Customer();	
 
 		if ( $this->customer->zone_id ) {
 
@@ -219,7 +220,7 @@ class WC_Product_Price_Based_Country {
 		}
 		
 		do_action('wc_price_based_country_frontend_init');
-	 }
+	}	
 	 
 	/**
 	 * Get regions

@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip, country-targeted pricing
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 1.6.13
+Stable tag: 1.6.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -46,7 +46,9 @@ WooCommerce Product Price Based on Countries is officially compatible with [WPML
 >* Display the currency code next to price.
 >* Thousand separator, decimal separator and number of decimals by pricing zone.
 >* Currency switcher widget.
->* Support to WooCommerce Subscriptions and WooCommerce Product Bundles.
+>* Support to WooCommerce Subscriptions 
+>* Support to WooCommerce Product Bundles.
+>* Support to WooCommerce Product Add-ons.
 >* More features and integrations is coming.
  
 >[Get Pro version now](https://www.pricebasedcountry.com?utm_source=wordpress.org&utm_medium=readme&utm_campaign=Extend)
@@ -100,6 +102,10 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.14 (2017-07-19) =
+* Fixed: Hide product data ads in default product types.
+* Fixed: Front-end prices for manual orders are deactivated, so manual orders does discrepancies between prices and currencies.
 
 = 1.6.13 (2017-06-26) =
 * Fixed: No round price set manually.<br />https://wordpress.org/support/topic/total-price-slightly-different-with-version-1-6-12-price-based-on-country/

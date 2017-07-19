@@ -69,27 +69,32 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-.wcpbpc_addon_banner .dashicons {	
+.wcpbc_addon_banner .dashicons {	
 	float:left;
 }
-.wcpbpc_addon_banner .feature_text {
+.wcpbc_addon_banner .feature_text {
 	display: block;
     margin-left: 25px;
 }
 
-.wcpbpc_addon_banner .dashicons.dashicons-star-filled{
+.wcpbc_addon_banner .dashicons.dashicons-star-filled{
 	color: rgb(213, 78, 33);
 }
 
-.wcpbpc_addon_banner .dashicons.dashicons-yes{
+.wcpbc_addon_banner .dashicons.dashicons-yes{
 	color: #46b450;
 }
 
-.wcpbpc_addon_banner_features {
+.wcpbc_addon_banner_features {
 	padding: 20px;
 }
-.wc_addons_wrap .products ul.wcpbpc_addon_banner_features li {
+
+.wc_addons_wrap .products ul.wcpbc_addon_banner_features li {
     float: none;
 	margin: 0 0 1em 0!important;
 	width:100%;
+}
+
+.wcpbc_product_data_ad {
+    display: none;
 }
