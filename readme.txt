@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip, country-targeted pricing
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 1.6.14
+Stable tag: 1.6.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -102,6 +102,9 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.15 (2017-07-20) =
+* Fixed: file not found. https://wordpress.org/support/topic/error-message-after-updating-4/
 
 = 1.6.14 (2017-07-19) =
 * Fixed: Hide product data ads in default product types.
