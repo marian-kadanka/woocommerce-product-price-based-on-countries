@@ -61,6 +61,33 @@ class WCPBC_Admin_Translation_Management {
 	}
 
 	/**
+	 * Check if original product
+	 *
+	 * @param int $product_id
+	 * @return bool
+	 */
+	private static function is_original_product( $product_id ) {
+		global $wpdb;
+
+		$cache_key =  $product_id;
+        $cache_group = 'is_original_product';
+        $is_original = wp_cache_get($cache_key, $cache_group);
+
+        if ( false === $is_original ) {
+
+        	$is_original = $this->wpdb->get_var( $this->wpdb->prepare(
+		                "SELECT source_language_code IS NULL
+		                                FROM {$wpdb->prefix}icl_translations
+		                                WHERE element_id=%d AND element_type=%s",		                
+		    $product_id, 'post_product'  ) );
+
+	        wp_cache_set( $cache_key, $is_original, $cache_group );	
+        }        
+
+        return $is_original;
+	}
+
+	/**
 	 * Enqueue scripts
 	 */
 	public static function wpml_scripts() {
@@ -69,9 +96,9 @@ class WCPBC_Admin_Translation_Management {
 
 		if ( isset($woocommerce_wpml) &&  is_object( $woocommerce_wpml ) && get_class($woocommerce_wpml) == 'woocommerce_wpml' ) {
 
-			if( ($pagenow == 'post.php' && isset($_GET['post']) && get_post_type($_GET['post']) == 'product' && !$woocommerce_wpml->products->is_original_product($_GET['post']) ) ||
+			if( ($pagenow == 'post.php' && isset($_GET['post']) && get_post_type( absint( $_GET['post'] ) ) == 'product' && ! self::is_original_product( absint( $_GET['post'] ) ) ) ||
             	($pagenow == 'post-new.php' && isset($_GET['source_lang']) && isset($_GET['post_type']) && $_GET['post_type'] == 'product') && 
-            	! $woocommerce_wpml->settings['trnsl_interface'] ) {
+            	empty( $woocommerce_wpml->settings['trnsl_interface'] ) ) {
 
 				$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 

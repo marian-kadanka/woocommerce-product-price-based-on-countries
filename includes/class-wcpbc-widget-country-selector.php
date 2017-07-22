@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @author   OscarGare
  * @category Widgets 
- * @version  1.5.5
+ * @version  1.6.16
  * @extends  WC_Widget
  */
 class WCPBC_Widget_Country_Selector extends WC_Widget {
@@ -40,7 +40,7 @@ class WCPBC_Widget_Country_Selector extends WC_Widget {
 		);
 
 		parent::__construct();
-	}
+	}	
 
 	/**
 	 * widget function.
@@ -52,26 +52,43 @@ class WCPBC_Widget_Country_Selector extends WC_Widget {
 	 *
 	 * @return void
 	 */
-	function widget( $args, $instance ) {				
+	public function widget( $args, $instance ) {				
 
-		self::$_other_countries_text = isset( $instance['other_countries_text']) ? $instance['other_countries_text'] : $this->settings['other_countries_text']['std'] ;
+		$all_countries = WC()->countries->get_countries();		
+		$base_country = wc_get_base_location();			
 
-		add_filter('wcpbc_other_countries_text', array( __CLASS__, 'get_other_countries_text') );
+		$countries[ $base_country['country'] ] = $all_countries[$base_country['country']];
+
+		foreach ( WCPBC()->get_regions() as $region ) {
+			
+			foreach ( $region['countries'] as $country ) {
+
+				if ( ! array_key_exists( $country, $countries ) ) {
+					$countries[ $country ] = $all_countries[$country];					
+				}
+			}			
+		}
+
+		wcpbc_maybe_asort_locale( $countries );
+				
+		//add other countries
+		$other_country = key( array_diff_key($all_countries, $countries ) );		
+		$countries[$other_country] = isset( $instance['other_countries_text']) ? $instance['other_countries_text'] : $this->settings['other_countries_text']['std'] ;				
+
+		$selected_country = wcpbc_get_woocommerce_country();
+
+		if ( ! array_key_exists( $selected_country, $countries ) ) {
+			$selected_country = $other_country;
+		}						
 
 		$this->widget_start( $args, $instance );						
 
-		do_action('wcpbc_manual_country_selector');
+		echo '<div class="wc-price-based-country">';
+		wc_get_template('country-selector.php', array( 'countries' => $countries, 'selected_country' => $selected_country ), 'woocommerce-product-price-based-on-countries/',  WCPBC()->plugin_path()  . '/templates/' );
+		echo '</div>';
 
 		$this->widget_end( $args );
-	}
-
-	/**
-	 * Get other countries text
-	 * @return string
-	 */
-	public static function get_other_countries_text( $value ) {
-		return self::$_other_countries_text;
-	}
+	}	
 	
 }
 

@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip, country-targeted pricing
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 1.6.15
+Stable tag: 1.6.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -68,11 +68,11 @@ Once you’ve added support for multiple country and their currencies, you could
 
 **Shortcode**
 
-[wcpbc_country_selector]
+[wcpbc_country_selector other_countries_text="Other countries"]
 
 **PHP Code**
 
-do_action('wcpbc_manual_country_selector');
+do_action('wcpbc_manual_country_selector', 'Other countries');
 
 = Customize country selector (only for developers) =
 
@@ -102,6 +102,10 @@ You should do the test in a private browsing window to prevent data stored in th
 5. /assets/screenshot-6.png
 
 == Changelog ==
+
+= 1.6.16 (2017-07-23) =
+* Fixed: Error on edit product when WooCommerce Multilingual is active.
+* Tweak: Add "other countries text" param to "wcpbc_country_selector" shortcode.
 
 = 1.6.15 (2017-07-20) =
 * Fixed: file not found. https://wordpress.org/support/topic/error-message-after-updating-4/
