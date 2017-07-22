@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Translation Management for WooCommerce Price Based Country
  *
  * @class 		WCPBC_Admin_Translation_Management
- * @version		1.4.1
+ * @version		1.6.17
  * @author 		oscargare
  * @category	Class
  */
@@ -75,7 +75,7 @@ class WCPBC_Admin_Translation_Management {
 
         if ( false === $is_original ) {
 
-        	$is_original = $this->wpdb->get_var( $this->wpdb->prepare(
+        	$is_original = $wpdb->get_var( $wpdb->prepare(
 		                "SELECT source_language_code IS NULL
 		                                FROM {$wpdb->prefix}icl_translations
 		                                WHERE element_id=%d AND element_type=%s",		                

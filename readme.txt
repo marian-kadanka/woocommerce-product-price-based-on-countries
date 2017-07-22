@@ -4,7 +4,7 @@ Donate link: https://www.pricebasedcountry.com/
 Tags: price based country, dynamic price based country, price by country, dynamic price, woocommerce, geoip, country-targeted pricing
 Requires at least: 3.8
 Tested up to: 4.8
-Stable tag: 1.6.16
+Stable tag: 1.6.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html	
 
@@ -103,7 +103,7 @@ You should do the test in a private browsing window to prevent data stored in th
 
 == Changelog ==
 
-= 1.6.16 (2017-07-23) =
+= 1.6.17 (2017-07-22) =
 * Fixed: Error on edit product when WooCommerce Multilingual is active.
 * Tweak: Add "other countries text" param to "wcpbc_country_selector" shortcode.
 
