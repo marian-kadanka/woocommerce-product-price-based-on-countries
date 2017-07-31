@@ -1,30 +1,5 @@
 jQuery( function( $ ) {		
 
-	$( document.body ).on( 'wcpbc_refresh_cart_fragments', function() {
-				
-		// Ajax action
-		$.post( woocommerce_params.wc_ajax_url.toString().replace( '%%endpoint%%', 'wc_price_based_country_refresh_cart' ), function( response ) {
-			var fragments = response.fragments;
-			var cart_hash = response.cart_hash;
-			
-			// Replace fragments
-			if ( fragments ) {
-				$.each( fragments, function( key, value ) {
-					$( key ).replaceWith( value );
-				});
-			}
-
-			// Trigger event so themes can refresh other areas
-			$( document.body ).trigger( 'wcpbc_cart_refreshed', [ fragments, cart_hash ] );
-		});			
-
-	});
-
-	// wcpbc_frontend_params is defined we must refresh cart fragments and price filter
-	if ( typeof wcpbc_frontend_params !== 'undefined' ) {		
-		$( document.body ).trigger( 'wcpbc_refresh_cart_fragments' );				
-	}		
-
 	//shipping_calculator_submit
 	if ( $('#calc_shipping_country').length > 0 ) {
 

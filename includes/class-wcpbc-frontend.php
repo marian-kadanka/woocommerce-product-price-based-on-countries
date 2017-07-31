@@ -28,8 +28,6 @@ class WCPBC_Frontend {
 		
 		add_action( 'wc_price_based_country_before_frontend_init', array( __CLASS__ , 'calculate_shipping_country_update'), 20 );		
 		
-		add_action( 'wc_ajax_wc_price_based_country_refresh_cart', array( __CLASS__, 'get_refreshed_fragments' ) );
-
 		add_action( 'wp_enqueue_scripts', array( __CLASS__ , 'load_scripts' ), 20 );			
 	}	
 		
@@ -63,39 +61,9 @@ class WCPBC_Frontend {
 			//set WC country
 			wcpbc_set_woocommerce_country( wc_clean( $_REQUEST['wcpbc-manual-country'] ) );			
 			
-			//trigger refresh mini cart
-			add_action( 'wp_print_footer_scripts', array( __CLASS__, 'localize_frontend_script' ), 5 );
 		}
 	}			
 	
-	/**
-	 * Get a refreshed cart fragment.
-	 */
-	public static function get_refreshed_fragments() {
-
-		if ( ! WC()->cart->is_empty() ) {
-			WC()->cart->calculate_totals();
-		}
-
-		// Get mini cart
-		ob_start();
-
-		woocommerce_mini_cart();
-
-		$mini_cart = ob_get_clean();
-
-		// Fragments and mini cart are returned
-		$data = array(
-			'fragments' => apply_filters( 'woocommerce_add_to_cart_fragments', array(
-					'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>'
-				)
-			),
-			'cart_hash' => apply_filters( 'woocommerce_add_to_cart_hash', WC()->cart->get_cart_for_session() ? md5( json_encode( WC()->cart->get_cart_for_session() ) ) : '', WC()->cart->get_cart_for_session() )
-		);
-
-		wp_send_json( $data );
-	}
-
 	/**
 	 * Add scripts
 	 */
@@ -120,18 +88,6 @@ class WCPBC_Frontend {
 
 			wp_enqueue_script( 'wc-price-based-country-checkout', WCPBC()->plugin_url() . 'assets/js/wcpbc-checkout' . $version . $suffix . '.js', array( 'wc-checkout', 'wc-price-based-country-frontend' ), WCPBC()->version, true );
 		}
-	}
-
-	/**
-	 * Localize frontend script.
-	 */
-	public static function localize_frontend_script() {
-		
-		if ( ! did_action( 'before_woocommerce_init' ) ) {
-			return;
-		}
-
-		wp_localize_script( 'wc-price-based-country-frontend', 'wcpbc_frontend_params', array('refresh_cart' => 'true' ) );
 	}
 
 	/**
