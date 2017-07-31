@@ -60,10 +60,37 @@ class WCPBC_Frontend {
 			
 			//set WC country
 			wcpbc_set_woocommerce_country( wc_clean( $_REQUEST['wcpbc-manual-country'] ) );			
-			
+
+			//recalculate cart totals, this will trigger mini cart refresh
+			//hook wp_loaded, since we need WC()->cart to be available
+			add_action( 'wp_loaded', array( __CLASS__, 'refresh_fragments' ) );
+
 		}
 	}			
-	
+
+	/**
+	 * Recalculate cart totals after country has changed, this will trigger mini cart refresh
+	 */	
+	public static function refresh_fragments() {
+		if ( ! WC()->cart->is_empty() ) {
+			WC()->cart->calculate_totals();
+		}
+		else {
+			add_action( 'wp_print_footer_scripts', array( __CLASS__, 'force_fragment_refresh_script' ) );
+		}
+	}
+
+	/**
+	 * Add snippet to the footer to force the fragment refresh in case of empty cart
+	 */	
+	public static function force_fragment_refresh_script() {
+		?>
+		<script type="text/javascript">
+		jQuery( function( $ ) { $( document.body ).on( 'wc_fragments_loaded', function() { jQuery( document.body ).trigger( 'wc_fragment_refresh' ); } ) } );
+		</script>
+		<?php
+	}
+
 	/**
 	 * Add scripts
 	 */
