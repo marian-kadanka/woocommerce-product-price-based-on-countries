@@ -33,6 +33,8 @@ class WCPBC_Integrations {
 				include_once( $integration_file );
 			}
 		}
+
+		include_once( dirname( __FILE__ ) . '/integrations/class-wcpbc-aelia-convert.php' );
 	}
 }
 add_action( 'plugins_loaded', array( 'WCPBC_Integrations', 'add_third_party_plugin_integrations' ) );

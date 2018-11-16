@@ -55,7 +55,6 @@ class WCPBC_Frontend_Pricing {
 		add_filter( 'woocommerce_package_rates', array( __CLASS__ , 'package_rates' ), 10, 2 );
 		add_filter( 'woocommerce_shipping_zone_shipping_methods', array( __CLASS__ , 'shipping_zone_shipping_methods' ), 10, 4 );			
 		add_action( 'woocommerce_coupon_loaded', array( __CLASS__ , 'coupon_loaded' ) );	
-		add_filter( 'wc_aelia_cs_convert', array( __CLASS__ , 'support_wc_aelia_cs_convert' ), 10, 3 );
 
 		do_action( 'wc_price_based_country_frontend_princing_init' );
 	}
@@ -299,19 +298,6 @@ class WCPBC_Frontend_Pricing {
 			}
 						
 		}		
-	}
-
-	/**
-     * Basic support for 'wc_aelia_cs_convert' filter hook
-     */
-	public static function support_wc_aelia_cs_convert( $value, $from_currency, $to_currency ) {
-
-		if ( $from_currency !== wcpbc_get_base_currency() || $to_currency !== self::$_currency || $from_currency === $to_currency ) {
-			return $value;
-		}
-		else {
-			return $value * self::$_exchange_rate;
-		}
 	}
 
 }
